@@ -34,4 +34,16 @@ context "State Machine Entry and Exit Actions" do
     
     @log.join(",").should_equal "exited_off,on,entered_on"
   end
+  
+  specify "entry and exit actions may be parameterized" do
+      @sm[:off].on_exit Proc.new { |a| @log << "exited_off(#{a})" }
+      @sm[:on].on_entry Proc.new { |a, b| @log << "entered_on(#{a},#{b})" }
+      
+      @sm.toggle "one", "two"
+      
+      @log.join(",").should_equal "exited_off(one),on,entered_on(one,two)"
+  end
+
+  
+  
 end

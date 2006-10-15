@@ -1,11 +1,11 @@
 require File.dirname(__FILE__) + '/../lib/state_machine'
 
-def check_transition(transition, start_state_id, end_state_id, event, action)
+def check_transition(transition, origin_id, destination_id, event, action)
   transition.should_not_be nil
   transition.event.should_be event
   transition.action.should_be action
-  transition.start_state.id.should_be start_state_id
-  transition.end_state.id.should_be end_state_id
+  transition.origin.id.should_be origin_id
+  transition.destination.id.should_be destination_id
 end
 
 module SwitchStateMachine

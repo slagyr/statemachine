@@ -67,10 +67,17 @@ context "State Machine Odds And Ends" do
   specify "To many parameters" do
     @sm.add(:off, :set, :on, Proc.new { |a, b, c, d, e, f, g, h, i| @status = [a, b, c, d, e, f, g, h, i].join(",") } )
     begin
-      @sm.set "blue", "green", "red", "orange", "yellow", "indigo", "violet", "ultra-violet", "Yikes!"
+      @sm.process_event(:set, "blue", "green", "red", "orange", "yellow", "indigo", "violet", "ultra-violet", "Yikes!")
     rescue StateMachine::StateMachineException => e
-      e.message.should_equal "Too many arguments for 'set' event. (9)"
+      e.message.should_equal "Too many arguments(9). (transition action from 'off' state invoked by 'set' event)"
     end
+  end
+  
+  specify "calling process_event with parameters" do
+    @sm.add(:off, :set, :on, Proc.new { |a, b, c| @status = [a, b, c].join(",") } )
+    @sm.process_event(:set, "blue", "green", "red")
+    @status.should_equal "blue,green,red"
+    @sm.state.id.should_be :on
   end
 
   specify "Insufficient params" do
@@ -78,7 +85,7 @@ context "State Machine Odds And Ends" do
     begin
       @sm.set "blue", "green"
     rescue StateMachine::StateMachineException => e
-      e.message.should_equal "Insufficient parameters to invoke action. (2 for 3, state: off, event: set)"
+      e.message.should_equal "Insufficient parameters. (transition action from 'off' state invoked by 'set' event)"
     end
   end
   
@@ -101,9 +108,7 @@ context "State Machine Odds And Ends" do
     begin
       @sm.set
     rescue StateMachine::StateMachineException => e
-      e.message.should_equal "Insufficient parameters to invoke action. (0 for -2, state: off, event: set)"
+      e.message.should_equal "Insufficient parameters. (transition action from 'off' state invoked by 'set' event)"
     end
   end
-
-  
 end

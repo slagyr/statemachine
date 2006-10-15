@@ -24,29 +24,29 @@ context "Turn Stile" do
   
   specify "start state" do
     @sm.run
-    @sm.initial_state.should.be @sm[:locked]
+    @sm.start_state.should.be @sm[:locked]
     @sm.state.should.be @sm[:locked]
   end
   
   specify "bad event" do
     begin
-      @sm.event(:blah)
+      @sm.process_event(:blah)
       self.should.fail_with_message("Exception expected")
     rescue Exception => e
       e.class.should.be StateMachine::MissingTransitionException
-      e.to_s.should_equal "'locked' state does not respond to the 'blah' event"
+      e.to_s.should_equal "'locked' state does not respond to the 'blah' event."
     end
   end
   
   specify "locked state with a coin" do
-    @sm.event(:coin)
+    @sm.process_event(:coin)
     
     @sm.state.should.be @sm[:unlocked]
     @locked.should.be false
   end
   
   specify "locked state with pass event" do
-    @sm.event(:pass)
+    @sm.process_event(:pass)
     
     @sm.state.should.be @sm[:locked]
     @locked.should.be true
@@ -54,16 +54,16 @@ context "Turn Stile" do
   end
 
   specify "unlocked state with coin" do
-    @sm.event(:coin)
-    @sm.event(:coin)
+    @sm.process_event(:coin)
+    @sm.process_event(:coin)
     
     @sm.state.should.be @sm[:locked]
     @thankyou_status.should.be true
   end
 
   specify "unlocked state with pass event" do
-    @sm.event(:coin)
-    @sm.event(:pass)
+    @sm.process_event(:coin)
+    @sm.process_event(:pass)
     
     @sm.state.should.be @sm[:locked]
     @locked.should.be true

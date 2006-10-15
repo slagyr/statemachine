@@ -17,12 +17,12 @@ context "simple cases:" do
     
   specify "one trasition create connects states with transition" do
     @sm.add(:on, :flip, :off, @proc)
-    start_state = @sm[:on]
-    end_state = @sm[:off]
+    origin = @sm[:on]
+    destination = @sm[:off]
     
-    start_state.transitions.length.should_be 1
-    end_state.transitions.length.should_be 0
-    transition = start_state[:flip]
+    origin.transitions.length.should_be 1
+    destination.transitions.length.should_be 0
+    transition = origin[:flip]
     check_transition(transition, :on, :off, :flip, @proc)
   end
   
@@ -31,7 +31,7 @@ context "simple cases:" do
     
     @sm.run
     @sm.running.should.be true
-    @sm.event(:blah)
+    @sm.process_event(:blah)
     @sm.state.should.be nil
     @sm.running.should.be false;
   end
@@ -39,7 +39,7 @@ context "simple cases:" do
   specify "reset" do
     @sm.add(:start, :blah, nil, @proc)
     @sm.run
-    @sm.event(:blah)
+    @sm.process_event(:blah)
     
     @sm.reset
     
@@ -51,7 +51,7 @@ context "simple cases:" do
     @sm.add(:on, :flip, :off)
     
     begin
-      @sm.event(:flip)
+      @sm.process_event(:flip)
     rescue StateMachine::StateMachineException => e
       e.message.should_equal "The state machine isn't in any state.  Did you forget to call run?"
     end
