@@ -30,16 +30,6 @@ module StateMachine
     def [] (event)
       return transitions[event]
     end
-
-    def process_event(event, args=nil)
-      transition = transitions[event]
-      if transition
-        exit(args)
-        return transition.invoke(args)
-      else
-        raise MissingTransitionException.new("#{self} does not respond to the '#{event}' event.")
-      end
-    end
   
     def on_entry action
       @entry_action = action
@@ -50,12 +40,18 @@ module StateMachine
     end
     
     def exit(args)
+      @statemachine.trace("\texiting #{self}")
       call_proc(@exit_action, args, "exit action for #{self}") if @exit_action
+      @superstate.existing(self) if @superstate
     end
 
     def enter(args)
+      @statemachine.trace("\tentering #{self}")
       call_proc(@entry_action, args, "entry action for #{self}") if @entry_action
-      return self
+    end
+    
+    def is_superstate?
+      return false
     end
 
     def to_s

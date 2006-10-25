@@ -16,7 +16,7 @@ module StateMachine
     include ProcCalling
   
     attr_reader :states, :state, :running
-    attr_accessor :start_state
+    attr_accessor :start_state, :tracer
   
     def initialize
       @states = {}
@@ -51,8 +51,14 @@ module StateMachine
     end
   
     def process_event(event, *args)
+      trace "Event: #{event}"
       if @state
-        @state = @state.process_event(event, args)
+        transition = @state.transitions[event]
+        if transition
+          @state = transition.invoke(@state, args)
+        else
+          raise MissingTransitionException.new("#{@state} does not respond to the '#{event}' event.")
+        end
         @running = @state != nil
       else
         raise StateMachineException.new("The state machine isn't in any state.  Did you forget to call run?")
@@ -86,6 +92,10 @@ module StateMachine
           transition.destination = replacement_state if transition.destination.id == state_id
         end
       end
+    end
+    
+    def trace(message)
+      @tracer.puts message if @tracer
     end
   
   end

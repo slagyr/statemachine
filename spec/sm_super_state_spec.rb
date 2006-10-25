@@ -7,8 +7,8 @@ context "Turn Stile" do
     create_turnstile
     
     @out_out_order = false
-    @sm.add(:operative, :maintain, :maintainance, Proc.new { @out_of_order = true } )
-    @sm.add(:maintainance, :operate, :operative, Proc.new { @out_of_order = false } )
+    @sm.add(:operative, :maintain, :maintenance, Proc.new { @out_of_order = true } )
+    @sm.add(:maintenance, :operate, :operative, Proc.new { @out_of_order = false } )
     @sm[:operative].add_substates(:locked, :unlocked)
     
     @sm.run
@@ -16,7 +16,7 @@ context "Turn Stile" do
 
   specify "substates respond to superstate transitions" do
     @sm.process_event(:maintain)
-    @sm.state.id.should_be :maintainance
+    @sm.state.id.should_be :maintenance
     @locked.should_be true
     @out_of_order.should_be true
   end
@@ -24,18 +24,20 @@ context "Turn Stile" do
   specify "after transitions, substates respond to superstate transitions" do
     @sm.coin
     @sm.maintain
-    @sm.state.id.should_be :maintainance
+    @sm.state.id.should_be :maintenance
     @locked.should_be false
     @out_of_order.should_be true
   end
   
   specify "transitions back to superstate go to history state" do
+    @sm[:operative].use_history
     @sm.maintain
     @sm.operate
     @sm.state.id.should_be :locked
     @out_of_order.should_be false
     
     @sm.coin
+    @sm.maintain
     @sm.operate
     @sm.state.id.should_be :unlocked
   end

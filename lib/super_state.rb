@@ -2,7 +2,7 @@ module StateMachine
 
   class Superstate < State
   
-    attr_accessor :start_state
+    attr_writer :start_state
   
     def initialize(state, transitions, substate_ids)
       @id = state.id
@@ -14,13 +14,32 @@ module StateMachine
       do_substate_adding(substate_ids)
     end
     
-    def enter(args, event)
-      super(args, event)
-      return @start_state.enter(args, event)
+    def is_superstate?
+      return true
+    end
+    
+    def start_state
+      if @use_history and @history_state
+        return @history_state
+      else
+        return @start_state
+      end
+    end
+    
+    def existing(substate)
+      @history_state = substate
     end
   
     def add_substates(*substate_ids)
       do_substate_adding(substate_ids)
+    end
+    
+    def use_history
+      @use_history = true;
+    end
+
+    def to_s
+      return "'#{id}' superstate"
     end
 
     private
