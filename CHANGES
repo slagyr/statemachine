@@ -1,0 +1,12 @@
+= StateMachine Changelog
+
+== Version 0.0.0 (in SVN)
+
+The first release.  Most finite state machine features are implemented
+ * states
+ * transitions
+ * transition actions
+ * super states
+ * entry actions
+ * exit actions
+ * history state

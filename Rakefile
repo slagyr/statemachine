@@ -142,6 +142,14 @@ end
 #  publisher.upload
 #end
 
+task :verify_user do
+  raise "RUBYFORGE_USER environment variable not set!" unless ENV['RUBYFORGE_USER']
+end
+
+task :verify_password do
+  raise "RUBYFORGE_PASSWORD environment variable not set!" unless ENV['RUBYFORGE_PASSWORD']
+end
+
 desc "Publish gem+tgz+zip on RubyForge. You must make sure lib/version.rb is aligned with the CHANGELOG file"
 task :publish_packages => [:verify_user, :verify_password, :package] do
   require 'meta_project'
@@ -158,16 +166,5 @@ task :publish_packages => [:verify_user, :verify_password, :package] do
     xf.password = ENV['RUBYFORGE_PASSWORD']
     xf.files = release_files.to_a
     xf.release_name = "StateMachine #{PKG_VERSION}"
-  end
-end
-
-desc "Publish news on RubyForge"
-task :publish_news => [:verify_user, :verify_password] do
-  require 'meta_project'
-  require 'rake/contrib/xforge'
-  Rake::XForge::NewsPublisher.new(MetaProject::Project::XForge::RubyForge.new(PKG_NAME)) do |news|
-    # Never hardcode user name and password in the Rakefile!
-    news.user_name = ENV['RUBYFORGE_USER']
-    news.password = ENV['RUBYFORGE_PASSWORD']
   end
 end
