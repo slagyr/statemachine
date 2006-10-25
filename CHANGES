@@ -1,12 +1,15 @@
 = StateMachine Changelog
 
-== Version 0.0.0 (in SVN)
+== Version 0.0.1
+* nothing really, just playing with rake and release configuration
+
+== Version 0.0.0
 
 The first release.  Most finite state machine features are implemented
- * states
- * transitions
- * transition actions
- * super states
- * entry actions
- * exit actions
- * history state
+* states
+* transitions
+* transition actions
+* super states
+* entry actions
+* exit actions
+* history state

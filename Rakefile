@@ -14,8 +14,8 @@ load File.dirname(__FILE__) + '/tasks/failing_examples_with_html.rake'
 load File.dirname(__FILE__) + '/tasks/verify_rcov.rake'"
 
 PKG_NAME = "statemachine"
-PKG_VERSION   = "0.0.0"
-PKG_TAG = "0_0_0"
+PKG_VERSION   = "0.0.1"
+PKG_TAG = "0_0_1"
 PKG_FILE_NAME = "#{PKG_NAME}-#{PKG_VERSION}"
 PKG_FILES = FileList[
   '[A-Z]*',
