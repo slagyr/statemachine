@@ -44,6 +44,35 @@ context "State Machine Entry and Exit Actions" do
       @log.join(",").should_equal "exited_off(one),on,entered_on(one,two)"
   end
 
+  specify "current state is set prior to exit and entry actions" do
+    @sm[:off].on_exit Proc.new { @log << @sm.state.id }
+    @sm[:on].on_entry Proc.new { @log << @sm.state.id }
+    
+    @sm.toggle
+    
+    @log.join(",").should_equal "off,on,on"  
+  end
+
+  specify "current state is set prior to exit and entry actions even with super states" do
+    @sm.add(:off_super, :toggle, :on, Proc.new { @log << "super_on" } )
+    @sm.add(:on_super, :toggle, :off, Proc.new { @log << "super_off" } )
+    @sm[:off_super].add_substates(:off)
+    @sm[:on_super].add_substates(:on)
+    @sm[:off_super].on_exit Proc.new { @log << @sm.state.id }
+    @sm[:on_super].on_entry Proc.new { @log << @sm.state.id }
+
+    @sm.toggle
+    @log.join(",").should_equal "off_super,super_on,on_super"  
+  end
+
+  specify "entry actions invokes another event" do
+    @sm[:on].on_entry Proc.new { @sm.toggle }
+    
+    @sm.toggle
+    @log.join(",").should_equal "on,off"
+    @sm.state.id.should_be :off
+  end
+
   
   
 end

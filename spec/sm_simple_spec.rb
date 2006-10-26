@@ -25,16 +25,6 @@ context "simple cases:" do
     transition = origin[:flip]
     check_transition(transition, :on, :off, :flip, @proc)
   end
-  
-  specify "end state" do
-    @sm.add(:start, :blah, nil, @proc)
-    
-    @sm.run
-    @sm.running.should.be true
-    @sm.process_event(:blah)
-    @sm.state.should.be nil
-    @sm.running.should.be false;
-  end
 
   specify "reset" do
     @sm.add(:start, :blah, nil, @proc)
@@ -44,7 +34,6 @@ context "simple cases:" do
     @sm.reset
     
     @sm.state.should.be @sm[:start]
-    @sm.running.should.be true
   end
   
   specify "exception when state machine is not running" do

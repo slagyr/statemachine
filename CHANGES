@@ -1,5 +1,15 @@
 = StateMachine Changelog
 
+== Version 0.0.3
+
+Bug fix dealing with entry and exit actions.  The state machine's state need to be set to the entered/exited state before calling the 
+exit/entry action.
+* added a couple specs in the exit_entry_spec
+* modified state.entered/exited methods to set the state
+* modifed the StateMachine.state to accept state objects.
+* removed running attribute from StateMachine because it wasn't much use
+* also removed the nil (end state)
+
 == Version 0.0.2
 
 More conventional file structure

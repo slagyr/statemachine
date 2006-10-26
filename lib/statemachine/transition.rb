@@ -29,8 +29,6 @@ module StateMachine
         terminal_state = terminal_state.start_state
         terminal_state.enter(args)
       end
-      
-      return terminal_state
     end
     
     def exits_and_entries(origin)

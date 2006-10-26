@@ -15,7 +15,7 @@ module StateMachine
     
     include ProcCalling
   
-    attr_reader :states, :state, :running
+    attr_reader :states, :state
     attr_accessor :start_state, :tracer
   
     def initialize
@@ -34,7 +34,6 @@ module StateMachine
   
     def run
       @state = @start_state
-      @running = true
     end
     alias :reset :run
   
@@ -43,7 +42,9 @@ module StateMachine
     end
     
     def state= value
-      if @states[value]
+      if value.is_a? State
+        @state = value
+      elsif @states[value]
         @state = @states[value]
       elsif value and @states[value.to_sym]
         @state = @states[value.to_sym]
@@ -55,11 +56,10 @@ module StateMachine
       if @state
         transition = @state.transitions[event]
         if transition
-          @state = transition.invoke(@state, args)
+          transition.invoke(@state, args)
         else
           raise MissingTransitionException.new("#{@state} does not respond to the '#{event}' event.")
         end
-        @running = @state != nil
       else
         raise StateMachineException.new("The state machine isn't in any state.  Did you forget to call run?")
       end
