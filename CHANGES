@@ -1,5 +1,10 @@
 = StateMachine Changelog
 
+== Version 0.0.2
+
+More conventional file structure
+* nothing much to report in terms of changes.
+
 == Version 0.0.1
 
 0.0.0 didn't seem to work as a gem so maybe this one will.

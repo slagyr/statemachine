@@ -5,6 +5,7 @@ require 'rake/contrib/rubyforgepublisher'
 require 'rake/clean'
 require 'rake/rdoctask'
 require 'spec/rake/spectask'
+require 'statemachine'
 
 # Some of the tasks are in separate files since they are also part of the website documentation
 "load File.dirname(__FILE__) + '/tasks/examples.rake'
@@ -57,7 +58,7 @@ end
 spec = Gem::Specification.new do |s|
   s.name = PKG_NAME
   s.version = PKG_VERSION
-  s.summary = Spec::VERSION::DESCRIPTION
+  s.summary = StateMachine::VERSION::DESCRIPTION
   s.description = <<-EOF
     StateMachine is a ruby library for building Finite State Machines (FSM), also known as Finite State Automata (FSA).
   EOF
@@ -75,7 +76,7 @@ spec = Gem::Specification.new do |s|
 #  s.bindir = "bin"
 #  s.executables = ["spec"]
 #  s.default_executable = "spec"
-  s.author = ["Micah Martin"]
+  s.author = "Micah Martin"
   s.email = "statemachine-devel@rubyforge.org"
   s.homepage = "http://statemachine.rubyforge.org"
   s.rubyforge_project = "statemachine"
