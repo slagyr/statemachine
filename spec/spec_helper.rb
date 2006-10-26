@@ -1,4 +1,5 @@
-require File.dirname(__FILE__) + '/../lib/state_machine'
+$:.unshift('lib')
+require 'statemachine'
 
 def check_transition(transition, origin_id, destination_id, event, action)
   transition.should_not_be nil

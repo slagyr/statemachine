@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../lib/state_machine'
+require File.dirname(__FILE__) + '/spec_helper'
 
 context "Transition Calculating Exits and Entries" do
 

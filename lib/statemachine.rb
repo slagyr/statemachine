@@ -1,1 +1,1 @@
-require File.dirname(__FILE__) + '/state_machine'
+require 'statemachine/state_machine'

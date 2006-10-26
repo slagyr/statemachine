@@ -14,8 +14,8 @@ load File.dirname(__FILE__) + '/tasks/failing_examples_with_html.rake'
 load File.dirname(__FILE__) + '/tasks/verify_rcov.rake'"
 
 PKG_NAME = "statemachine"
-PKG_VERSION   = "0.0.1"
-PKG_TAG = "0_0_1"
+PKG_VERSION   = StateMachine::VERSION::STRING
+PKG_TAG = StateMachine::VERSION::TAG
 PKG_FILE_NAME = "#{PKG_NAME}-#{PKG_VERSION}"
 PKG_FILES = FileList[
   '[A-Z]*',
@@ -29,7 +29,7 @@ task :default => :spec
 desc "Run all specs"
 Spec::Rake::SpecTask.new do |t|
   t.spec_files = FileList['spec/**/*_spec.rb']
-  t.spec_opts = ['--diff','--color']
+#  t.spec_opts = ['--diff','--color']
 #  t.rcov = true
 #  t.rcov_dir = 'doc/output/coverage'
 #  t.rcov_opts = ['--exclude', 'spec\/spec,bin\/spec']"
@@ -165,6 +165,6 @@ task :publish_packages => [:verify_user, :verify_password, :package] do
     xf.user_name = ENV['RUBYFORGE_USER']
     xf.password = ENV['RUBYFORGE_PASSWORD']
     xf.files = release_files.to_a
-    xf.release_name = "StateMachine #{PKG_VERSION}"
+    xf.release_name = "statemachine #{PKG_VERSION}"
   end
 end

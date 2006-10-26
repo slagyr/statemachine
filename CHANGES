@@ -1,6 +1,9 @@
 = StateMachine Changelog
 
 == Version 0.0.1
+
+0.0.0 didn't seem to work as a gem so maybe this one will.
+
 * nothing really, just playing with rake and release configuration
 
 == Version 0.0.0

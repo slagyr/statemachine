@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/proc_calling'
+require 'statemachine/proc_calling'
 
 module StateMachine
 

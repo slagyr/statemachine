@@ -1,7 +1,7 @@
-require File.dirname(__FILE__) + '/state'
-require File.dirname(__FILE__) + '/super_state'
-require File.dirname(__FILE__) + '/transition'
-require File.dirname(__FILE__) + '/proc_calling'
+require 'statemachine/state'
+require 'statemachine/super_state'
+require 'statemachine/transition'
+require 'statemachine/proc_calling'
 
 module StateMachine
   
