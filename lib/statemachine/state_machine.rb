@@ -1,14 +1,12 @@
 require 'statemachine/state'
 require 'statemachine/super_state'
+require 'statemachine/history_state'
 require 'statemachine/transition'
 require 'statemachine/proc_calling'
 
 module StateMachine
   
   class StateMachineException < Exception
-  end
-  
-  class MissingTransitionException < StateMachineException
   end
   
   class StateMachine
@@ -58,7 +56,7 @@ module StateMachine
         if transition
           transition.invoke(@state, args)
         else
-          raise MissingTransitionException.new("#{@state} does not respond to the '#{event}' event.")
+          raise StateMachineException.new("#{@state} does not respond to the '#{event}' event.")
         end
       else
         raise StateMachineException.new("The state machine isn't in any state.  Did you forget to call run?")
@@ -77,6 +75,7 @@ module StateMachine
   
     def acquire_state(state_id)
       return nil if state_id == nil
+      return state_id if state_id.is_a? State
       state = @states[state_id]
       if not state
         state = State.new(state_id, self)

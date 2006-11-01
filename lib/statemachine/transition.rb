@@ -21,14 +21,15 @@ module StateMachine
       exits.each { |exited_state| exited_state.exit(args) }
       
       call_proc(@action, args, "transition action from #{origin} invoked by '#{event}' event") if @action
-
-      entries.each { |entered_state| entered_state.enter(args) }
       
       terminal_state = @destination
-      while terminal_state and terminal_state.is_superstate?
+      while terminal_state and not terminal_state.is_concrete?
         terminal_state = terminal_state.start_state
-        terminal_state.enter(args)
+        entries << terminal_state
       end
+      terminal_state.activate
+
+      entries.each { |entered_state| entered_state.enter(args) }
     end
     
     def exits_and_entries(origin)

@@ -30,15 +30,15 @@ context "Turn Stile" do
   end
   
   specify "transitions back to superstate go to history state" do
-    @sm[:operative].use_history
-    @sm.maintain
-    @sm.operate
+    @sm.add(:operative, :alarm, :alert)
+    @sm.add(:alert, :disarm, @sm[:operative].history)
+    @sm.alarm
+    @sm.disarm
     @sm.state.id.should_be :locked
-    @out_of_order.should_be false
     
     @sm.coin
-    @sm.maintain
-    @sm.operate
+    @sm.alarm
+    @sm.disarm
     @sm.state.id.should_be :unlocked
   end
   

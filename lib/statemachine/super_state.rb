@@ -3,6 +3,7 @@ module StateMachine
   class Superstate < State
   
     attr_writer :start_state
+    attr_reader :history
   
     def initialize(state, transitions, substate_ids)
       @id = state.id
@@ -12,30 +13,23 @@ module StateMachine
       @exit_action = state.exit_action
       @superstate = state.superstate
       do_substate_adding(substate_ids)
+      @history = HistoryState.new(self)
     end
     
-    def is_superstate?
-      return true
+    def is_concrete?
+      return false
     end
     
     def start_state
-      if @use_history and @history_state
-        return @history_state
-      else
-        return @start_state
-      end
+      return @start_state
     end
     
-    def existing(substate)
-      @history_state = substate
+    def exiting(substate)
+      @history.last_exited = substate
     end
   
     def add_substates(*substate_ids)
       do_substate_adding(substate_ids)
-    end
-    
-    def use_history
-      @use_history = true;
     end
 
     def to_s
@@ -63,6 +57,24 @@ module StateMachine
       end
     end
   
+  end
+  
+  class HistoryState < State
+    
+    attr_writer :last_exited
+    
+    def initialize(super_state)
+      super(super_state.id.to_s + ".history", super_state.statemachine)
+      @super_state = super_state
+    end
+    
+    def is_concrete?
+      return false
+    end
+    
+    def start_state
+      return @last_exited
+    end
   end
 
 end

@@ -33,7 +33,7 @@ context "Turn Stile" do
       @sm.process_event(:blah)
       self.should.fail_with_message("Exception expected")
     rescue Exception => e
-      e.class.should.be StateMachine::MissingTransitionException
+      e.class.should.be StateMachine::StateMachineException
       e.to_s.should_equal "'locked' state does not respond to the 'blah' event."
     end
   end

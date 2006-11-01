@@ -62,7 +62,7 @@ context "State Machine Entry and Exit Actions" do
     @sm[:on_super].on_entry Proc.new { @log << @sm.state.id }
 
     @sm.toggle
-    @log.join(",").should_equal "off_super,super_on,on_super"  
+    @log.join(",").should_equal "off,super_on,on"  
   end
 
   specify "entry actions invokes another event" do

@@ -41,14 +41,12 @@ module StateMachine
     
     def exit(args)
       @statemachine.trace("\texiting #{self}")
-      activate
       call_proc(@exit_action, args, "exit action for #{self}") if @exit_action
-      @superstate.existing(self) if @superstate
+      @superstate.exiting(self) if @superstate
     end
 
     def enter(args)
       @statemachine.trace("\tentering #{self}")
-      activate
       call_proc(@entry_action, args, "entry action for #{self}") if @entry_action
     end
     
@@ -56,8 +54,8 @@ module StateMachine
       @statemachine.state = self
     end
     
-    def is_superstate?
-      return false
+    def is_concrete?
+      return true
     end
 
     def to_s

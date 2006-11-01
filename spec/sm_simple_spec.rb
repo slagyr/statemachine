@@ -27,7 +27,7 @@ context "simple cases:" do
   end
 
   specify "reset" do
-    @sm.add(:start, :blah, nil, @proc)
+    @sm.add(:start, :blah, :end, @proc)
     @sm.run
     @sm.process_event(:blah)
     
@@ -51,6 +51,17 @@ context "simple cases:" do
     @sm.run
     
     @sm.flip
+  end
+
+  specify "Can use state to add transitions instead of symbols" do
+    @sm.add(:on, :toggle, :off)
+    @sm.add(@sm[:off], :toggle, @sm[:on])
+    @sm.run
+    
+    @sm.toggle
+    @sm.toggle
+    
+    @sm.state.id.should_be :on
   end
 
   

@@ -1,5 +1,11 @@
 = StateMachine Changelog
 
+== Version 0.0.4
+
+* Proper handling of state transition implemented, such that the proper state is set for entry and exit actions.
+* can now use State objects in addition to symbols while creating a transition
+* more compliant implementation of history state
+
 == Version 0.0.3
 
 Bug fix dealing with entry and exit actions.  The state machine's state need to be set to the entered/exited state before calling the 
