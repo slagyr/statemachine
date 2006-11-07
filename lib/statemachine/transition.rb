@@ -6,23 +6,24 @@ module StateMachine
     
     include ProcCalling
     
-    attr_reader :origin, :event, :action
-    attr_accessor :destination
+    attr_reader :origin_id, :event, :action
+    attr_accessor :destination_id
 
-    def initialize(origin, destination, event, action)
-      @origin = origin
-      @destination = destination
+    def initialize(origin_id, destination_id, event, action)
+      @origin_id = origin_id
+      @destination_id = destination_id
       @event = event
       @action = action
     end
     
-    def invoke(origin, args)
-      exits, entries = exits_and_entries(origin)
+    def invoke(origin, statemachine, args)
+      destination = statemachine.states[@destination_id]
+      exits, entries = exits_and_entries(origin, destination)
       exits.each { |exited_state| exited_state.exit(args) }
       
-      call_proc(@action, args, "transition action from #{origin} invoked by '#{event}' event") if @action
+      call_proc(@action, args, "transition action from #{origin} invoked by '#{@event}' event") if @action
       
-      terminal_state = @destination
+      terminal_state = destination
       while terminal_state and not terminal_state.is_concrete?
         terminal_state = terminal_state.start_state
         entries << terminal_state
@@ -32,31 +33,31 @@ module StateMachine
       entries.each { |entered_state| entered_state.enter(args) }
     end
     
-    def exits_and_entries(origin)
+    def exits_and_entries(origin, destination)
       exits = []
-      entries = exits_and_entries_helper(exits, origin)
+      entries = exits_and_entries_helper(exits, origin, destination)
       
       return exits, entries.reverse
     end
   
     def to_s
-      return "#{origin.id} ---#{event}---> #{destination.id} : #{action}"
+      return "#{@origin_id} ---#{@event}---> #{@destination_id} : #{action}"
     end
     
     private
     
-    def exits_and_entries_helper(exits, exit_state)
-      entries = entries_to_destination(exit_state)
+    def exits_and_entries_helper(exits, exit_state, destination)
+      entries = entries_to_destination(exit_state, destination)
       return entries if entries
       return [] if exit_state == nil
       
       exits << exit_state
-      exits_and_entries_helper(exits, exit_state.superstate)
+      exits_and_entries_helper(exits, exit_state.superstate, destination)
     end
     
-    def entries_to_destination(exit_state)
+    def entries_to_destination(exit_state, destination)
       entries = []
-      state = @destination
+      state = destination
       while state    
         entries << state
         return entries if exit_state == state.superstate

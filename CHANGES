@@ -1,5 +1,9 @@
 = StateMachine Changelog
 
+== Version 0.1.0
+
+* process_event accepts strings
+
 == Version 0.0.4
 
 * Proper handling of state transition implemented, such that the proper state is set for entry and exit actions.

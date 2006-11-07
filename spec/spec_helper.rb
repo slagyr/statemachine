@@ -5,8 +5,8 @@ def check_transition(transition, origin_id, destination_id, event, action)
   transition.should_not_be nil
   transition.event.should_be event
   transition.action.should_be action
-  transition.origin.id.should_be origin_id
-  transition.destination.id.should_be destination_id
+  transition.origin_id.should_be origin_id
+  transition.destination_id.should_be destination_id
 end
 
 module SwitchStateMachine

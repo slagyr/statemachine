@@ -23,5 +23,12 @@ context "State Machine Odds And Ends" do
     @sm.state = :on
     @sm.state.id.should_be :on
   end
+  
+  specify "process event accepts strings" do
+    @sm.process_event("toggle")
+    @sm.state.id.should_be :on
+  end
+
+  
 
 end

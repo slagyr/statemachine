@@ -11,14 +11,14 @@ context "simple cases:" do
     @sm.add(:on, :flip, :off, @proc)
     
     @sm.states.length.should_be 2
-    @sm[:on].should_not_be nil
-    @sm[:off].should_not_be nil
+    @sm.states[:on].should_not_be nil
+    @sm.states[:off].should_not_be nil
   end
     
   specify "one trasition create connects states with transition" do
     @sm.add(:on, :flip, :off, @proc)
-    origin = @sm[:on]
-    destination = @sm[:off]
+    origin = @sm.states[:on]
+    destination = @sm.states[:off]
     
     origin.transitions.length.should_be 1
     destination.transitions.length.should_be 0
@@ -33,7 +33,7 @@ context "simple cases:" do
     
     @sm.reset
     
-    @sm.state.should.be @sm[:start]
+    @sm.state.should.be @sm.states[:start]
   end
   
   specify "exception when state machine is not running" do
@@ -51,17 +51,6 @@ context "simple cases:" do
     @sm.run
     
     @sm.flip
-  end
-
-  specify "Can use state to add transitions instead of symbols" do
-    @sm.add(:on, :toggle, :off)
-    @sm.add(@sm[:off], :toggle, @sm[:on])
-    @sm.run
-    
-    @sm.toggle
-    @sm.toggle
-    
-    @sm.state.id.should_be :on
   end
 
   

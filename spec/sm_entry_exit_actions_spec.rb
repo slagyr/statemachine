@@ -11,7 +11,7 @@ context "State Machine Entry and Exit Actions" do
   end
 
   specify "entry action" do
-    @sm[:on].on_entry Proc.new { @log << "entered_on" }
+    @sm.states[:on].on_entry Proc.new { @log << "entered_on" }
     
     @sm.toggle
     
@@ -19,7 +19,7 @@ context "State Machine Entry and Exit Actions" do
   end
   
   specify "exit action" do
-    @sm[:off].on_exit Proc.new { @log << "exited_off" }
+    @sm.states[:off].on_exit Proc.new { @log << "exited_off" }
     
     @sm.toggle
     
@@ -27,8 +27,8 @@ context "State Machine Entry and Exit Actions" do
   end
 
   specify "exit and entry" do
-    @sm[:off].on_exit Proc.new { @log << "exited_off" }
-    @sm[:on].on_entry Proc.new { @log << "entered_on" }
+    @sm.states[:off].on_exit Proc.new { @log << "exited_off" }
+    @sm.states[:on].on_entry Proc.new { @log << "entered_on" }
     
     @sm.toggle
     
@@ -36,8 +36,8 @@ context "State Machine Entry and Exit Actions" do
   end
   
   specify "entry and exit actions may be parameterized" do
-      @sm[:off].on_exit Proc.new { |a| @log << "exited_off(#{a})" }
-      @sm[:on].on_entry Proc.new { |a, b| @log << "entered_on(#{a},#{b})" }
+      @sm.states[:off].on_exit Proc.new { |a| @log << "exited_off(#{a})" }
+      @sm.states[:on].on_entry Proc.new { |a, b| @log << "entered_on(#{a},#{b})" }
       
       @sm.toggle "one", "two"
       
@@ -45,8 +45,8 @@ context "State Machine Entry and Exit Actions" do
   end
 
   specify "current state is set prior to exit and entry actions" do
-    @sm[:off].on_exit Proc.new { @log << @sm.state.id }
-    @sm[:on].on_entry Proc.new { @log << @sm.state.id }
+    @sm.states[:off].on_exit Proc.new { @log << @sm.state.id }
+    @sm.states[:on].on_entry Proc.new { @log << @sm.state.id }
     
     @sm.toggle
     
@@ -56,17 +56,17 @@ context "State Machine Entry and Exit Actions" do
   specify "current state is set prior to exit and entry actions even with super states" do
     @sm.add(:off_super, :toggle, :on, Proc.new { @log << "super_on" } )
     @sm.add(:on_super, :toggle, :off, Proc.new { @log << "super_off" } )
-    @sm[:off_super].add_substates(:off)
-    @sm[:on_super].add_substates(:on)
-    @sm[:off_super].on_exit Proc.new { @log << @sm.state.id }
-    @sm[:on_super].on_entry Proc.new { @log << @sm.state.id }
+    @sm.states[:off_super].add_substates(:off)
+    @sm.states[:on_super].add_substates(:on)
+    @sm.states[:off_super].on_exit Proc.new { @log << @sm.state.id }
+    @sm.states[:on_super].on_entry Proc.new { @log << @sm.state.id }
 
     @sm.toggle
     @log.join(",").should_equal "off,super_on,on"  
   end
 
   specify "entry actions invokes another event" do
-    @sm[:on].on_entry Proc.new { @sm.toggle }
+    @sm.states[:on].on_entry Proc.new { @sm.toggle }
     
     @sm.toggle
     @log.join(",").should_equal "on,off"

@@ -10,34 +10,38 @@ module StateMachine
   end
   
   class StateMachine
-    
     include ProcCalling
   
+    attr_accessor :tracer
     attr_reader :states, :state
-    attr_accessor :start_state, :tracer
   
-    def initialize
+    def initialize(root = Superstate.new(:root, self))
+      @root = root
       @states = {}
-      @start_state = nil
-      @state = nil
-      @running = false
     end
   
     def add(origin_id, event, destination_id, action = nil)
       origin = acquire_state(origin_id)
-      @start_state = origin if @start_state == nil
+      @root.start_state = origin if @root.start_state == nil
       destination = acquire_state(destination_id)
-      origin.add(Transition.new(origin, destination, event, action))
+      origin.add(Transition.new(origin_id, destination_id, event, action))
+    end
+    
+    def start_state
+      return @root.start_state
+    end
+    
+    def start_state= value
+      return @root.start_state = value
     end
   
     def run
-      @state = @start_state
+      @state = start_state
+      while not @state.is_concrete?
+        @state = @state.start_state
+      end
     end
     alias :reset :run
-  
-    def [] (state_id)
-      return @states[state_id]
-    end
     
     def state= value
       if value.is_a? State
@@ -48,13 +52,14 @@ module StateMachine
         @state = @states[value.to_sym]
       end
     end
-  
+    
     def process_event(event, *args)
+      event = event.to_sym
       trace "Event: #{event}"
       if @state
         transition = @state.transitions[event]
         if transition
-          transition.invoke(@state, args)
+          transition.invoke(@state, self, args)
         else
           raise StateMachineException.new("#{@state} does not respond to the '#{event}' event.")
         end
@@ -62,9 +67,9 @@ module StateMachine
         raise StateMachineException.new("The state machine isn't in any state.  Did you forget to call run?")
       end
     end
-  
+    
     def method_missing(message, *args)
-      if @state and @state[message]
+      if @state and @state.transitions[message]
         method = self.method(:process_event)
         params = [message.to_sym].concat(args)
         call_proc(method, params, "method_missing")
@@ -86,11 +91,6 @@ module StateMachine
     
     def replace_state(state_id, replacement_state)
       @states[state_id] = replacement_state
-      @states.values.each do |state|
-        state.local_transitions.values.each do |transition|
-          transition.destination = replacement_state if transition.destination.id == state_id
-        end
-      end
     end
     
     def trace(message)

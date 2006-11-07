@@ -10,8 +10,8 @@ context "Turn Stile" do
   
   specify "connections" do
     @sm.states.length.should_be 2
-    locked_state = @sm[:locked]
-    unlocked_state = @sm[:unlocked]
+    locked_state = @sm.states[:locked]
+    unlocked_state = @sm.states[:unlocked]
     
     locked_state.transitions.length.should_be 2
     unlocked_state.transitions.length.should_be 2
@@ -24,8 +24,8 @@ context "Turn Stile" do
   
   specify "start state" do
     @sm.run
-    @sm.start_state.should.be @sm[:locked]
-    @sm.state.should.be @sm[:locked]
+    @sm.start_state.should.be @sm.states[:locked]
+    @sm.state.should.be @sm.states[:locked]
   end
   
   specify "bad event" do
@@ -41,14 +41,14 @@ context "Turn Stile" do
   specify "locked state with a coin" do
     @sm.process_event(:coin)
     
-    @sm.state.should.be @sm[:unlocked]
+    @sm.state.should.be @sm.states[:unlocked]
     @locked.should.be false
   end
   
   specify "locked state with pass event" do
     @sm.process_event(:pass)
     
-    @sm.state.should.be @sm[:locked]
+    @sm.state.should.be @sm.states[:locked]
     @locked.should.be true
     @alarm.should.be true
   end
@@ -57,7 +57,7 @@ context "Turn Stile" do
     @sm.process_event(:coin)
     @sm.process_event(:coin)
     
-    @sm.state.should.be @sm[:locked]
+    @sm.state.should.be @sm.states[:locked]
     @thankyou_status.should.be true
   end
 
@@ -65,14 +65,14 @@ context "Turn Stile" do
     @sm.process_event(:coin)
     @sm.process_event(:pass)
     
-    @sm.state.should.be @sm[:locked]
+    @sm.state.should.be @sm.states[:locked]
     @locked.should.be true
   end
 
   specify "events invoked via method_missing" do
     @sm.coin
-    @sm.state.should.be @sm[:unlocked]
+    @sm.state.should.be @sm.states[:unlocked]
     @sm.pass
-    @sm.state.should.be @sm[:locked]
+    @sm.state.should.be @sm.states[:locked]
   end
 end

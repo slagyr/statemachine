@@ -42,7 +42,7 @@ module StateMachine
     def exit(args)
       @statemachine.trace("\texiting #{self}")
       call_proc(@exit_action, args, "exit action for #{self}") if @exit_action
-      @superstate.exiting(self) if @superstate
+      @superstate.substate_exiting(self) if @superstate
     end
 
     def enter(args)
@@ -64,7 +64,7 @@ module StateMachine
 
     def add_substates(*substate_ids)
       raise StateMachineException.new("At least one parameter is required for add_substates.") if substate_ids.length == 0
-      replacement = Superstate.new(self, @transitions, substate_ids)
+      replacement = Superstate.from_state(self, @transitions, substate_ids)
       @statemachine.replace_state(@id, replacement)
     end
 
