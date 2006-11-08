@@ -1,6 +1,5 @@
 require 'statemachine/state'
 require 'statemachine/super_state'
-require 'statemachine/history_state'
 require 'statemachine/transition'
 require 'statemachine/proc_calling'
 
@@ -13,18 +12,11 @@ module StateMachine
     include ProcCalling
   
     attr_accessor :tracer
-    attr_reader :states, :state
+    attr_reader :state, :root
   
     def initialize(root = Superstate.new(:root, self))
       @root = root
       @states = {}
-    end
-  
-    def add(origin_id, event, destination_id, action = nil)
-      origin = acquire_state(origin_id)
-      @root.start_state = origin if @root.start_state == nil
-      destination = acquire_state(destination_id)
-      origin.add(Transition.new(origin_id, destination_id, event, action))
     end
     
     def start_state
@@ -35,13 +27,13 @@ module StateMachine
       return @root.start_state = value
     end
   
-    def run
+    def reset
       @state = start_state
+      raise StateMachineException.new("The state machine doesn't know where to start. Try setting the start_state.") if @state.nil?
       while not @state.is_concrete?
         @state = @state.start_state
       end
     end
-    alias :reset :run
     
     def state= value
       if value.is_a? State
@@ -77,26 +69,54 @@ module StateMachine
         super(message, args)
       end
     end
-  
-    def acquire_state(state_id)
-      return nil if state_id == nil
-      return state_id if state_id.is_a? State
-      state = @states[state_id]
-      if not state
-        state = State.new(state_id, self)
-        @states[state_id] = state
-      end
-      return state
-    end
-    
-    def replace_state(state_id, replacement_state)
-      @states[state_id] = replacement_state
-    end
     
     def trace(message)
       @tracer.puts message if @tracer
     end
-  
+    
+    def get_state(id)
+      if @states.has_key? id
+        return @states[id]
+      elsif(is_history_state_id?(id))
+        superstate_id = base_id(id)
+        superstate = @states[superstate_id]
+        raise StateMachineException.new("No history exists for #{superstate} since it is not a super state.") if superstate.is_concrete?
+        raise StateMachineException.new("#{superstate} doesn't have any history yet.") if not superstate.history
+        return superstate.history
+      else
+        state = State.new(id, self)
+        @states[id] = state
+        return state
+      end
+    end
+    
+    def add_state(state)
+      @states[state.id] = state
+      self.start_state = state if start_state.nil?
+    end
+    
+    def has_state(id)
+      if(is_history_state_id?(id))
+        return @states.has_key?(base_id(id))
+      else
+        return @states.has_key?(id)
+      end
+    end
+    
+    def state_count
+      return @states.length
+    end
+    
+    private 
+    
+    def is_history_state_id?(id)
+      return id.to_s[-2..-1] == "_H"
+    end
+    
+    def base_id(history_id)
+      return history_id.to_s[0...-2].to_sym
+    end
+    
   end
 
 end

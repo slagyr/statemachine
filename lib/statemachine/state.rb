@@ -7,7 +7,7 @@ module StateMachine
     include ProcCalling
     
     attr_reader :id, :statemachine, :entry_action, :exit_action
-    attr_accessor :superstate
+    attr_accessor :superstate, :entry_action, :exit_action
 
     def initialize(id, state_machine)
       @id = id
@@ -29,14 +29,6 @@ module StateMachine
 
     def [] (event)
       return transitions[event]
-    end
-  
-    def on_entry action
-      @entry_action = action
-    end
-  
-    def on_exit action
-      @exit_action = action
     end
     
     def exit(args)
@@ -60,12 +52,6 @@ module StateMachine
 
     def to_s
       return "'#{id}' state"
-    end
-
-    def add_substates(*substate_ids)
-      raise StateMachineException.new("At least one parameter is required for add_substates.") if substate_ids.length == 0
-      replacement = Superstate.from_state(self, @transitions, substate_ids)
-      @statemachine.replace_state(@id, replacement)
     end
 
   end

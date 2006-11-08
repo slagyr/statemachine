@@ -7,11 +7,18 @@ context "Turn Stile" do
     create_turnstile
     
     @out_out_order = false
-    @sm.add(:operative, :maintain, :maintenance, Proc.new { @out_of_order = true } )
-    @sm.add(:maintenance, :operate, :operative, Proc.new { @out_of_order = false } )
-    @sm.states[:operative].add_substates(:locked, :unlocked)
     
-    @sm.run
+    @sm = StateMachine.build do |s|
+      s.superstate :operative do |o|
+        o.trans :locked, :coin, :unlocked, @unlock
+        o.trans :unlocked, :pass, :locked, @lock
+        o.trans :locked, :pass, :locked, @alarm
+        o.trans :unlocked, :coin, :locked, @thankyou
+        o.event :maintain, :maintenance, Proc.new { @out_of_order = true }
+      end
+      s.trans :maintenance, :operate, :operative, Proc.new { @out_of_order = false } 
+      s.start_state :locked
+    end
   end
 
   specify "substates respond to superstate transitions" do
@@ -28,53 +35,5 @@ context "Turn Stile" do
     @locked.should_be false
     @out_of_order.should_be true
   end
-  
-#  specify "transitions back to superstate go to history state" do
-#    @sm.add(:operative, :alarm, :alert)
-#    @sm.add(:alert, :disarm, @sm.states[:operative].history)
-#    @sm.alarm
-#    @sm.disarm
-#    @sm.state.id.should_be :locked
-#    
-#    @sm.coin
-#    @sm.alarm
-#    @sm.disarm
-#    @sm.state.id.should_be :unlocked
-#  end
-  
-  specify "missing substates are added" do
-    @sm.states[:operative].add_substates(:blah)
-    @sm.states[:blah].should_not_be nil
-    @sm.states[:blah].superstate.id.should_be :operative
-  end
-
-  specify "recursive superstates not allowed" do
-    begin
-      @sm.states[:operative].add_substates(:operative)
-      self.should_fail_with_message("exception expected")
-    rescue StateMachine::StateMachineException => e
-      e.message.should_equal "Cyclic substates not allowed. (operative)"
-    end
-  end
-
-  specify "recursive superstates (2 levels) not allowed" do
-    begin
-      @sm.states[:operative].add_substates(:blah)
-      @sm.states[:blah].add_substates(:operative)
-      self.should_fail_with_message("exception expected")
-    rescue StateMachine::StateMachineException => e
-      e.message.should_equal "Cyclic substates not allowed. (blah)"
-    end
-  end
-  
-  specify "exception when add_substates called without args" do
-    begin
-      @sm.states[:locked].add_substates()
-      self.should_fail_with_message("exception expected")
-    rescue StateMachine::StateMachineException => e
-      e.message.should_equal "At least one parameter is required for add_substates."
-    end
-  end
-  
   
 end

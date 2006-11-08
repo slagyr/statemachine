@@ -5,13 +5,12 @@ context "Turn Stile" do
   
   setup do
     create_turnstile
-    @sm.run
   end
   
   specify "connections" do
-    @sm.states.length.should_be 2
-    locked_state = @sm.states[:locked]
-    unlocked_state = @sm.states[:unlocked]
+    @sm.state_count.should_be 2
+    locked_state = @sm.get_state(:locked)
+    unlocked_state = @sm.get_state(:unlocked)
     
     locked_state.transitions.length.should_be 2
     unlocked_state.transitions.length.should_be 2
@@ -23,9 +22,9 @@ context "Turn Stile" do
   end
   
   specify "start state" do
-    @sm.run
-    @sm.start_state.should.be @sm.states[:locked]
-    @sm.state.should.be @sm.states[:locked]
+    @sm.reset
+    @sm.start_state.should.be @sm.get_state(:locked)
+    @sm.state.should.be @sm.get_state(:locked)
   end
   
   specify "bad event" do
@@ -34,30 +33,30 @@ context "Turn Stile" do
       self.should.fail_with_message("Exception expected")
     rescue Exception => e
       e.class.should.be StateMachine::StateMachineException
-      e.to_s.should_equal "'locked' state does not respond to the 'blah' event."
+      e.to_s.should_eql "'locked' state does not respond to the 'blah' event."
     end
   end
   
   specify "locked state with a coin" do
     @sm.process_event(:coin)
     
-    @sm.state.should.be @sm.states[:unlocked]
+    @sm.state.should.be @sm.get_state(:unlocked)
     @locked.should.be false
   end
   
   specify "locked state with pass event" do
     @sm.process_event(:pass)
     
-    @sm.state.should.be @sm.states[:locked]
+    @sm.state.should.be @sm.get_state(:locked)
     @locked.should.be true
-    @alarm.should.be true
+    @alarm_status.should.be true
   end
 
   specify "unlocked state with coin" do
     @sm.process_event(:coin)
     @sm.process_event(:coin)
     
-    @sm.state.should.be @sm.states[:locked]
+    @sm.state.should.be @sm.get_state(:locked)
     @thankyou_status.should.be true
   end
 
@@ -65,14 +64,14 @@ context "Turn Stile" do
     @sm.process_event(:coin)
     @sm.process_event(:pass)
     
-    @sm.state.should.be @sm.states[:locked]
+    @sm.state.should.be @sm.get_state(:locked)
     @locked.should.be true
   end
 
   specify "events invoked via method_missing" do
     @sm.coin
-    @sm.state.should.be @sm.states[:unlocked]
+    @sm.state.should.be @sm.get_state(:unlocked)
     @sm.pass
-    @sm.state.should.be @sm.states[:locked]
+    @sm.state.should.be @sm.get_state(:locked)
   end
 end

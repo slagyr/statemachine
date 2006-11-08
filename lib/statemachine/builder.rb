@@ -1,7 +1,7 @@
 module StateMachine
   
-  def self.build
-    builder = StatemachineBuilder.new
+  def self.build(statemachine = nil)
+    builder = statemachine ? StatemachineBuilder.new(statemachine) : StatemachineBuilder.new
     yield builder
     builder.statemachine.reset
     return builder.statemachine
@@ -18,12 +18,14 @@ module StateMachine
     def acquire_state_in(state_id, context)
       return nil if state_id == nil
       return state_id if state_id.is_a? State
-      state = @statemachine.states[state_id]
-      if not state
+      state = nil
+      if @statemachine.has_state(state_id)
+        state = @statemachine.get_state(state_id)
+      else
         state = State.new(state_id, @statemachine)
-        @statemachine.states[state_id] = state
+        state.superstate = context
+        @statemachine.add_state(state)
       end
-      context.start_state = state if context.start_state == nil
       return state
     end
   end
@@ -31,8 +33,16 @@ module StateMachine
   module StateBuilding
     attr_reader :subject
   
-    def event(event, destination_id, action)
+    def event(event, destination_id, action = nil)
       @subject.add(Transition.new(@subject.id, destination_id, event, action))
+    end
+    
+    def on_entry(&entry_action)
+      @subject.entry_action = entry_action
+    end
+    
+    def on_exit(&exit_action)
+      @subject.exit_action = exit_action
     end
   end
   
@@ -41,26 +51,21 @@ module StateMachine
     
     def state(id)
       builder = StateBuilder.new(id, @subject, @statemachine)
-      @statemachine.states[id] = builder.subject
-      builder.subject.superstate = @subject
       yield builder
     end
 
     def superstate(id)
       builder = SuperstateBuilder.new(id, @subject, @statemachine)
-      @statemachine.states[id] = builder.subject
-      builder.subject.superstate = @subject
       yield builder
     end
 
     def trans(origin_id, event, destination_id, action = nil)
       origin = acquire_state_in(origin_id, @subject)
-      origin.superstate = @subject
       origin.add(Transition.new(origin_id, destination_id, event, action))
     end
     
     def start_state(start_state_id)
-      @subject.start_state = @statemachine.states[start_state_id]
+      @subject.start_state = @statemachine.get_state(start_state_id)
       raise "Start state #{start_state_id} not found" if not @subject.start_state
     end
   end
@@ -81,15 +86,17 @@ module StateMachine
     def initialize(id, superstate, statemachine)
       super statemachine
       @subject = Superstate.new(id, statemachine)
+      statemachine.add_state(@subject)
+      @subject.superstate = superstate
     end
   end
   
   class StatemachineBuilder < Builder
     include SuperstateBuilding
     
-    def initialize
-      @subject = Superstate.new(:root, @statemachine)
-      super StateMachine.new(@subject)
+    def initialize(statemachine = StateMachine.new)
+      super statemachine
+      @subject = @statemachine.root
     end
   end
   

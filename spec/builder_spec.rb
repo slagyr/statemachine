@@ -10,11 +10,11 @@ context "Builder" do
     sm.state.id.should_be :off
     
     sm.toggle
-    @log[0].should_equal "toggle on"
+    @log[0].should_eql "toggle on"
     sm.state.id.should_be :on
     
     sm.toggle
-    @log[1].should_equal "toggle off"
+    @log[1].should_eql "toggle off"
     sm.state.id.should_be :off
   end
 
@@ -42,6 +42,7 @@ context "Builder" do
         o.event :admin, :testing, lambda { @log << "testing" }
         o.trans :off, :toggle, :on, lambda { @log << "toggle on" }
         o.trans :on, :toggle, :off, lambda { @log << "toggle off" }
+        o.start_state :on
       end
       b.trans :testing, :resume, :operation, lambda { @log << "resuming" }
       b.start_state :off
@@ -52,8 +53,50 @@ context "Builder" do
     sm.admin
     sm.state.id.should_be :testing
     sm.resume
-    sm.state.id.should_be :off
-    @log.join(",").should_equal "toggle on,testing,resuming"
+    sm.state.id.should_be :on
+    @log.join(",").should_eql "toggle on,testing,resuming"
   end
+  
+  specify "entry exit actions" do
+    sm = StateMachine.build do |sm|
+      sm.state :off do |off|
+        off.on_entry { @log << "enter off" }
+        off.event :toggle, :on, lambda { @log << "toggle on" }
+        off.on_exit { @log << "exit off" }
+      end
+      sm.trans :on, :toggle, :off, lambda { @log << "toggle off" } 
+    end
+
+    sm.toggle
+    sm.state.id.should_be :on
+    sm.toggle
+    sm.state.id.should_be :off
+
+    @log.join(",").should_eql "exit off,toggle on,toggle off,enter off"
+  end
+  
+  specify "History state" do
+    sm = StateMachine.build do |b|
+      b.superstate :operation do |o|
+        o.event :admin, :testing, lambda { @log << "testing" }
+        o.state :off do |off|
+          off.on_entry { @log << "enter off" }
+          off.event :toggle, :on, lambda { @log << "toggle on" }
+        end
+        o.trans :on, :toggle, :off, lambda { @log << "toggle off" }
+        o.start_state :on
+      end
+      b.trans :testing, :resume, :operation_H, lambda { @log << "resuming" }
+      b.start_state :off
+    end
+    
+    sm.admin
+    sm.resume
+    sm.state.id.should_be :off
+    
+    @log.join(",").should_eql "testing,resuming,enter off"
+  end
+
+  
 end
 

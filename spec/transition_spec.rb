@@ -13,58 +13,58 @@ context "Transition Calculating Exits and Entries" do
   
   specify "to nil" do
     exits, entries = @transition.exits_and_entries(@a, nil)
-    exits.to_s.should_equal [@a].to_s
-    entries.to_s.should_equal [].to_s
+    exits.to_s.should_eql [@a].to_s
+    entries.to_s.should_eql [].to_s
     entries.length.should_be 0
   end
   
   specify "to itself" do
     exits, entries = @transition.exits_and_entries(@a, @a)
-    exits.to_s.should_equal [@a].to_s
-    entries.to_s.should_equal [@a].to_s
+    exits.to_s.should_eql [@a].to_s
+    entries.to_s.should_eql [@a].to_s
   end
 
   specify "to friend" do
     exits, entries = @transition.exits_and_entries(@a, @b)
-    exits.to_s.should_equal [@a].to_s
-    entries.to_s.should_equal [@b].to_s
+    exits.to_s.should_eql [@a].to_s
+    entries.to_s.should_eql [@b].to_s
   end
 
   specify "to parent" do
     @a.superstate = @b
     exits, entries = @transition.exits_and_entries(@a, @b)
-    exits.to_s.should_equal [@a, @b].to_s
-    entries.to_s.should_equal [@b].to_s
+    exits.to_s.should_eql [@a, @b].to_s
+    entries.to_s.should_eql [@b].to_s
   end
 
   specify "to uncle" do
     @a.superstate = @b
     exits, entries = @transition.exits_and_entries(@a, @c)
-    exits.to_s.should_equal [@a, @b].to_s
-    entries.to_s.should_equal [@c].to_s
+    exits.to_s.should_eql [@a, @b].to_s
+    entries.to_s.should_eql [@c].to_s
   end
 
   specify "to cousin" do
     @a.superstate = @b
     @c.superstate = @d
     exits, entries = @transition.exits_and_entries(@a, @c)
-    exits.to_s.should_equal [@a, @b].to_s
-    entries.to_s.should_equal [@d, @c].to_s
+    exits.to_s.should_eql [@a, @b].to_s
+    entries.to_s.should_eql [@d, @c].to_s
   end
   
   specify "to nephew" do
     @a.superstate = @b
     exits, entries = @transition.exits_and_entries(@c, @a)
-    exits.to_s.should_equal [@c].to_s
-    entries.to_s.should_equal [@b,@a].to_s
+    exits.to_s.should_eql [@c].to_s
+    entries.to_s.should_eql [@b,@a].to_s
   end
 
   specify "to sister" do
     @a.superstate = @c
     @b.superstate = @c
     exits, entries = @transition.exits_and_entries(@a, @b)
-    exits.to_s.should_equal [@a].to_s
-    entries.to_s.should_equal [@b].to_s
+    exits.to_s.should_eql [@a].to_s
+    entries.to_s.should_eql [@b].to_s
   end
   
   specify "to second cousin" do
@@ -73,16 +73,25 @@ context "Transition Calculating Exits and Entries" do
     @d.superstate = @e
     @e.superstate = @c
     exits, entries = @transition.exits_and_entries(@a, @d)
-    exits.to_s.should_equal [@a, @b].to_s
-    entries.to_s.should_equal [@e, @d].to_s
+    exits.to_s.should_eql [@a, @b].to_s
+    entries.to_s.should_eql [@e, @d].to_s
   end
 
   specify "to grandparent" do
     @a.superstate = @b
     @b.superstate = @c
     exits, entries = @transition.exits_and_entries(@a, @c)
-    exits.to_s.should_equal [@a, @b, @c].to_s
-    entries.to_s.should_equal [@c].to_s
+    exits.to_s.should_eql [@a, @b, @c].to_s
+    entries.to_s.should_eql [@c].to_s
+  end
+
+  specify "to parent's grandchild" do
+    @a.superstate = @b
+    @b.superstate = @c
+    @d.superstate = @c
+    exits, entries = @transition.exits_and_entries(@d, @a)
+    exits.to_s.should_eql [@d].to_s
+    entries.to_s.should_eql [@b, @a].to_s
   end
   
 end

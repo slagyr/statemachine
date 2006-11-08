@@ -1,4 +1,4 @@
-Fix problem when referencing Superstates before they are created
+
 Use *[] in place of all the args in proc_calling
-revisit history
-cleanup all test to use new building syntax
+StateMachine.state should return the symbol instead of the state object
+Add superstate to State constructor

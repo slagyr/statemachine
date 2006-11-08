@@ -17,7 +17,7 @@ module StateMachine
     end
     
     def invoke(origin, statemachine, args)
-      destination = statemachine.states[@destination_id]
+      destination = statemachine.get_state(@destination_id)
       exits, entries = exits_and_entries(origin, destination)
       exits.each { |exited_state| exited_state.exit(args) }
       
@@ -28,7 +28,7 @@ module StateMachine
         terminal_state = terminal_state.start_state
         entries << terminal_state
       end
-      terminal_state.activate
+      terminal_state.activate if terminal_state
 
       entries.each { |entered_state| entered_state.enter(args) }
     end
