@@ -12,27 +12,27 @@ module StateMachine
     include ProcCalling
   
     attr_accessor :tracer
-    attr_reader :state, :root
+    attr_reader :root
   
-    def initialize(root = Superstate.new(:root, self))
+    def initialize(root = Superstate.new(:root, nil, self))
       @root = root
       @states = {}
     end
     
     def start_state
-      return @root.start_state
-    end
-    
-    def start_state= value
-      return @root.start_state = value
+      return @root.start_state.id
     end
   
     def reset
-      @state = start_state
+      @state = @root.start_state
       raise StateMachineException.new("The state machine doesn't know where to start. Try setting the start_state.") if @state.nil?
       while not @state.is_concrete?
         @state = @state.start_state
       end
+    end
+    
+    def state
+      return @state.id
     end
     
     def state= value
@@ -60,16 +60,6 @@ module StateMachine
       end
     end
     
-    def method_missing(message, *args)
-      if @state and @state.transitions[message]
-        method = self.method(:process_event)
-        params = [message.to_sym].concat(args)
-        call_proc(method, params, "method_missing")
-      else
-        super(message, args)
-      end
-    end
-    
     def trace(message)
       @tracer.puts message if @tracer
     end
@@ -84,7 +74,7 @@ module StateMachine
         raise StateMachineException.new("#{superstate} doesn't have any history yet.") if not superstate.history
         return superstate.history
       else
-        state = State.new(id, self)
+        state = State.new(id, @root, self)
         @states[id] = state
         return state
       end
@@ -92,7 +82,7 @@ module StateMachine
     
     def add_state(state)
       @states[state.id] = state
-      self.start_state = state if start_state.nil?
+      @root.start_state = state if @root.start_state.nil?
     end
     
     def has_state(id)
@@ -103,8 +93,14 @@ module StateMachine
       end
     end
     
-    def state_count
-      return @states.length
+    def method_missing(message, *args)
+      if @state and @state.transitions[message]
+        method = self.method(:process_event)
+        params = [message.to_sym].concat(args)
+        method.call(*params)
+      else
+        super(message, args)
+      end
     end
     
     private 

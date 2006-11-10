@@ -5,8 +5,8 @@ module StateMachine
     attr_writer :start_state
     attr_reader :history
   
-    def initialize(id, statemachine)
-      super(id, statemachine)
+    def initialize(id, superstate, statemachine)
+      super(id, superstate, statemachine)
       @start_state = nil
       @history = nil
     end

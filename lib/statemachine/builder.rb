@@ -22,8 +22,7 @@ module StateMachine
       if @statemachine.has_state(state_id)
         state = @statemachine.get_state(state_id)
       else
-        state = State.new(state_id, @statemachine)
-        state.superstate = context
+        state = State.new(state_id, context, @statemachine)
         @statemachine.add_state(state)
       end
       return state
@@ -85,9 +84,8 @@ module StateMachine
     
     def initialize(id, superstate, statemachine)
       super statemachine
-      @subject = Superstate.new(id, statemachine)
+      @subject = Superstate.new(id, superstate, statemachine)
       statemachine.add_state(@subject)
-      @subject.superstate = superstate
     end
   end
   

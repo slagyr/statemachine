@@ -7,15 +7,15 @@ context "Builder" do
   end
 
   def check_switch(sm)
-    sm.state.id.should_be :off
+    sm.state.should_be :off
     
     sm.toggle
     @log[0].should_eql "toggle on"
-    sm.state.id.should_be :on
+    sm.state.should_be :on
     
     sm.toggle
     @log[1].should_eql "toggle off"
-    sm.state.id.should_be :off
+    sm.state.should_be :off
   end
 
   specify "Building a the switch, relaxed" do
@@ -48,12 +48,12 @@ context "Builder" do
       b.start_state :off
     end
     
-    sm.state.id.should_be :off
+    sm.state.should_be :off
     sm.toggle
     sm.admin
-    sm.state.id.should_be :testing
+    sm.state.should_be :testing
     sm.resume
-    sm.state.id.should_be :on
+    sm.state.should_be :on
     @log.join(",").should_eql "toggle on,testing,resuming"
   end
   
@@ -68,9 +68,9 @@ context "Builder" do
     end
 
     sm.toggle
-    sm.state.id.should_be :on
+    sm.state.should_be :on
     sm.toggle
-    sm.state.id.should_be :off
+    sm.state.should_be :off
 
     @log.join(",").should_eql "exit off,toggle on,toggle off,enter off"
   end
@@ -92,7 +92,7 @@ context "Builder" do
     
     sm.admin
     sm.resume
-    sm.state.id.should_be :off
+    sm.state.should_be :off
     
     @log.join(",").should_eql "testing,resuming,enter off"
   end

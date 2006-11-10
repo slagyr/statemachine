@@ -12,20 +12,20 @@ context "State Machine Odds And Ends" do
   end
   
   specify "set state with string" do
-    @sm.state.id.should_be :off
+    @sm.state.should_be :off
     @sm.state = "on"
-    @sm.state.id.should_be :on
+    @sm.state.should_be :on
   end
   
   specify "set state with symbol" do
-    @sm.state.id.should_be :off
+    @sm.state.should_be :off
     @sm.state = :on
-    @sm.state.id.should_be :on
+    @sm.state.should_be :on
   end
   
   specify "process event accepts strings" do
     @sm.process_event("toggle")
-    @sm.state.id.should_be :on
+    @sm.state.should_be :on
   end
 
 end
@@ -48,7 +48,7 @@ context "Special States" do
   
   specify "states without transitions are valid" do
     @sm.push
-    @sm.state.id.should_be :stuck
+    @sm.state.should_be :stuck
   end
   
   specify "no history allowed for concrete states" do

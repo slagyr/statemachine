@@ -23,7 +23,7 @@ context "Turn Stile" do
 
   specify "substates respond to superstate transitions" do
     @sm.process_event(:maintain)
-    @sm.state.id.should_be :maintenance
+    @sm.state.should_be :maintenance
     @locked.should_be true
     @out_of_order.should_be true
   end
@@ -31,7 +31,7 @@ context "Turn Stile" do
   specify "after transitions, substates respond to superstate transitions" do
     @sm.coin
     @sm.maintain
-    @sm.state.id.should_be :maintenance
+    @sm.state.should_be :maintenance
     @locked.should_be false
     @out_of_order.should_be true
   end

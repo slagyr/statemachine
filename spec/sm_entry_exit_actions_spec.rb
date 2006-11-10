@@ -45,8 +45,8 @@ context "State Machine Entry and Exit Actions" do
   end
 
   specify "current state is set prior to exit and entry actions" do
-    @sm.get_state(:off).exit_action = Proc.new { @log << @sm.state.id }
-    @sm.get_state(:on).entry_action =  Proc.new { @log << @sm.state.id }
+    @sm.get_state(:off).exit_action = Proc.new { @log << @sm.state }
+    @sm.get_state(:on).entry_action =  Proc.new { @log << @sm.state }
     
     @sm.toggle
     
@@ -57,12 +57,12 @@ context "State Machine Entry and Exit Actions" do
     @sm = StateMachine::StateMachine.new
     StateMachine.build(@sm) do |s|
       s.superstate :off_super do |off_s|
-        off_s.on_exit {@log << @sm.state.id}
+        off_s.on_exit {@log << @sm.state}
         off_s.trans :off, :toggle, :on, Proc.new { @log << "on" }
         off_s.event :toggle, :on, Proc.new { @log << "super_on" }
       end
       s.superstate :on_super do |on_s|
-        on_s.on_entry { @log << @sm.state.id }
+        on_s.on_entry { @log << @sm.state }
         on_s.trans :on, :toggle, :off, Proc.new { @log << "off" }
         on_s.event :toggle, :off, Proc.new { @log << "super_off" }
       end
@@ -78,7 +78,7 @@ context "State Machine Entry and Exit Actions" do
     
     @sm.toggle
     @log.join(",").should_eql "on,off"
-    @sm.state.id.should_be :off
+    @sm.state.should_be :off
   end
 
   

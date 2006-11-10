@@ -13,7 +13,7 @@ context "simple cases:" do
     
     @sm.reset
     
-    @sm.state.id.should_be :start
+    @sm.state.should_be :start
   end
 
   specify "no proc in transition" do

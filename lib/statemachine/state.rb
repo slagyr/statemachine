@@ -6,11 +6,12 @@ module StateMachine
     
     include ProcCalling
     
-    attr_reader :id, :statemachine, :entry_action, :exit_action
-    attr_accessor :superstate, :entry_action, :exit_action
+    attr_reader :id, :statemachine, :superstate
+    attr_accessor :entry_action, :exit_action
 
-    def initialize(id, state_machine)
+    def initialize(id, superstate, state_machine)
       @id = id
+      @superstate = superstate
       @statemachine = state_machine
       @transitions = {}
     end
@@ -21,14 +22,6 @@ module StateMachine
   
     def transitions
       return @superstate ? @transitions.merge(@superstate.transitions) : @transitions
-    end
-
-    def local_transitions
-      return @transitions
-    end
-
-    def [] (event)
-      return transitions[event]
     end
     
     def exit(args)

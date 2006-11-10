@@ -1,9 +1,9 @@
 module StateMachine
   module VERSION
     unless defined? MAJOR
-      MAJOR  = 0
+      MAJOR  = 1
       MINOR  = 0
-      TINY   = 3
+      TINY   = 0
 
       STRING = [MAJOR, MINOR, TINY].join('.')
       TAG    = "REL_" + [MAJOR, MINOR, TINY].join('_')
