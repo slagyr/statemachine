@@ -1,8 +1,3 @@
-require 'statemachine/state'
-require 'statemachine/super_state'
-require 'statemachine/transition'
-require 'statemachine/proc_calling'
-
 module StateMachine
   
   class StateMachineException < Exception
@@ -25,10 +20,10 @@ module StateMachine
   
     def reset
       @state = @root.start_state
-      raise StateMachineException.new("The state machine doesn't know where to start. Try setting the start_state.") if @state.nil?
-      while not @state.is_concrete?
+      while @state and not @state.is_concrete?
         @state = @state.start_state
       end
+      raise StateMachineException.new("The state machine doesn't know where to start. Try setting the start_state.") if @state == nil
     end
     
     def state
@@ -56,7 +51,7 @@ module StateMachine
           raise StateMachineException.new("#{@state} does not respond to the '#{event}' event.")
         end
       else
-        raise StateMachineException.new("The state machine isn't in any state.  Did you forget to call run?")
+        raise StateMachineException.new("The state machine isn't in any state while processing the '#{event}' event.")
       end
     end
     
@@ -82,7 +77,6 @@ module StateMachine
     
     def add_state(state)
       @states[state.id] = state
-      @root.start_state = state if @root.start_state.nil?
     end
     
     def has_state(id)

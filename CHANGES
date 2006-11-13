@@ -2,6 +2,9 @@
 
 == Version 0.1.0
 
+* cleaner API for running a statemachine
+* much refactoring
+* new API for building statemachine
 * process_event accepts strings
 
 == Version 0.0.4

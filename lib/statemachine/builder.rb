@@ -25,6 +25,7 @@ module StateMachine
         state = State.new(state_id, context, @statemachine)
         @statemachine.add_state(state)
       end
+      context.start_state = state if context.start_state == nil
       return state
     end
   end
@@ -67,6 +68,14 @@ module StateMachine
       @subject.start_state = @statemachine.get_state(start_state_id)
       raise "Start state #{start_state_id} not found" if not @subject.start_state
     end
+    
+    def on_entry_of(id, &action)
+      @statemachine.get_state(id).entry_action = action
+    end
+    
+    def on_exit_of(id, &action)
+      @statemachine.get_state(id).exit_action = action
+    end
   end
   
   class StateBuilder < Builder
@@ -85,6 +94,7 @@ module StateMachine
     def initialize(id, superstate, statemachine)
       super statemachine
       @subject = Superstate.new(id, superstate, statemachine)
+      superstate.start_state = @subject if superstate.start_state == nil
       statemachine.add_state(@subject)
     end
   end

@@ -97,6 +97,35 @@ context "Builder" do
     @log.join(",").should_eql "testing,resuming,enter off"
   end
 
+  specify "entry and exit action created from superstate builder" do
+    sm = StateMachine.build do |b|
+      b.trans :off, :toggle, :on, Proc.new { @log << "toggle on" }
+      b.on_entry_of(:off) { @log << "entering off" }
+      b.trans :on, :toggle, :off, Proc.new { @log << "toggle off" }
+      b.on_exit_of(:on) { @log << "exiting on" }
+    end
+    
+    sm.toggle
+    sm.toggle
+    
+    @log.join(",").should_eql "toggle on,exiting on,toggle off,entering off"
+    
+  end
+
+  specify "superstate as startstate" do
+    
+    lambda do 
+      sm = StateMachine.build do |b|
+        b.superstate :mario_bros do |m|
+          m.trans :luigi, :bother, :mario
+        end
+      end
+      
+      sm.state.should_be :luigi
+    end.should_not_raise(Exception)
+  end
+
+  
   
 end
 
