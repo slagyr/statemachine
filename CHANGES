@@ -2,6 +2,7 @@
 
 == Version 0.1.0
 
+A new way to build the statemachines
 * cleaner API for running a statemachine
 * much refactoring
 * new API for building statemachine
@@ -9,6 +10,7 @@
 
 == Version 0.0.4
 
+Some minor improvements
 * Proper handling of state transition implemented, such that the proper state is set for entry and exit actions.
 * can now use State objects in addition to symbols while creating a transition
 * more compliant implementation of history state
