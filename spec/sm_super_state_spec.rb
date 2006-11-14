@@ -8,17 +8,18 @@ context "Turn Stile" do
     
     @out_out_order = false
     
-    @sm = StateMachine.build do |s|
-      s.superstate :operative do |o|
-        o.trans :locked, :coin, :unlocked, @unlock
-        o.trans :unlocked, :pass, :locked, @lock
-        o.trans :locked, :pass, :locked, @alarm
-        o.trans :unlocked, :coin, :locked, @thankyou
-        o.event :maintain, :maintenance, Proc.new { @out_of_order = true }
+    @sm = StateMachine.build do 
+      superstate :operative do
+        trans :locked, :coin, :unlocked, Proc.new { @locked = false }
+        trans :unlocked, :pass, :locked, Proc.new { @locked = true }
+        trans :locked, :pass, :locked, Proc.new { @alarm_status = true }
+        trans :unlocked, :coin, :locked, Proc.new { @thankyou_status = true }
+        event :maintain, :maintenance, Proc.new { @out_of_order = true }
       end
-      s.trans :maintenance, :operate, :operative, Proc.new { @out_of_order = false } 
-      s.start_state :locked
+      trans :maintenance, :operate, :operative, Proc.new { @out_of_order = false } 
+      start_state :locked
     end
+    @sm.context = self
   end
 
   specify "substates respond to superstate transitions" do

@@ -4,9 +4,10 @@ module StateMachine
   end
   
   class StateMachine
-    include ProcCalling
+    
+    include ActionInvokation
   
-    attr_accessor :tracer
+    attr_accessor :tracer, :context
     attr_reader :root
   
     def initialize(root = Superstate.new(:root, nil, self))

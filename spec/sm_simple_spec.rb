@@ -3,6 +3,7 @@ require File.dirname(__FILE__) + '/spec_helper'
 context "simple cases:" do
   setup do
     @sm = StateMachine::StateMachine.new
+    @sm.context = self
     @count = 0
     @proc = Proc.new {@count = @count + 1}
   end

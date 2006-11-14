@@ -1,8 +1,8 @@
 module StateMachine
   
-  def self.build(statemachine = nil)
+  def self.build(statemachine = nil, &block)
     builder = statemachine ? StatemachineBuilder.new(statemachine) : StatemachineBuilder.new
-    yield builder
+    builder.instance_eval(&block)
     builder.statemachine.reset
     return builder.statemachine
   end
@@ -37,11 +37,11 @@ module StateMachine
       @subject.add(Transition.new(@subject.id, destination_id, event, action))
     end
     
-    def on_entry(&entry_action)
+    def on_entry(entry_action)
       @subject.entry_action = entry_action
     end
     
-    def on_exit(&exit_action)
+    def on_exit(exit_action)
       @subject.exit_action = exit_action
     end
   end
@@ -49,14 +49,14 @@ module StateMachine
   module SuperstateBuilding
     attr_reader :subject
     
-    def state(id)
+    def state(id, &block)
       builder = StateBuilder.new(id, @subject, @statemachine)
-      yield builder
+      builder.instance_eval(&block)
     end
 
-    def superstate(id)
+    def superstate(id, &block)
       builder = SuperstateBuilder.new(id, @subject, @statemachine)
-      yield builder
+      builder.instance_eval(&block)
     end
 
     def trans(origin_id, event, destination_id, action = nil)
@@ -69,11 +69,11 @@ module StateMachine
       raise "Start state #{start_state_id} not found" if not @subject.start_state
     end
     
-    def on_entry_of(id, &action)
+    def on_entry_of(id, action)
       @statemachine.get_state(id).entry_action = action
     end
     
-    def on_exit_of(id, &action)
+    def on_exit_of(id, action)
       @statemachine.get_state(id).exit_action = action
     end
   end

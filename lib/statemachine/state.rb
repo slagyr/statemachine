@@ -1,10 +1,6 @@
-require 'statemachine/proc_calling'
-
 module StateMachine
 
   class State
-    
-    include ProcCalling
     
     attr_reader :id, :statemachine, :superstate
     attr_accessor :entry_action, :exit_action
@@ -26,13 +22,13 @@ module StateMachine
     
     def exit(args)
       @statemachine.trace("\texiting #{self}")
-      call_proc(@exit_action, args, "exit action for #{self}") if @exit_action
+      @statemachine.invoke_action(@exit_action, args, "exit action for #{self}") if @exit_action
       @superstate.substate_exiting(self) if @superstate
     end
 
     def enter(args)
       @statemachine.trace("\tentering #{self}")
-      call_proc(@entry_action, args, "entry action for #{self}") if @entry_action
+      @statemachine.invoke_action(@entry_action, args, "entry action for #{self}") if @entry_action
     end
     
     def activate

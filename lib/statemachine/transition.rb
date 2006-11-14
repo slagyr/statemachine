@@ -1,10 +1,6 @@
-require 'statemachine/proc_calling'
-
 module StateMachine
 
   class Transition
-    
-    include ProcCalling
     
     attr_reader :origin_id, :event, :action
     attr_accessor :destination_id
@@ -21,7 +17,7 @@ module StateMachine
       exits, entries = exits_and_entries(origin, destination)
       exits.each { |exited_state| exited_state.exit(args) }
       
-      call_proc(@action, args, "transition action from #{origin} invoked by '#{@event}' event") if @action
+      origin.statemachine.invoke_action(@action, args, "transition action from #{origin} invoked by '#{@event}' event") if @action
       
       terminal_state = destination
       while terminal_state and not terminal_state.is_concrete?

@@ -19,34 +19,37 @@ context "Builder" do
   end
 
   specify "Building a the switch, relaxed" do
-    sm = StateMachine.build do |b|
-      b.trans :off, :toggle, :on, Proc.new { @log << "toggle on" }
-      b.trans :on, :toggle, :off, Proc.new { @log << "toggle off" }
+    sm = StateMachine.build do
+      trans :off, :toggle, :on, Proc.new { @log << "toggle on" }
+      trans :on, :toggle, :off, Proc.new { @log << "toggle off" }
     end
+    sm.context = self
     
     check_switch sm
   end
 
   specify "Building a the switch, strict" do
-    sm = StateMachine.build do |b|
-      b.state(:off) { |s| s.event :toggle, :on, Proc.new { @log << "toggle on" } }
-      b.state(:on) { |s| s.event :toggle, :off, Proc.new { @log << "toggle off" } }
+    sm = StateMachine.build do
+      state(:off) { |s| s.event :toggle, :on, Proc.new { @log << "toggle on" } }
+      state(:on) { |s| s.event :toggle, :off, Proc.new { @log << "toggle off" } }
     end
+    sm.context = self
 
     check_switch sm
   end
 
   specify "Adding a superstate to the switch" do
-    sm = StateMachine.build do |b|
-      b.superstate :operation do |o|
-        o.event :admin, :testing, lambda { @log << "testing" }
-        o.trans :off, :toggle, :on, lambda { @log << "toggle on" }
-        o.trans :on, :toggle, :off, lambda { @log << "toggle off" }
-        o.start_state :on
+    sm = StateMachine.build do
+      superstate :operation do
+        event :admin, :testing, lambda { @log << "testing" }
+        trans :off, :toggle, :on, lambda { @log << "toggle on" }
+        trans :on, :toggle, :off, lambda { @log << "toggle off" }
+        start_state :on
       end
-      b.trans :testing, :resume, :operation, lambda { @log << "resuming" }
-      b.start_state :off
+      trans :testing, :resume, :operation, lambda { @log << "resuming" }
+      start_state :off
     end
+    sm.context = self
     
     sm.state.should_be :off
     sm.toggle
@@ -58,14 +61,15 @@ context "Builder" do
   end
   
   specify "entry exit actions" do
-    sm = StateMachine.build do |sm|
-      sm.state :off do |off|
-        off.on_entry { @log << "enter off" }
-        off.event :toggle, :on, lambda { @log << "toggle on" }
-        off.on_exit { @log << "exit off" }
+    sm = StateMachine.build do
+      state :off do
+        on_entry Proc.new { @log << "enter off" }
+        event :toggle, :on, lambda { @log << "toggle on" }
+        on_exit Proc.new { @log << "exit off" }
       end
-      sm.trans :on, :toggle, :off, lambda { @log << "toggle off" } 
+      trans :on, :toggle, :off, lambda { @log << "toggle off" } 
     end
+    sm.context = self
 
     sm.toggle
     sm.state.should_be :on
@@ -76,19 +80,20 @@ context "Builder" do
   end
   
   specify "History state" do
-    sm = StateMachine.build do |b|
-      b.superstate :operation do |o|
-        o.event :admin, :testing, lambda { @log << "testing" }
-        o.state :off do |off|
-          off.on_entry { @log << "enter off" }
-          off.event :toggle, :on, lambda { @log << "toggle on" }
+    sm = StateMachine.build do
+      superstate :operation do
+        event :admin, :testing, lambda { @log << "testing" }
+        state :off do |off|
+          on_entry Proc.new { @log << "enter off" }
+          event :toggle, :on, lambda { @log << "toggle on" }
         end
-        o.trans :on, :toggle, :off, lambda { @log << "toggle off" }
-        o.start_state :on
+        trans :on, :toggle, :off, lambda { @log << "toggle off" }
+        start_state :on
       end
-      b.trans :testing, :resume, :operation_H, lambda { @log << "resuming" }
-      b.start_state :off
+      trans :testing, :resume, :operation_H, lambda { @log << "resuming" }
+      start_state :off
     end
+    sm.context = self
     
     sm.admin
     sm.resume
@@ -98,12 +103,13 @@ context "Builder" do
   end
 
   specify "entry and exit action created from superstate builder" do
-    sm = StateMachine.build do |b|
-      b.trans :off, :toggle, :on, Proc.new { @log << "toggle on" }
-      b.on_entry_of(:off) { @log << "entering off" }
-      b.trans :on, :toggle, :off, Proc.new { @log << "toggle off" }
-      b.on_exit_of(:on) { @log << "exiting on" }
+    sm = StateMachine.build do
+      trans :off, :toggle, :on, Proc.new { @log << "toggle on" }
+      on_entry_of :off, Proc.new { @log << "entering off" }
+      trans :on, :toggle, :off, Proc.new { @log << "toggle off" }
+      on_exit_of :on, Proc.new { @log << "exiting on" }
     end
+    sm.context = self
     
     sm.toggle
     sm.toggle
@@ -115,9 +121,9 @@ context "Builder" do
   specify "superstate as startstate" do
     
     lambda do 
-      sm = StateMachine.build do |b|
-        b.superstate :mario_bros do |m|
-          m.trans :luigi, :bother, :mario
+      sm = StateMachine.build do
+        superstate :mario_bros do
+          trans :luigi, :bother, :mario
         end
       end
       
@@ -125,7 +131,5 @@ context "Builder" do
     end.should_not_raise(Exception)
   end
 
-  
-  
 end
 
