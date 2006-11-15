@@ -1,22 +1,18 @@
-module StateMachine
+module Statemachine
 
   class Superstate < State
   
-    attr_writer :start_state
+    attr_accessor :startstate_id
     attr_reader :history
   
     def initialize(id, superstate, statemachine)
       super(id, superstate, statemachine)
-      @start_state = nil
+      @startstate = nil
       @history = nil
     end
     
     def is_concrete?
       return false
-    end
-    
-    def start_state
-      return @start_state
     end
     
     def substate_exiting(substate)

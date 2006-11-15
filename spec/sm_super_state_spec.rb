@@ -1,14 +1,14 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
 context "Turn Stile" do
-  include TurnstileStateMachine
+  include TurnstileStatemachine
   
   setup do
     create_turnstile
     
     @out_out_order = false
     
-    @sm = StateMachine.build do 
+    @sm = Statemachine.build do 
       superstate :operative do
         trans :locked, :coin, :unlocked, Proc.new { @locked = false }
         trans :unlocked, :pass, :locked, Proc.new { @locked = true }
@@ -17,7 +17,7 @@ context "Turn Stile" do
         event :maintain, :maintenance, Proc.new { @out_of_order = true }
       end
       trans :maintenance, :operate, :operative, Proc.new { @out_of_order = false } 
-      start_state :locked
+      startstate :locked
     end
     @sm.context = self
   end

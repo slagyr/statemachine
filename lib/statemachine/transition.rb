@@ -1,4 +1,4 @@
-module StateMachine
+module Statemachine
 
   class Transition
     
@@ -21,7 +21,7 @@ module StateMachine
       
       terminal_state = destination
       while terminal_state and not terminal_state.is_concrete?
-        terminal_state = terminal_state.start_state
+        terminal_state = statemachine.get_state(terminal_state.startstate_id)
         entries << terminal_state
       end
       terminal_state.activate if terminal_state

@@ -1,4 +1,3 @@
-Allow setting of start state at beginning
-Remove proc actions in favor of method names.  Statemachine will have a context in which methods will run.
+
 Implement default history
 Implement superstate end state with automatic transition

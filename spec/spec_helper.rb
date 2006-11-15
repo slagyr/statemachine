@@ -11,11 +11,11 @@ def check_transition(transition, origin_id, destination_id, event, action)
   transition.action.should_eql action
 end
 
-module SwitchStateMachine
+module SwitchStatemachine
   
   def create_switch
     @status = "off"
-    @sm = StateMachine.build do
+    @sm = Statemachine.build do
       trans :off, :toggle, :on, Proc.new { @status = "on" } 
       trans :on, :toggle, :off, Proc.new { @status = "off" }
     end
@@ -24,7 +24,7 @@ module SwitchStateMachine
   
 end
 
-module TurnstileStateMachine
+module TurnstileStatemachine
   
   def create_turnstile
     @locked = true
@@ -35,7 +35,7 @@ module TurnstileStateMachine
     @alarm = "@alarm_status = true"
     @thankyou = "@thankyou_status = true"
   
-    @sm = StateMachine.build do
+    @sm = Statemachine.build do
       trans :locked, :coin, :unlocked, "@locked = false"
       trans :unlocked, :pass, :locked, "@locked = true"
       trans :locked, :pass, :locked, "@alarm_status = true"

@@ -1,4 +1,4 @@
-module StateMachine
+module Statemachine
 
   module ActionInvokation
     
@@ -16,7 +16,7 @@ module StateMachine
     
     def invoke_method(symbol, args, message)
       method = @context.method(symbol)
-      raise StateMachineException.new("No method '#{symbol}' for context. " + message) if not method
+      raise StatemachineException.new("No method '#{symbol}' for context. " + message) if not method
       
       parameters = params_for_block(method, args, message)
       method.call(*parameters)
@@ -35,7 +35,7 @@ module StateMachine
       arity = block.arity
       required_params = arity < 0 ? arity.abs - 1 : arity
       
-      raise StateMachineException.new("Insufficient parameters. (#{message})") if required_params > args.length
+      raise StatemachineException.new("Insufficient parameters. (#{message})") if required_params > args.length
       
       return arity < 0 ? args : args[0...arity]
     end

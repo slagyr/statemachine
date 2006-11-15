@@ -1,6 +1,6 @@
 require 'statemachine'
 
-module StateMachine
+module Statemachine
   module ControllerSupport
     
     def self.included(base)

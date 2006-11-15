@@ -1,4 +1,4 @@
-module StateMachine
+module Statemachine
   
   def self.build(statemachine = nil, &block)
     builder = statemachine ? StatemachineBuilder.new(statemachine) : StatemachineBuilder.new
@@ -25,7 +25,7 @@ module StateMachine
         state = State.new(state_id, context, @statemachine)
         @statemachine.add_state(state)
       end
-      context.start_state = state if context.start_state == nil
+      context.startstate_id = state_id if context.startstate_id == nil
       return state
     end
   end
@@ -51,7 +51,7 @@ module StateMachine
     
     def state(id, &block)
       builder = StateBuilder.new(id, @subject, @statemachine)
-      builder.instance_eval(&block)
+      builder.instance_eval(&block) if block
     end
 
     def superstate(id, &block)
@@ -64,9 +64,8 @@ module StateMachine
       origin.add(Transition.new(origin_id, destination_id, event, action))
     end
     
-    def start_state(start_state_id)
-      @subject.start_state = @statemachine.get_state(start_state_id)
-      raise "Start state #{start_state_id} not found" if not @subject.start_state
+    def startstate(startstate_id)
+      @subject.startstate_id = startstate_id
     end
     
     def on_entry_of(id, action)
@@ -94,7 +93,7 @@ module StateMachine
     def initialize(id, superstate, statemachine)
       super statemachine
       @subject = Superstate.new(id, superstate, statemachine)
-      superstate.start_state = @subject if superstate.start_state == nil
+      superstate.startstate_id = id if superstate.startstate_id == nil
       statemachine.add_state(@subject)
     end
   end
@@ -102,7 +101,7 @@ module StateMachine
   class StatemachineBuilder < Builder
     include SuperstateBuilding
     
-    def initialize(statemachine = StateMachine.new)
+    def initialize(statemachine = Statemachine.new)
       super statemachine
       @subject = @statemachine.root
     end

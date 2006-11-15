@@ -1,4 +1,4 @@
-module StateMachine
+module Statemachine
 
   class State
     

@@ -15,8 +15,8 @@ load File.dirname(__FILE__) + '/tasks/failing_examples_with_html.rake'
 load File.dirname(__FILE__) + '/tasks/verify_rcov.rake'"
 
 PKG_NAME = "statemachine"
-PKG_VERSION   = StateMachine::VERSION::STRING
-PKG_TAG = StateMachine::VERSION::TAG
+PKG_VERSION   = Statemachine::VERSION::STRING
+PKG_TAG = Statemachine::VERSION::TAG
 PKG_FILE_NAME = "#{PKG_NAME}-#{PKG_VERSION}"
 PKG_FILES = FileList[
   '[A-Z]*',
@@ -58,9 +58,9 @@ end
 spec = Gem::Specification.new do |s|
   s.name = PKG_NAME
   s.version = PKG_VERSION
-  s.summary = StateMachine::VERSION::DESCRIPTION
+  s.summary = Statemachine::VERSION::DESCRIPTION
   s.description = <<-EOF
-    StateMachine is a ruby library for building Finite State Machines (FSM), also known as Finite State Automata (FSA).
+    Statemachine is a ruby library for building Finite State Machines (FSM), also known as Finite State Automata (FSA).
   EOF
 
   s.files = PKG_FILES.to_a

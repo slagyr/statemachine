@@ -1,9 +1,9 @@
-module StateMachine
+module Statemachine
   
-  class StateMachineException < Exception
+  class StatemachineException < Exception
   end
   
-  class StateMachine
+  class Statemachine
     
     include ActionInvokation
   
@@ -15,16 +15,16 @@ module StateMachine
       @states = {}
     end
     
-    def start_state
-      return @root.start_state.id
+    def startstate
+      return @root.startstate_id
     end
   
     def reset
-      @state = @root.start_state
+      @state = get_state(@root.startstate_id)
       while @state and not @state.is_concrete?
-        @state = @state.start_state
+        @state = get_state(@state.startstate_id)
       end
-      raise StateMachineException.new("The state machine doesn't know where to start. Try setting the start_state.") if @state == nil
+      raise StatemachineException.new("The state machine doesn't know where to start. Try setting the startstate.") if @state == nil
     end
     
     def state
@@ -49,10 +49,10 @@ module StateMachine
         if transition
           transition.invoke(@state, self, args)
         else
-          raise StateMachineException.new("#{@state} does not respond to the '#{event}' event.")
+          raise StatemachineException.new("#{@state} does not respond to the '#{event}' event.")
         end
       else
-        raise StateMachineException.new("The state machine isn't in any state while processing the '#{event}' event.")
+        raise StatemachineException.new("The state machine isn't in any state while processing the '#{event}' event.")
       end
     end
     
@@ -66,8 +66,8 @@ module StateMachine
       elsif(is_history_state_id?(id))
         superstate_id = base_id(id)
         superstate = @states[superstate_id]
-        raise StateMachineException.new("No history exists for #{superstate} since it is not a super state.") if superstate.is_concrete?
-        raise StateMachineException.new("#{superstate} doesn't have any history yet.") if not superstate.history
+        raise StatemachineException.new("No history exists for #{superstate} since it is not a super state.") if superstate.is_concrete?
+        raise StatemachineException.new("#{superstate} doesn't have any history yet.") if not superstate.history
         return superstate.history
       else
         state = State.new(id, @root, self)

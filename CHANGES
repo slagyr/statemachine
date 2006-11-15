@@ -1,4 +1,11 @@
-= StateMachine Changelog
+= Statemachine Changelog
+
+
+== Version 0.2.0
+
+Separation of logic from behavior.
+* Prefered builder syntax implemented
+* statemachine have a context which defines all the behavior
 
 == Version 0.1.0
 

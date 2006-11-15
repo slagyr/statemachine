@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
 context "Turn Stile" do
-  include TurnstileStateMachine
+  include TurnstileStatemachine
   
   setup do
     create_turnstile
@@ -22,7 +22,7 @@ context "Turn Stile" do
   
   specify "start state" do
     @sm.reset
-    @sm.start_state.should.be :locked
+    @sm.startstate.should.be :locked
     @sm.state.should.be :locked
   end
   
@@ -31,7 +31,7 @@ context "Turn Stile" do
       @sm.process_event(:blah)
       self.should.fail_with_message("Exception expected")
     rescue Exception => e
-      e.class.should.be StateMachine::StateMachineException
+      e.class.should.be Statemachine::StatemachineException
       e.to_s.should_eql "'locked' state does not respond to the 'blah' event."
     end
   end

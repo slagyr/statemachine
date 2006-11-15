@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
 context "State Machine Odds And Ends" do
-  include SwitchStateMachine
+  include SwitchStatemachine
 
   setup do
     create_switch
@@ -33,7 +33,7 @@ end
 context "Special States" do
 
   setup do
-    @sm = StateMachine.build do |s|
+    @sm = Statemachine.build do |s|
       s.superstate :operate do |o|
         o.trans :on, :toggle, :off
         o.trans :off, :toggle, :on
@@ -42,7 +42,7 @@ context "Special States" do
       s.trans :middle, :fiddle, :operate_H
       s.trans :middle, :push, :stuck
       s.trans :middle, :dream, :on_H
-      s.start_state :middle
+      s.startstate :middle
     end
   end
   
@@ -54,13 +54,13 @@ context "Special States" do
   specify "no history allowed for concrete states" do
     lambda {
         @sm.dream
-      }.should_raise(StateMachine::StateMachineException, "No history exists for 'on' state since it is not a super state.")
+      }.should_raise(Statemachine::StatemachineException, "No history exists for 'on' state since it is not a super state.")
   end
 
   specify "error when trying to use history that doesn't exist yet" do
     lambda {
       @sm.fiddle
-      }.should_raise(StateMachine::StateMachineException, "'operate' superstate doesn't have any history yet.")
+      }.should_raise(Statemachine::StatemachineException, "'operate' superstate doesn't have any history yet.")
   end
 
 end

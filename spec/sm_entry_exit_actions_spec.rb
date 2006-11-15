@@ -4,7 +4,7 @@ context "State Machine Entry and Exit Actions" do
 
   setup do
     @log = []
-    @sm = StateMachine.build do
+    @sm = Statemachine.build do
       trans :off, :toggle, :on, Proc.new { @log << "on" }
       trans :on, :toggle, :off, Proc.new { @log << "off" }
     end
@@ -55,8 +55,8 @@ context "State Machine Entry and Exit Actions" do
   end
 
   specify "current state is set prior to exit and entry actions even with super states" do
-    @sm = StateMachine::StateMachine.new
-    StateMachine.build(@sm) do
+    @sm = Statemachine::Statemachine.new
+    Statemachine.build(@sm) do
       superstate :off_super do
         on_exit Proc.new {@log << @sm.state}
         trans :off, :toggle, :on, Proc.new { @log << "on" }
@@ -67,7 +67,7 @@ context "State Machine Entry and Exit Actions" do
         trans :on, :toggle, :off, Proc.new { @log << "off" }
         event :toggle, :off, Proc.new { @log << "super_off" }
       end
-      start_state :off
+      startstate :off
     end
     @sm.context = self
 
