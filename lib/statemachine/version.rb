@@ -2,7 +2,7 @@ module Statemachine
   module VERSION
     unless defined? MAJOR
       MAJOR  = 0
-      MINOR  = 1
+      MINOR  = 2
       TINY   = 0
 
       STRING = [MAJOR, MINOR, TINY].join('.')
@@ -11,7 +11,7 @@ module Statemachine
       NAME   = "Statemachine"
       URL    = "http://statemachine.rubyforge.org/"  
     
-      DESCRIPTION = "#{NAME}-#{STRING} - State Machine Library for Ruby\n#{URL}"
+      DESCRIPTION = "#{NAME}-#{STRING} - Statemachine Library for Ruby\n#{URL}"
     end
   end
 end
