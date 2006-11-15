@@ -165,6 +165,17 @@ context "Builder" do
     sm.tilt
     sm.state.should_be :floor
   end
+  
+  specify "can set context" do
+    widget = Object.new
+    sm = Statemachine.build do
+      context widget
+    end
+    
+    sm.context.should_be widget
+  end
+
+  
 
 end
 

@@ -6,6 +6,9 @@
 Separation of logic from behavior.
 * Prefered builder syntax implemented
 * statemachine have a context which defines all the behavior
+* startstate can be set at any time in the builder
+* states can be declared without blocks
+* context can be set in builder
 
 == Version 0.1.0
 

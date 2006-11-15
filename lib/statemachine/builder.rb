@@ -105,6 +105,10 @@ module Statemachine
       super statemachine
       @subject = @statemachine.root
     end
+    
+    def context(a_context)
+      @statemachine.context = a_context
+    end
   end
   
 end
