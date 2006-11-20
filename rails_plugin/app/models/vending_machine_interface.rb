@@ -10,6 +10,9 @@ class VendingMachineInterface
         on_entry :accept_money
         on_exit :refuse_money
         event :dollar, :collecting_money, :add_dollar 
+        event :quarter, :collecting_money, :add_quarter
+        event :dime, :collecting_money, :add_dime
+        event :nickel, :collecting_money, :add_nickel
         state :standby
         state :collecting_money do
           on_entry :check_max_price
@@ -31,6 +34,18 @@ class VendingMachineInterface
   
   def add_dollar
     @amount_tendered = @amount_tendered + 100
+  end
+
+  def add_quarter
+    @amount_tendered = @amount_tendered + 25
+  end
+  
+  def add_dime
+    @amount_tendered = @amount_tendered + 10
+  end
+  
+  def add_nickel
+    @amount_tendered = @amount_tendered + 5
   end
   
   def check_max_price

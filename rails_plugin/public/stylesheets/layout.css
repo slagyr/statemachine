@@ -101,6 +101,7 @@ body {
 	width: 250px;
 	padding: 10px;
 	border: 1px solid black;
+	text-align: center;
 	z-index: 100;
 }
 

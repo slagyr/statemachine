@@ -23,7 +23,28 @@ context "Vending Machine Display Spec" do
     @display.amount_tendered.should_be 100
     @display.accepting_money.should_be true
   end
-  
+
+  specify "quarter" do
+    @sm.quarter
+    @sm.state.should_be :collecting_money
+    @display.amount_tendered.should_be 25
+    @display.accepting_money.should_be true
+  end
+
+  specify "dime" do
+    @sm.dime
+    @sm.state.should_be :collecting_money
+    @display.amount_tendered.should_be 10
+    @display.accepting_money.should_be true
+  end
+
+  specify "nickel" do
+    @sm.nickel
+    @sm.state.should_be :collecting_money
+    @display.amount_tendered.should_be 5
+    @display.accepting_money.should_be true
+  end
+
   specify "dollar when max price is a dollar" do
     @vending_machine.should_receive(:max_price).and_return(100)
     @sm.dollar
