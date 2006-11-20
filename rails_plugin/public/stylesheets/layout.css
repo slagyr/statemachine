@@ -1,0 +1,141 @@
+body {
+  padding: 0px;
+  background-image: url('../images/bricks.jpg');
+  font-family: "Lucida Grande", "Bitstream Vera Sans", "Verdana";
+  font-size: 13px;
+}
+
+#vending_machine_body {
+	position: absolute;
+	top: 0px;
+	left: 50px;
+	z-index: 1;
+}
+
+#money_panel {
+	position: absolute;
+	top: 100px;
+	left: 353px;
+	z-index: 2;
+}
+
+#cash_release_button {
+	position: absolute;
+	top: 197px;
+	left: 442px;
+	border: none;
+	z-index: 3;
+}
+
+#quartz_screen {
+	position: absolute;
+	top: 115px;
+	left: 359px;
+	width: 115px;
+	height: 32px;
+	text-align: right;
+	font-size: 12pt;
+	color: #64F847;
+	z-index: 100;
+}
+
+#dispenser {
+	position: absolute;
+	top: 577px;
+	left: 133px;
+	width: 142px;
+	height: 70px;
+	text-align: center;
+	font-size: 12pt;
+	display: none;
+	z-index: 100;
+}
+
+#dispenser p {
+	border: 1px solid red;
+	margin: 20px 10px 0px 10px;
+	padding: 5px;
+	background-color: black;
+	color: red;
+}
+
+#product_list {
+	position: absolute;
+	top: 235px;
+	left: 355px;
+	width: 125px;
+	height: 440px;
+	text-align: center;
+	z-index: 100;
+}
+
+#product_list a {
+	display: block;
+	margin: 5px;
+	padding: 5px;
+	border: 1px solid black;
+	background-color: lightgrey;
+	color: black;
+	text-decoration: none;
+}
+
+#product_list a:hover {
+	color: blue;
+	background-color: grey;
+}
+
+#info {
+	position: absolute;
+	top: 250px;
+	left: 525px;
+	width: 250px;
+	padding: 10px;
+	border: 1px solid black;
+	z-index: 100;
+}
+
+#cash {
+	position: absolute;
+	top: 25px;
+	left: 525px;
+	width: 250px;
+	padding: 10px;
+	border: 1px solid black;
+	z-index: 100;
+}
+
+h3 {
+	text-align: center;
+	margin: 5px;
+	font-size: 20pt;
+}
+
+.money_active {
+	background-color: yellow;
+}
+
+#change {
+	position: absolute;
+	top: 681px;
+	left: 362px;
+	z-index: 2;
+}	
+
+#change_amount {
+	position: absolute;
+	top: 681px;
+	left: 362px;
+	width: 109px;
+	height: 74px;
+	z-index: 100;
+	text-align: center;
+	display: none;
+}
+
+#change_amount p {
+	border: 1px solid #64F847;
+	margin: 20px 10px 0px 10px;
+	padding: 5px;
+	background-color: black;
+	color: #64F847;
+}

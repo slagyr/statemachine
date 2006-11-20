@@ -1,0 +1,51 @@
+<html>
+	<head>
+		<title>Statemachine Vending</title>
+	    <%= stylesheet_link_tag "layout", :media => "all" %>
+	    <%= javascript_include_tag "prototype", "effects", "dragdrop", "controls" %>
+	</head>
+	<body>
+		<img id="vending_machine_body" src="/images/vending_machine_body.png">
+		<img id="money_panel" src="/images/money_panel.png">
+		<a id="cash_release_button" href="#">
+			<img src="/images/cash_release_button.png">
+		</a>
+		<div id="product_list">
+			<a href="#">Water $1.00</a>
+			<a href="#">Coke</a>
+			<a href="#">Crackers</a>
+			<a href="#">Peanut Butter - $5.00</a>
+			<a href="#">Chips</a>
+		</div>
+		<img id="change" src="/images/change.png">
+		<div id="change_amount"><p>$1.00</p></div>
+		<div id="cash">
+			<h3>Cash</h3>
+			<img id="dollar" class="money" src="/images/dollar.png"><br/>
+			<img id="quarter" class="money" src="/images/quarter.png">
+			<img id="dime" class="money" src="/images/dime.png">
+			<img id="nickel" class="money" src="/images/nickel.png">
+		</div>
+		
+		<div id="quartz_screen">Insert Money</div>
+		<div id="dispenser"><p>Water</p></div>
+		<div id="info">
+			<h3>Info</h3>
+			blah<br/>
+				blah<br/>
+					blah<br/>
+						blah<br/>
+							blah<br/>
+								blah<br/>
+		</div>
+		
+	 	<%= draggable_element "dollar", :revert => true %>
+	 	<%= draggable_element "quarter", :revert => true %>
+	 	<%= draggable_element "dime", :revert => true %>
+	 	<%= draggable_element "nickel", :revert => true %>
+		<%= drop_receiving_element "money_panel", 
+		      :url => { :action => "insert_money" },
+		      :accept => "money", :hoverclass => "money_active" %>
+		
+	<body>
+</html>
