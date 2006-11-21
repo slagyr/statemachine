@@ -27,7 +27,7 @@ context "Vending Machine Interface" do
   specify "message when refusing money" do
     @display.add_dollar
     @display.refuse_money
-    @display.message.should_eql "Make Selection"
+    @display.message.should_eql "Select Item"
   end
 
   specify "available items" do

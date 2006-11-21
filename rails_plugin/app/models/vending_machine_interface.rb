@@ -49,7 +49,7 @@ class VendingMachineInterface
     if @amount_tendered <= 0
       return "Insert Money"
     elsif not @accepting_money
-      return "Make Selection"
+      return "Select Item"
     else
       return sprintf("$%.2f", @amount_tendered/100.0)
     end

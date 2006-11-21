@@ -47,7 +47,6 @@ body {
 	height: 70px;
 	text-align: center;
 	font-size: 12pt;
-	display: none;
 	z-index: 100;
 }
 
@@ -130,7 +129,6 @@ h3 {
 	height: 74px;
 	z-index: 100;
 	text-align: center;
-	display: none;
 }
 
 #change_amount p {
@@ -139,4 +137,12 @@ h3 {
 	padding: 5px;
 	background-color: black;
 	color: #64F847;
+}
+
+.non_affordable {
+	color: black;
+}
+
+a.affordable {
+	border: 1px solid green;
 }

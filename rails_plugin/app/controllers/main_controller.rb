@@ -11,8 +11,12 @@ class MainController < ApplicationController
     event = params[:event]
     arg = params[:arg]
     @display = session[:display]
+    @display.statemachine.tracer = $stdout
     @display.statemachine.process_event(event, arg)
+    
+    @display.statemachine.tracer = nil
     session[:display] = @display
+puts render_to_string :template => "/main/event"
   end
   
   def insert_money

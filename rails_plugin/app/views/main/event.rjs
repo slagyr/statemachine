@@ -11,3 +11,15 @@ end
 @display.sold_out_items.each do |product|
   page.replace_html "product_#{product.id}_price", "<span style=\"color: red;\">SOLD OUT</span>"
 end
+
+if @display.dispensed_item
+  page.replace_html "dispenser", "<p>#{@display.dispensed_item.name}</p>"
+  page.show "dispenser"
+  page.visual_effect :fade, "dispenser", :duration => 5
+end
+
+if @display.change
+  page.replace_html "change_amount", "<p>#{@display.change}</p>"
+  page.show "change_amount"
+  page.visual_effect :fade, "change_amount", :duration => 5
+end
