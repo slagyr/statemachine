@@ -11,11 +11,11 @@
 			<img src="/images/cash_release_button.png">
 		</a>
 		<div id="product_list">
-			<a href="#">Water $1.00</a>
-			<a href="#">Coke</a>
-			<a href="#">Crackers</a>
-			<a href="#">Peanut Butter - $5.00</a>
-			<a href="#">Chips</a>
+			<% @vending_machine.products.each do |product| %>
+			<%= link_to_remote 	product_label(product), 
+								{:url => { :action => "event", :event => "selection", :arg => product.id }},
+								{ :id => "product_#{product.id}" } %>
+			<% end %>
 		</div>
 		<img id="change" src="/images/change.png">
 		<div id="change_amount"><p>$1.00</p></div>
@@ -48,5 +48,5 @@
 		      :url => { :action => "insert_money" },
 		      :accept => "money", :hoverclass => "money_active" %>
 		
-	<body>
+	</body>
 </html>

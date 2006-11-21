@@ -1,1 +1,13 @@
-page.replace_html "quartz_screen", @display.amount_tendered
+page.replace_html "quartz_screen", @display.message
+
+@display.affordable_items.each do |product|
+  page << "document.getElementById('product_#{product.id}').class = 'affordable';"
+end
+
+@display.non_affordable_items.each do |product|
+  page << "document.getElementById('product_#{product.id}').class = 'non_affordable';"
+end
+
+@display.sold_out_items.each do |product|
+  page.replace_html "product_#{product.id}_price", "<span style=\"color: red;\">SOLD OUT</span>"
+end

@@ -1,20 +1,16 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+require File.dirname(__FILE__) + '/../../spec_helper'
 
-context "The MainController" do
-  controller_name :main
+context "Index spec" do
 
-end
-
-context "Index View spec" do
-  controller_name :main
-  integrate_views
-  
   setup do
-    @vm = VendingMachine.new
-    @product = @vm.add_product(10, "Glue", 100)
-    @vm.save!
+    @vm = mock("vending machine")
+    @product = mock("product")
+    @product.stub!(:name).and_return("Glue")
+    @product.stub!(:id).and_return(123)
+    @vm.stub!(:products).and_return([@product])
+    assigns[:vending_machine] = @vm
     
-    post :index, :id => @vm.id
+    render "/main/index"
   end
 
   specify "Has required divs" do
@@ -31,8 +27,10 @@ context "Index View spec" do
   end
 
   specify "products" do
-    response.should_have_tag :a, :attributes => { :id => "product_#{@product.id}" }
-    response.should_have_tag :span, :attributes => { :id => "product_#{@product.id}_price" }
+    response.should_have_tag :a, :attributes => { :id => "product_123" }
+    response.should_have_tag :span, :attributes => { :id => "product_123_price" }
   end
+
+  
   
 end
