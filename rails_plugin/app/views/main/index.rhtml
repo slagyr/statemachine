@@ -1,52 +1,37 @@
-<html>
-	<head>
-		<title>Statemachine Vending</title>
-	    <%= stylesheet_link_tag "layout", :media => "all" %>
-	    <%= javascript_include_tag "prototype", "effects", "dragdrop", "controls" %>
-	</head>
-	<body>
-		<img id="vending_machine_body" src="/images/vending_machine_body.png">
-		<img id="money_panel" src="/images/money_panel.png">
-		<a id="cash_release_button" href="#">
-			<img src="/images/cash_release_button.png">
-		</a>
-		<div id="product_list">
-			<% @vending_machine.products.each do |product| %>
-			<%= link_to_remote 	product_label(product), 
-								{:url => { :action => "event", :event => "selection", :arg => product.id }},
-								{ :id => "product_#{product.id}" } %>
-			<% end %>
-		</div>
-		<img id="change" src="/images/change.png">
-		<div id="change_amount"></div>
-		<div id="cash">
-			<h3>Cash</h3>
-			(drag and drop the money)<br/>
-			<img id="dollar" class="money" src="/images/dollar.png"><br/>
-			<img id="quarter" class="money" src="/images/quarter.png">
-			<img id="dime" class="money" src="/images/dime.png">
-			<img id="nickel" class="money" src="/images/nickel.png">
-		</div>
-		
-		<div id="quartz_screen">Insert Money</div>
-		<div id="dispenser"></div>
-		<div id="info">
-			<h3>Info</h3>
-			blah<br/>
-				blah<br/>
-					blah<br/>
-						blah<br/>
-							blah<br/>
-								blah<br/>
-		</div>
-		
-	 	<%= draggable_element "dollar", :revert => true %>
-	 	<%= draggable_element "quarter", :revert => true %>
-	 	<%= draggable_element "dime", :revert => true %>
-	 	<%= draggable_element "nickel", :revert => true %>
-		<%= drop_receiving_element "money_panel", 
-		      :url => { :action => "insert_money" },
-		      :accept => "money", :hoverclass => "money_active" %>
-		
-	</body>
-</html>
+
+<img id="vending_machine_body" src="/images/vending_machine_body.png">
+<img id="money_panel" src="/images/money_panel.png">
+<%= link_to_remote 	'<img src="/images/cash_release_button.png">', 
+					{:url => { :action => "event", :event => "release_money"}},
+					{ :id => "cash_release_button"} %>
+<div id="product_list">
+	<% @vending_machine.products.each do |product| %>
+	<%= link_to_remote 	product_label(product), 
+						{:url => { :action => "event", :event => "selection", :arg => product.id }},
+						{ :id => "product_#{product.id}", :class => "non_affordable" } %>
+	<% end %>
+</div>
+<img id="change" src="/images/change.png">
+<div id="change_amount"></div>
+<div id="cash">
+	<h3>Cash</h3>
+	(drag and drop the money)<br/>
+	<img id="dollar" class="money" src="/images/dollar.png"><br/>
+	<img id="quarter" class="money" src="/images/quarter.png">
+	<img id="dime" class="money" src="/images/dime.png">
+	<img id="nickel" class="money" src="/images/nickel.png">
+</div>
+
+<div id="quartz_screen">Insert Money</div>
+<div id="dispenser"></div>
+<div id="info">
+	<%= render :partial => "info" %>
+</div>
+
+	<%= draggable_element "dollar", :revert => true %>
+	<%= draggable_element "quarter", :revert => true %>
+	<%= draggable_element "dime", :revert => true %>
+	<%= draggable_element "nickel", :revert => true %>
+<%= drop_receiving_element "money_panel", 
+      :url => { :action => "insert_money" },
+      :accept => "money", :hoverclass => "money_active" %>

@@ -1,46 +1,9 @@
 class VendingMachineInterface
   
-  attr_reader :amount_tendered, :statemachine, :accepting_money, :dispensed_item, :change
-  attr_accessor :vending_machine
-  
-  def create_statemachine
-    return Statemachine.build do
-      startstate :standby
-      superstate :accepting_money do
-        on_entry :accept_money
-        on_exit :refuse_money
-        event :dollar, :collecting_money, :add_dollar 
-        event :quarter, :collecting_money, :add_quarter
-        event :dime, :collecting_money, :add_dime
-        event :nickel, :collecting_money, :add_nickel
-        state :standby do
-          on_exit :clear_dispensers
-          event :selection, :standby
-        end
-        state :collecting_money do
-          on_entry :check_max_price
-          event :reached_max_price, :max_price_tendered
-          event :selection, :validating_purchase, :load_product
-        end
-        state :validating_purchase do
-          on_entry :check_affordability
-          event :accept_purchase, :standby, :make_sale
-          event :refuse_purchase, :collecting_money
-        end
-      end
-      state :max_price_tendered do
-        event :selection, :standby, :load_and_make_sale
-        event :dollar, :max_price_tendered
-        event :quarter, :max_price_tendered
-        event :dime, :max_price_tendered
-        event :nickel, :max_price_tendered
-      end
-    end
-  end
+  attr_reader :amount_tendered, :accepting_money, :dispensed_item, :change
+  attr_accessor :vending_machine, :statemachine
   
   def initialize
-    @statemachine = create_statemachine
-    @statemachine.context = self
     @amount_tendered = 0
     @accepting_money = true
   end
@@ -98,11 +61,11 @@ class VendingMachineInterface
   end
   
   def load_product(id)
-    @selected_product = Product.find(id)
+    @selected_product = @vending_machine.product_with_id(id)
   end
   
   def check_affordability
-    if @amount_tendered >= @selected_product.price
+    if @amount_tendered >= @selected_product.price and @selected_product.in_stock?
       @statemachine.accept_purchase
     else
       @statemachine.refuse_purchase
@@ -114,7 +77,14 @@ class VendingMachineInterface
     change_pennies = @amount_tendered - @selected_product.price
     @change = sprintf("$%.2f", change_pennies/100.0)
     @amount_tendered = 0
+    @selected_product.sold
+    @vending_machine.add_cash @selected_product.price
     @accepting_money = true
+  end
+  
+  def dispense_change
+    @change = sprintf("$%.2f", @amount_tendered/100.0)
+    @amount_tendered = 0
   end
   
   def clear_dispensers

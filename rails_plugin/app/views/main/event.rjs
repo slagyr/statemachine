@@ -1,11 +1,11 @@
 page.replace_html "quartz_screen", @display.message
 
 @display.affordable_items.each do |product|
-  page << "document.getElementById('product_#{product.id}').class = 'affordable';"
+  page << "document.getElementById('product_#{product.id}').className = 'affordable';"
 end
 
 @display.non_affordable_items.each do |product|
-  page << "document.getElementById('product_#{product.id}').class = 'non_affordable';"
+  page << "document.getElementById('product_#{product.id}').className = 'non_affordable';"
 end
 
 @display.sold_out_items.each do |product|
@@ -23,3 +23,5 @@ if @display.change
   page.show "change_amount"
   page.visual_effect :fade, "change_amount", :duration => 5
 end
+
+page.replace_html "info", :partial => "info"

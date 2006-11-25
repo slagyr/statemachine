@@ -1,0 +1,13 @@
+<h3>Info</h3>
+<b>Location</b> <%= @vending_machine.location %> <br />
+<b>Cash:</b> <%= @vending_machine.cash_str %> <br />
+<table border="0" cellspacing="10" cellpadding="0">
+	<tr><th>Product</th><th>Price</th><th>Inventory</th></tr>
+	<% @vending_machine.products.each do |product| %>
+	<tr>
+		<td><%= product.name %></td>
+		<td><%= product.price_str %></td>
+		<td><%= product.inventory %></td>
+	</tr>	
+	<% end %>
+</table>

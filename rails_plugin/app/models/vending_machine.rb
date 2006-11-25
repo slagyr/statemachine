@@ -1,6 +1,11 @@
 class VendingMachine < ActiveRecord::Base
   has_many :products
   
+  def initialize(hash = nil)
+    super(hash)
+    self[:cash] = 0 if not self[:cash]
+  end
+  
   def add_product(inventory, name, price)
     product = Product.new(:inventory => inventory, :name => name, :price => price)
     products << product
@@ -13,11 +18,18 @@ class VendingMachine < ActiveRecord::Base
     return max
   end
   
-  def [](name)
-    self[:products].each do |product|
-      return product if product.name == name
+  def add_cash(amount)
+    self[:cash] = self[:cash] + amount
+  end
+  
+  def cash_str
+    return sprintf("$%.2f", self[:cash]/100.0)
+  end
+  
+  def product_with_id(id)
+    products.each do |product|
+      return product if product.id == id
     end
-    return nil
   end
   
 end
