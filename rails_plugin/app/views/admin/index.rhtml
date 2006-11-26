@@ -1,0 +1,30 @@
+<div style="float: left; width: 50%; text-align: center; font-size: 1.5em;">
+	<h3>Vending Machines</h3>
+	<% @vending_machines.each do |vending_machine| %>
+		<%= link_to vending_machine.location, :action => "index", :controller => "main", :id => vending_machine.id %><br/>
+	<% end %>
+</div>
+<div style="float: right; width: 50%;">
+	<h3>Create New Vending Machine</h3>
+	<%= form_tag :action => "save" %>
+		Location: <input type="text" name="location"><br />
+		Cash (in pennies): <input type="text" name="cash"><br />
+		<table width="100%" cellspacing="0" cellpadding="0">
+			<tr>
+				<th></th>
+				<th>Name</th>
+				<th>Price (in pennies)</th>
+				<th>Inventory</th>
+			</tr>
+			<% 8.times do |i| %>
+			<tr>
+				<td>Product #<%= i + 1 %></td>
+				<td><input type="text" name="name_<%= i %>"></td>
+				<td><input type="text" name="price_<%= i %>"></td>
+				<td><input type="text" name="inventory_<%= i %>"></td>
+			</tr>
+	 		<% end %>
+		</table>
+		<%= submit_tag "Save" %>
+	<%= end_form_tag %>
+</div>

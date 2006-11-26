@@ -1,5 +1,6 @@
 class Product < ActiveRecord::Base
   belongs_to :vending_machine
+  acts_as_list :scope => :vending_machine_id
   
   def sold_out?
     return self[:inventory] <= 0

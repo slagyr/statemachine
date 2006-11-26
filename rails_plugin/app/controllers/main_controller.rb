@@ -4,7 +4,11 @@ class MainController < ApplicationController
   
   def index
     return redirect_to("/admin") if (params[:id] == nil)
-    @vending_machine = VendingMachine.find(params[:id])
+    begin
+      @vending_machine = VendingMachine.find(params[:id])
+    rescue Exception => e
+      return redirect_to("/admin")
+    end
     @display = VendingMachineInterface.new
     @statemachine = VendingStatemachine.statemachine
     @statemachine.context = @display
