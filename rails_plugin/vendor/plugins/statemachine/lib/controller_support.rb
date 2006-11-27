@@ -9,37 +9,58 @@ module Statemachine
     
     module SupportMacro
       
-      def supported_by_statemachine(context_class)
+      def supported_by_statemachine(a_context_class, a_statemachine_creation)
         self.extend ClassMethods
         self.send(:include, InstanceMethods)
         
-        self.context_class = context_class
+        self.context_class = a_context_class
+        self.statemachine_creation = a_statemachine_creation
       end
       
     end
     
     module ClassMethods
       
-      attr_accessor :context_class
+      attr_accessor :context_class, :statemachine_creation
       
     end
     
     module InstanceMethods
       
       attr_reader :statemachine, :context
-    
-      #def new_context(*args)
-      #  @context = self.class.context_class.new(*args)
-      #  @statemachine = @context.create_state_machine
-      #end  
+
+      def event
+        recall_state
+        event = params[:event]
+        arg = params[:arg]
+        @statemachine.process_event(event, arg)
+        prepare_for_render
+        save_state
+      end
       
       protected
+      def new_context(*args)
+        @context = self.class.context_class.new
+        @statemachine = self.class.statemachine_creation.call(*args)
+        @statemachine.context = @context
+        @context.statemachine = @statemachine
+        initialize_context(*args)
+        save_state
+      end
+      
       def save_state
         session[state_session_key] = @context
+      end
+      
+      def initialize_context(*args)
+      end
+      
+      def prepare_for_render
       end
 
       def recall_state
         @context = session[state_session_key]
+        @statemachine = @context.statemachine
       end
     
       def state_session_key
