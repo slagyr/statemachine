@@ -26,14 +26,25 @@ module Statemachine
     
     module InstanceMethods
       
-      attr_reader :statemachine
+      attr_reader :statemachine, :context
     
-      def new_context(*args)
-        @context = self.class.context_class.new(*args)
-        @statemachine = @context.create_state_machine
-      end
+      #def new_context(*args)
+      #  @context = self.class.context_class.new(*args)
+      #  @statemachine = @context.create_state_machine
+      #end  
       
-    end
+      protected
+      def save_state
+        session[state_session_key] = @context
+      end
+
+      def recall_state
+        @context = session[state_session_key]
+      end
     
+      def state_session_key
+        return "#{self.class.name.downcase}_state".to_sym
+      end
+    end
   end
 end

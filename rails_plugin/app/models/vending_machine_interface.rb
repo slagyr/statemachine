@@ -1,7 +1,9 @@
 class VendingMachineInterface
   
+  include Statemachine::ContextSupport
+  
   attr_reader :amount_tendered, :accepting_money, :dispensed_item, :change
-  attr_accessor :vending_machine, :statemachine
+  attr_accessor :vending_machine
   
   def initialize
     @amount_tendered = 0

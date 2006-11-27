@@ -1,8 +1,23 @@
 <div style="float: left; width: 50%; text-align: center; font-size: 1.5em;">
 	<h3>Vending Machines</h3>
-	<% @vending_machines.each do |vending_machine| %>
-		<%= link_to vending_machine.location, :action => "index", :controller => "main", :id => vending_machine.id %><br/>
-	<% end %>
+	<table width="100%" cellspacing="0" cellpadding="0">
+		<tr>
+			<th>Id</th>
+			<th>Location</th>
+			<th>Cash</th>
+			<th>Products</th>
+			<th>Delete</th>
+		</tr>
+		<% @vending_machines.each do |vending_machine| %>
+		<tr>
+			<td><%= vending_machine.id %></td>
+			<td><%= link_to vending_machine.location, :action => "index", :controller => "main", :id => vending_machine.id %></td>
+			<td><%= vending_machine.cash_str %></td>
+			<td><%= vending_machine.products.length %></td>
+			<td><%= link_to "delete", :action => "delete", :id => vending_machine.id %>
+		</tr>
+		<% end %>
+	</table>
 </div>
 <div style="float: right; width: 50%;">
 	<h3>Create New Vending Machine</h3>

@@ -94,7 +94,7 @@ body {
 
 #info {
 	position: absolute;
-	top: 250px;
+	top: 275px;
 	left: 525px;
 	width: 250px;
 	padding: 10px;
@@ -104,13 +104,23 @@ body {
 
 #cash {
 	position: absolute;
-	top: 25px;
+	top: 50px;
 	left: 525px;
 	width: 250px;
 	padding: 10px;
 	border: 1px solid black;
 	text-align: center;
 	z-index: 100;
+}
+
+#links {
+	position: absolute;
+	top: 25px;
+	height: 20px;
+	left: 525px;
+	width: 250px;
+	text-align: center;
+	z-index: 2;
 }
 
 h3 {
@@ -146,4 +156,8 @@ h3 {
 	padding: 5px;
 	background-color: black;
 	color: #64F847;
+}
+
+th {
+	text-align: left;
 }

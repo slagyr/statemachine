@@ -1,5 +1,6 @@
 
 <img id="vending_machine_body" src="/images/vending_machine_body.png">
+<div id="links"><%= link_to "Manage Vending Machines", :action => "index", :controller => "admin" %></div>
 <img id="money_panel" src="/images/money_panel.png">
 <%= link_to_remote 	'<img src="/images/cash_release_button.png">', 
 					{:url => { :action => "event", :event => "release_money"}},

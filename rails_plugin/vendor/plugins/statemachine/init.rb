@@ -1,5 +1,2 @@
-require 'statemachine_support'
+require 'statemachine_on_rails'
 
-ActionController::Base.class_eval do
-  include Statemachine::ControllerSupport
-end

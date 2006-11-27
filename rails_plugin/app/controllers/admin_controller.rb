@@ -12,6 +12,13 @@ class AdminController < ApplicationController
     render :template => "/admin/index"
   end
   
+  def delete
+    VendingMachine.find(params[:id]).destroy
+    
+    @vending_machines = VendingMachine.find(:all)
+    render :template => "/admin/index"
+  end
+  
   private
   
   def create_vending_machine

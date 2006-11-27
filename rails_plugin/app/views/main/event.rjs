@@ -1,25 +1,25 @@
-page.replace_html "quartz_screen", @display.message
+page.replace_html "quartz_screen", @context.message
 
-@display.affordable_items.each do |product|
+@context.affordable_items.each do |product|
   page << "document.getElementById('product_#{product.id}').className = 'affordable';"
 end
 
-@display.non_affordable_items.each do |product|
+@context.non_affordable_items.each do |product|
   page << "document.getElementById('product_#{product.id}').className = 'non_affordable';"
 end
 
-@display.sold_out_items.each do |product|
+@context.sold_out_items.each do |product|
   page.replace_html "product_#{product.id}_price", "<span style=\"color: red;\">SOLD OUT</span>"
 end
 
-if @display.dispensed_item
-  page.replace_html "dispenser", "<p>#{@display.dispensed_item.name}</p>"
+if @context.dispensed_item
+  page.replace_html "dispenser", "<p>#{@context.dispensed_item.name}</p>"
   page.show "dispenser"
   page.visual_effect :fade, "dispenser", :duration => 3
 end
 
-if @display.change
-  page.replace_html "change_amount", "<p>#{@display.change}</p>"
+if @context.change
+  page.replace_html "change_amount", "<p>#{@context.change}</p>"
   page.show "change_amount"
   page.visual_effect :fade, "change_amount", :duration => 3
 end
