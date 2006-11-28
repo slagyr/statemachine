@@ -13,12 +13,13 @@ class SampleController
   include Statemachine::ControllerSupport
   supported_by_statemachine SampleContext, lambda { SampleStatemachine.new }
   
-  attr_accessor :session, :initialized, :before_event, :after_event, :params
+  attr_accessor :session, :initialized, :before, :after, :params, :can_continue
   
   def initialize(statemachine, context)
     @statemachine = statemachine
     @context = context
     @session = {}
+    @can_continue = true
   end  
   
   def initialize_context(*args)
@@ -26,11 +27,12 @@ class SampleController
   end
   
   def before_event
-    @before_event = true
+    @before = true
+    return @can_continue
   end
   
   def after_event
-    @after_event = true
+    @after = true
   end
   
 end
@@ -75,8 +77,22 @@ context "State Machine Support" do
     
     @controller.event
     
-    @controller.before_event.should_be true
-    @controller.after_event.should_be true
+    @controller.before.should_be true
+    @controller.after.should_be true
   end
+  
+  specify "the event is not invoked is before_event return false" do
+    @controller.params = {:event => "boo"}
+    @controller.session[:samplecontroller_state] = @context
+    @context.should_not_receive(:statemachine)
+    @statemachine.should_not_receive(:process_event)
+    @controller.can_continue = false
+    
+    @controller.event
+    
+    @controller.before.should_be true
+    @controller.after.should_not_be true
+  end
+
   
 end

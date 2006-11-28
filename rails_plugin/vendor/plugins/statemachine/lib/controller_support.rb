@@ -30,12 +30,15 @@ module Statemachine
       attr_reader :statemachine, :context
 
       def event
-        recall_state
-        event = params[:event]
-        arg = params[:arg]
-        @statemachine.process_event(event, arg)
-        prepare_for_render
-        save_state
+        can_continue = before_event
+        if can_continue
+          recall_state
+          event = params[:event]
+          arg = params[:arg]
+          @statemachine.process_event(event, arg)
+          after_event
+          save_state
+        end
       end
       
       protected

@@ -12,7 +12,7 @@ context "Event View" do
 
   setup do
     @display = mock("display")
-    assigns[:display] = @display
+    assigns[:context] = @display
     @display.stub!(:message).and_return("$123.45")
     @display.stub!(:affordable_items).and_return([Stub.new(1)])
     @display.stub!(:non_affordable_items).and_return([Stub.new(2)])

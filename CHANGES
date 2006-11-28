@@ -1,5 +1,14 @@
 = Statemachine Changelog
 
+== Version 0.2.2
+
+Minor plugin update
+* introduced before_event and after_event hooks for controllers
+
+== Version 0.2.1
+
+Rails Plugin.
+* Rails plugin introduced
 
 == Version 0.2.0
 
