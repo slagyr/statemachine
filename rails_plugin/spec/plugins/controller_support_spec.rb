@@ -13,7 +13,7 @@ class SampleController
   include Statemachine::ControllerSupport
   supported_by_statemachine SampleContext, lambda { SampleStatemachine.new }
   
-  attr_accessor :session, :initialized, :prepared, :params
+  attr_accessor :session, :initialized, :before_event, :after_event, :params
   
   def initialize(statemachine, context)
     @statemachine = statemachine
@@ -25,8 +25,12 @@ class SampleController
     @initialized = true
   end
   
-  def prepare_for_render
-    @prepared = true
+  def before_event
+    @before_event = true
+  end
+  
+  def after_event
+    @after_event = true
   end
   
 end
@@ -71,7 +75,8 @@ context "State Machine Support" do
     
     @controller.event
     
-    @controller.prepared.should_be true
+    @controller.before_event.should_be true
+    @controller.after_event.should_be true
   end
   
 end
