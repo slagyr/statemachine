@@ -24,4 +24,4 @@ if @context.change
   page.visual_effect :fade, "change_amount", :duration => 3
 end
 
-page.replace_html "info", :partial => "info"
+page.replace_html "info", :partial => "main/info"
