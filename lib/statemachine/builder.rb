@@ -20,6 +20,9 @@ module Statemachine
   #   2. String: Ruby code that will be executed within the binding of the _context_
   #   3. Proc: Will be executed within the binding of the _context_
   #
+  # See Statemachine::SuperstateBuilding
+  # See Statemachine::StateBuilding
+  #
   def self.build(statemachine = nil, &block)
     builder = statemachine ? StatemachineBuilder.new(statemachine) : StatemachineBuilder.new
     builder.instance_eval(&block)

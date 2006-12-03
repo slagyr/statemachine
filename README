@@ -1,5 +1,38 @@
 = Statemachine Gem
 
-== Usage
+This Ruby Library enables simple creation of full-features Finite Statemachines. 
+ 
+== API
 
-The best place to get started is the Statemachine.build method.
+Where to start:
+
+* Statemachine.build
+* Statemachine::SuperstateBuilding
+* Statemachine::StateBuilding
+* Statemachine::Statemachine
+	
+== Documentation
+
+Some documentation is available here in this RDOC documentation.  
+You may also find useful documentation on the Statemachine website: http://statemachine.rubyforge.org
+
+A detailed tutorial and overview of Finite State Machines and this library can be found
+at http://blog.8thlight.com/articles/2006/11/17/understanding-statemachines-part-1-states-and-transitions.
+	
+== License
+
+Copyright (C) 2006  Micah Martin
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
