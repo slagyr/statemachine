@@ -2,7 +2,7 @@ module Statemachine
   
   module ContextSupport
     
-    attr_accessor :statemachine
+    attr_accessor :statemachine, :context
     
   end
   

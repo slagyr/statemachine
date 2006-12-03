@@ -1,4 +1,5 @@
 
+Startstate's entry action should be called when the SM starts.
 Implement default history
 Implement superstate end state with automatic transition
 Reset method resets all history states

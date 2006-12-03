@@ -3,8 +3,21 @@ module Statemachine
   class StatemachineException < Exception
   end
   
+  # Used at runtime to execute the behavior of the statemachine.
+  # Should be created by using the Statemachine.build method.
+  # 
+  #   sm = Statemachine.build do
+  #     trans :locked, :coin, :unlocked
+  #     trans :unlocked, :pass, :locked:
+  #   end
+  #   
+  #   sm.coin
+  #   sm.state
+  #   
+  # This class will accept any method that corresponds to an event.  If the
+  # current state respons to the event, the appropriate transtion will be invoked.
+  # Otherwise an exception will be raised.
   class Statemachine
-    
     include ActionInvokation
   
     attr_accessor :tracer, :context
@@ -15,10 +28,12 @@ module Statemachine
       @states = {}
     end
     
+    # Returns the id of the startstate of the statemachine.
     def startstate
       return @root.startstate_id
     end
   
+    # Resets the statemachine back to its starting state.
     def reset
       @state = get_state(@root.startstate_id)
       while @state and not @state.is_concrete?
@@ -27,10 +42,13 @@ module Statemachine
       raise StatemachineException.new("The state machine doesn't know where to start. Try setting the startstate.") if @state == nil
     end
     
+    # Return the id of the current state of the statemachine.
     def state
       return @state.id
     end
     
+    # You may change the state of the statemachine by using this method.  The parameter should be
+    # the id of the desired state.
     def state= value
       if value.is_a? State
         @state = value
@@ -41,6 +59,11 @@ module Statemachine
       end
     end
     
+    # The key method to exercise the statemachine. Any extra arguments supplied will be passed into
+    # any actions associated with the transition.
+    # 
+    # Alternatively to this method, you may invoke methods, names the same as the event, on the statemachine.
+    # The advantage of using +process_event+ is that errors messages are more informative.
     def process_event(event, *args)
       event = event.to_sym
       trace "Event: #{event}"
@@ -56,11 +79,11 @@ module Statemachine
       end
     end
     
-    def trace(message)
+    def trace(message) #:nodoc:
       @tracer.puts message if @tracer
     end
     
-    def get_state(id)
+    def get_state(id) #:nodoc:
       if @states.has_key? id
         return @states[id]
       elsif(is_history_state_id?(id))
@@ -76,11 +99,11 @@ module Statemachine
       end
     end
     
-    def add_state(state)
+    def add_state(state) #:nodoc:
       @states[state.id] = state
     end
     
-    def has_state(id)
+    def has_state(id) #:nodoc:
       if(is_history_state_id?(id))
         return @states.has_key?(base_id(id))
       else
@@ -88,7 +111,7 @@ module Statemachine
       end
     end
     
-    def method_missing(message, *args)
+    def method_missing(message, *args) #:nodoc:
       if @state and @state.transitions[message]
         method = self.method(:process_event)
         params = [message.to_sym].concat(args)

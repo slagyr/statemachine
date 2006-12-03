@@ -7,13 +7,6 @@ require 'rake/rdoctask'
 require 'spec/rake/spectask'
 require 'statemachine'
 
-# Some of the tasks are in separate files since they are also part of the website documentation
-"load File.dirname(__FILE__) + '/tasks/examples.rake'
-load File.dirname(__FILE__) + '/tasks/examples_specdoc.rake'
-load File.dirname(__FILE__) + '/tasks/examples_with_rcov.rake'
-load File.dirname(__FILE__) + '/tasks/failing_examples_with_html.rake'
-load File.dirname(__FILE__) + '/tasks/verify_rcov.rake'"
-
 PKG_NAME = "statemachine"
 PKG_VERSION   = Statemachine::VERSION::STRING
 PKG_TAG = Statemachine::VERSION::TAG
@@ -22,7 +15,6 @@ PKG_FILES = FileList[
   '[A-Z]*',
   'lib/**/*.rb', 
   'spec/**/*.rb' 
-#  'examples/**/*',
 ]
 
 task :default => :spec
@@ -30,52 +22,26 @@ task :default => :spec
 desc "Run all specs"
 Spec::Rake::SpecTask.new do |t|
   t.spec_files = FileList['spec/**/*_spec.rb']
-#  t.spec_opts = ['--diff','--color']
-#  t.rcov = true
-#  t.rcov_dir = 'doc/output/coverage'
-#  t.rcov_opts = ['--exclude', 'spec\/spec,bin\/spec']"
 end
 
-#desc 'Generate HTML documentation for website'
-#task :webgen do
-#  Dir.chdir 'doc' do
-#    output = nil
-#    IO.popen('webgen 2>&1') do |io|
-#      output = io.read
-#    end
-#    raise "ERROR while running webgen: #{output}" if output =~ /ERROR/n || $? != 0
-#  end
-#end
-
-#desc 'Generate RDoc'
-#rd = Rake::RDocTask.new do |rdoc|
-#  rdoc.rdoc_dir = 'doc/output/rdoc'
-#  rdoc.options << '--title' << 'RSpec' << '--line-numbers' << '--inline-source' << '--main' << 'README'
-#  rdoc.rdoc_files.include('README', 'CHANGES', 'EXAMPLES.rd', 'lib/**/*.rb')
-#end
-#task :rdoc => :examples_specdoc # We generate EXAMPLES.rd
+desc 'Generate RDoc'
+rd = Rake::RDocTask.new do |rdoc|
+  rdoc.rdoc_dir = 'doc/website/rdoc'
+  rdoc.options << '--title' << 'Statemachine' << '--line-numbers' << '--inline-source' << '--main' << 'README'
+  rdoc.rdoc_files.include('README', 'CHANGES', 'lib/**/*.rb')
+end
+task :rdoc
 
 spec = Gem::Specification.new do |s|
   s.name = PKG_NAME
   s.version = PKG_VERSION
   s.summary = Statemachine::VERSION::DESCRIPTION
-  s.description = <<-EOF
-    Statemachine is a ruby library for building Finite State Machines (FSM), also known as Finite State Automata (FSA).
-  EOF
-
+  s.description = "Statemachine is a ruby library for building Finite State Machines (FSM), also known as Finite State Automata (FSA)."
   s.files = PKG_FILES.to_a
   s.require_path = 'lib'
-
-#  s.has_rdoc = true
-#  s.rdoc_options = rd.options
-#  s.extra_rdoc_files = rd.rdoc_files.reject { |fn| fn =~ /\.rb$|^EXAMPLES.rd$/ }.to_a
-  
   s.test_files = Dir.glob('spec/*_spec.rb')
   s.require_path = 'lib'
   s.autorequire = 'statemachine'
-#  s.bindir = "bin"
-#  s.executables = ["spec"]
-#  s.default_executable = "spec"
   s.author = "Micah Martin"
   s.email = "statemachine-devel@rubyforge.org"
   s.homepage = "http://statemachine.rubyforge.org"

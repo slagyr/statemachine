@@ -1,0 +1,66 @@
+body {
+	background: url(../images/bg.png);
+	margin: 0px;
+	padding: 0px;
+	font-family: sans-serif;
+	find
+}
+
+#frame {
+	width: 700px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#left_edge {
+	width: 10px;
+	height: 100%;
+	float: left;
+	background: url(../images/left_edge.png);
+}
+
+#right_edge {
+	width: 10px;
+	height: 100%;
+	float: right;
+	background: url(../images/right_edge.png);
+}
+
+#canvas {
+	height: 95%;
+	width: 660px;
+	padding-left: 20px;
+	padding-right: 20px;
+	background: white;
+}
+
+#footer {
+	width: 660px;
+	height: 5%;
+	padding-left: 20px;
+	padding-right: 20px;
+	background: white;
+	border-top: 2px dotted #9E5454;
+	margin-top: -2px;
+	overflow: none;
+}
+
+#footer td {
+	font-size: 0.6em;
+	letter-spacing: 5px;
+}
+
+#title_box {
+	text-align: center;
+	border-bottom: 2px dotted #9E5454;
+}
+
+.tag_line {
+	padding-bottom: 10px;
+}
+
+a img {
+	border: none;
+	margin: 0px;
+	padding: 0px;
+}
