@@ -1,6 +1,6 @@
 module Statemachine
 
-  class Transition
+  class Transition #:nodoc:
     
     attr_reader :origin_id, :event, :action
     attr_accessor :destination_id

@@ -1,5 +1,5 @@
 module Statemachine
-  module VERSION
+  module VERSION #:nodoc:
     unless defined? MAJOR
       MAJOR  = 0
       MINOR  = 2

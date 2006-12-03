@@ -1,6 +1,6 @@
 module Statemachine
 
-  class State
+  class State #:nodoc:
     
     attr_reader :id, :statemachine, :superstate
     attr_accessor :entry_action, :exit_action

@@ -1,6 +1,6 @@
 module Statemachine
 
-  module ActionInvokation
+  module ActionInvokation #:nodoc:
     
     def invoke_action(action, args, message)
       if action.is_a? Symbol

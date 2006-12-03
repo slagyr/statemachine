@@ -1,6 +1,6 @@
 module Statemachine
 
-  class Superstate < State
+  class Superstate < State #:nodoc:
   
     attr_accessor :startstate_id
     attr_reader :history

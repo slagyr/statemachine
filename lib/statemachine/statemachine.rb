@@ -20,9 +20,20 @@ module Statemachine
   class Statemachine
     include ActionInvokation
   
-    attr_accessor :tracer, :context
-    attr_reader :root
+    # The tracer is an IO object.  The statemachine will write run time execution 
+    # information to the +tracer+. Can be helpful in debugging. Defaults to nil.
+    attr_accessor :tracer
+    
+    # Provides access to the +context+ of the statemachine.  The context is a object
+    # where all actions will be invoked.  This provides a way to separate logic from
+    # behavior.  The statemachine is responsible for all the logic and the context
+    # is responsible for all the behavior.  
+    attr_accessor :context
+    
+    attr_reader :root #:nodoc:
   
+    # Should not be called directly.  Instances of Statemachine::Statemachine are created
+    # through the Statemachine.build method.
     def initialize(root = Superstate.new(:root, nil, self))
       @root = root
       @states = {}
