@@ -26,7 +26,7 @@ end
 
 desc 'Generate RDoc'
 rd = Rake::RDocTask.new do |rdoc|
-  rdoc.rdoc_dir = 'doc/website/rdoc'
+  rdoc.rdoc_dir = 'doc/website/output/rdoc'
   rdoc.options << '--title' << 'Statemachine' << '--line-numbers' << '--inline-source' << '--main' << 'README'
   rdoc.rdoc_files.include('README', 'CHANGES', 'lib/**/*.rb')
 end
