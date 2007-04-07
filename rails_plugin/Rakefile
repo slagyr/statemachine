@@ -9,7 +9,3 @@ require 'rake/rdoctask'
 
 require 'tasks/rails'
 
-task :plugins do
-  `rm -rf vendor/plugins/rspec`
-  `script/plugin install svn://rubyforge.org/var/svn/rspec/tags/REL_0_7_3/vendor/rspec_on_rails/vendor/plugins/rspec`
-end

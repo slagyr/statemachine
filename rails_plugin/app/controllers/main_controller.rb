@@ -22,13 +22,13 @@ class MainController < ApplicationController
   
   protected
   
-  def initialize_context
-    @context.vending_machine = @vending_machine
-  end
-  
-  def prepare_for_render
+  def after_event
     @vending_machine = @context.vending_machine
     @vending_machine.save!
+  end
+  
+  def initialize_context
+    @context.vending_machine = @vending_machine
   end
   
 end

@@ -33,17 +33,28 @@ module Statemachine
         can_continue = before_event
         if can_continue
           recall_state
+puts "@context_event1: #{@context}"
           event = params[:event]
           arg = params[:arg]
           @statemachine.process_event(event, arg)
           after_event
           save_state
+puts "@context_event2: #{@context}"
         end
       end
       
       protected
+      
+      def before_event
+        return true
+      end
+      
+      def after_event
+      end
+      
       def new_context(*args)
         @context = self.class.context_class.new
+puts "@context_new_context: #{@context}"
         @statemachine = self.class.statemachine_creation.call(*args)
         @statemachine.context = @context
         @context.statemachine = @statemachine
