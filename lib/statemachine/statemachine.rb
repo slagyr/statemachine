@@ -51,6 +51,7 @@ module Statemachine
         @state = get_state(@state.startstate_id)
       end
       raise StatemachineException.new("The state machine doesn't know where to start. Try setting the startstate.") if @state == nil
+      @state.enter
     end
     
     # Return the id of the current state of the statemachine.
@@ -79,7 +80,7 @@ module Statemachine
       event = event.to_sym
       trace "Event: #{event}"
       if @state
-        transition = @state.transitions[event]
+        transition = @state.transition_for(event)
         if transition
           transition.invoke(@state, self, args)
         else
@@ -123,7 +124,7 @@ module Statemachine
     end
     
     def method_missing(message, *args) #:nodoc:
-      if @state and @state.transitions[message]
+      if @state and @state.transition_for(message)
         method = self.method(:process_event)
         params = [message.to_sym].concat(args)
         method.call(*params)

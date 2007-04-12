@@ -1,6 +1,5 @@
 
-Startstate's entry action should be called when the SM starts.
-Implement default history
+Implement default history for superstates
 Implement superstate end state with automatic transition
-Reset method resets all history states
+Reset method should resets all history states
 statemachine command in builder should set the context's statemachine if possible.

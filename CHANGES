@@ -1,5 +1,13 @@
 = Statemachine Changelog
 
+== Version 0.2.3
+
+Feature enhancements
+* added default transitions
+
+Behavior Fixes
+* the entry action of the startstate is called when the statemachine starts or is reset.
+
 == Version 0.2.2
 
 Minor plugin update

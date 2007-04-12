@@ -39,6 +39,7 @@ context "Builder" do
   end
 
   specify "Adding a superstate to the switch" do
+    the_context = self
     sm = Statemachine.build do
       superstate :operation do
         event :admin, :testing, lambda { @log << "testing" }
@@ -48,8 +49,8 @@ context "Builder" do
       end
       trans :testing, :resume, :operation, lambda { @log << "resuming" }
       startstate :off
+      context the_context
     end
-    sm.context = self
     
     sm.state.should_be :off
     sm.toggle
@@ -61,6 +62,7 @@ context "Builder" do
   end
   
   specify "entry exit actions" do
+    the_context = self
     sm = Statemachine.build do
       state :off do
         on_entry Proc.new { @log << "enter off" }
@@ -68,18 +70,19 @@ context "Builder" do
         on_exit Proc.new { @log << "exit off" }
       end
       trans :on, :toggle, :off, lambda { @log << "toggle off" } 
+      context the_context
     end
-    sm.context = self
 
     sm.toggle
     sm.state.should_be :on
     sm.toggle
     sm.state.should_be :off
 
-    @log.join(",").should_eql "exit off,toggle on,toggle off,enter off"
+    @log.join(",").should_eql "enter off,exit off,toggle on,toggle off,enter off"
   end
   
   specify "History state" do
+    the_context = self
     sm = Statemachine.build do
       superstate :operation do
         event :admin, :testing, lambda { @log << "testing" }
@@ -92,29 +95,30 @@ context "Builder" do
       end
       trans :testing, :resume, :operation_H, lambda { @log << "resuming" }
       startstate :off
+      context the_context
     end
-    sm.context = self
     
     sm.admin
     sm.resume
     sm.state.should_be :off
     
-    @log.join(",").should_eql "testing,resuming,enter off"
+    @log.join(",").should_eql "enter off,testing,resuming,enter off"
   end
 
   specify "entry and exit action created from superstate builder" do
+    the_context = self
     sm = Statemachine.build do
       trans :off, :toggle, :on, Proc.new { @log << "toggle on" }
       on_entry_of :off, Proc.new { @log << "entering off" }
       trans :on, :toggle, :off, Proc.new { @log << "toggle off" }
       on_exit_of :on, Proc.new { @log << "exiting on" }
+      context the_context
     end
-    sm.context = self
     
     sm.toggle
     sm.toggle
     
-    @log.join(",").should_eql "toggle on,exiting on,toggle off,entering off"
+    @log.join(",").should_eql "entering off,toggle on,exiting on,toggle off,entering off"
     
   end
 

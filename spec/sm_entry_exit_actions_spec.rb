@@ -59,12 +59,12 @@ context "State Machine Entry and Exit Actions" do
     Statemachine.build(@sm) do
       superstate :off_super do
         on_exit Proc.new {@log << @sm.state}
-        trans :off, :toggle, :on, Proc.new { @log << "on" }
+        state :off
         event :toggle, :on, Proc.new { @log << "super_on" }
       end
       superstate :on_super do
         on_entry Proc.new { @log << @sm.state }
-        trans :on, :toggle, :off, Proc.new { @log << "off" }
+        state :on
         event :toggle, :off, Proc.new { @log << "super_off" }
       end
       startstate :off
@@ -81,6 +81,17 @@ context "State Machine Entry and Exit Actions" do
     @sm.toggle
     @log.join(",").should_eql "on,off"
     @sm.state.should_be :off
+  end
+
+  specify "startstate's entry action should be called when the statemachine starts" do
+    the_context = self
+    @sm = Statemachine.build do
+      trans :a, :b, :c
+      on_entry_of :a, Proc.new { @log << "entering a" }
+      context the_context
+    end
+    
+    @log.join(",").should eql("entering a")
   end
 
   

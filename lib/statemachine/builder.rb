@@ -86,8 +86,7 @@ module Statemachine
       @subject.entry_action = entry_action
     end
 
-    # Declare the exit action for the state. The type of the +entry_action+ parameter
-    # may be:
+    # Declare the exit action for the state.
     #
     #   sm = Statemachine.build do
     #     state :locked do
@@ -97,6 +96,19 @@ module Statemachine
     #
     def on_exit(exit_action)
       @subject.exit_action = exit_action
+    end
+    
+    # Declare a default transition for the state.  Any event that is not already handled
+    # by the state will be handled by this transition.
+    #
+    #   sm = Statemachine.build do
+    #     state :locked do
+    #       default :unlock, :action
+    #     end
+    #   end
+    #    
+    def default(destination_id, action = nil)
+      @subject.default_transition = Transition.new(@subject.id, destination_id, nil, action)
     end
   end
   
