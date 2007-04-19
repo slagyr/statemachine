@@ -195,6 +195,18 @@ module Statemachine
     def on_exit_of(id, action)
       @statemachine.get_state(id).exit_action = action
     end
+    
+    # Used to specify the default state held by the history pseudo state of the superstate.  
+    # 
+    #   sm = Statemachine.build do
+    #     superstate :operational do
+    #       default_history :state_id
+    #     end
+    #   end
+    #
+    def default_history(id)
+      @subject.default_history = @statemachine.get_state(id)
+    end
   end
   
   # Builder class used to define states. Creates by SuperstateBuilding#state
@@ -239,6 +251,7 @@ module Statemachine
     # Statemachine.context may also be used.
     def context(a_context)
       @statemachine.context = a_context
+      a_context.statemachine = @statemachine if a_context.respond_to?(:statemachine=)
     end
   end
   

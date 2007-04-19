@@ -52,6 +52,8 @@ module Statemachine
       end
       raise StatemachineException.new("The state machine doesn't know where to start. Try setting the startstate.") if @state == nil
       @state.enter
+      
+      @states.values.each { |state| state.reset }
     end
     
     # Return the id of the current state of the statemachine.

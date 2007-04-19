@@ -1,12 +1,15 @@
 = Statemachine Changelog
 
-== Version 0.2.3
+== Version 0.3.0
 
 Feature enhancements
 * added default transitions
+* added default history for superstates
+* the context method in the builder will set the context's statemachine variable if the context respond_to?(:statemachine=)
 
 Behavior Fixes
 * the entry action of the startstate is called when the statemachine starts or is reset.
+* resetting the statemachine will reset the history state for each superstate.
 
 == Version 0.2.2
 

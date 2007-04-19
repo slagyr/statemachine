@@ -176,10 +176,22 @@ context "Builder" do
       context widget
     end
     
-    sm.context.should_be widget
+    sm.context.should be(widget)
   end
 
-  
+  specify "statemachine will be set on context if possible" do
+    class Widget
+      attr_accessor :statemachine
+    end
+    widget = Widget.new
+    
+    sm = Statemachine.build do
+      context widget
+    end
+    
+    sm.context.should be(widget)
+    widget.statemachine.should be(sm)
+  end
 
 end
 

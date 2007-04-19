@@ -22,6 +22,14 @@ module Statemachine
     def add_substates(*substate_ids)
       do_substate_adding(substate_ids)
     end
+    
+    def default_history=(state)
+      @history = @default_history = state
+    end
+    
+    def reset
+      @history = @default_history
+    end
 
     def to_s
       return "'#{id}' superstate"

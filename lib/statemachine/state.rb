@@ -45,6 +45,9 @@ module Statemachine
     def is_concrete?
       return true
     end
+    
+    def reset
+    end
 
     def to_s
       return "'#{id}' state"

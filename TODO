@@ -1,5 +1,4 @@
 
-Implement default history for superstates
-Implement superstate end state with automatic transition
-Reset method should resets all history states
-statemachine command in builder should set the context's statemachine if possible.
+
+Maybe:
+Implement superstate endstate with automatic transition
