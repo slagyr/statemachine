@@ -62,4 +62,26 @@ context "Default Transition" do
     @sm.blah
     @sm.state.should eql(:default_state)
   end
+  
+  specify "superstate transitions do not go to the default state" do
+    @sm = Statemachine.build do
+      superstate :test_superstate do
+        event :not_default, :not_default_state
+        
+        state :start_state do 
+          default :default_state
+        end
+        
+        state :default_state
+      end
+      
+      startstate :start_state
+    end
+    
+    @sm.state = :start_state
+    @sm.not_default
+    @sm.state.should eql(:not_default_state)
+  end
+
+  
 end

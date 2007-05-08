@@ -22,8 +22,8 @@ module Statemachine
     
     def transition_for(event)
       transition = @transitions[event]
+      transition = @superstate.transition_for(event) if @superstate and not transition      
       transition = @default_transition if not transition
-      transition = @superstate.transition_for(event) if @superstate and not transition
       return transition 
     end
     
