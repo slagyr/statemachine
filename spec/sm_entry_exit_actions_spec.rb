@@ -1,8 +1,8 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-context "State Machine Entry and Exit Actions" do
+describe "State Machine Entry and Exit Actions" do
 
-  setup do
+  before(:each) do
     @log = []
     @sm = Statemachine.build do
       trans :off, :toggle, :on, Proc.new { @log << "on" }
@@ -11,50 +11,50 @@ context "State Machine Entry and Exit Actions" do
     @sm.context = self
   end
 
-  specify "entry action" do
+  it "entry action" do
     @sm.get_state(:on).entry_action = Proc.new { @log << "entered_on" }
     
     @sm.toggle
     
-    @log.join(",").should_eql "on,entered_on"
+    @log.join(",").should eql("on,entered_on")
   end
   
-  specify "exit action" do
+  it "exit action" do
     @sm.get_state(:off).exit_action = Proc.new { @log << "exited_off" }
     
     @sm.toggle
     
-    @log.join(",").should_eql "exited_off,on"
+    @log.join(",").should eql("exited_off,on")
   end
 
-  specify "exit and entry" do
+  it "exit and entry" do
     @sm.get_state(:off).exit_action = Proc.new { @log << "exited_off" }
     @sm.get_state(:on).entry_action = Proc.new { @log << "entered_on" }
     
     @sm.toggle
     
-    @log.join(",").should_eql "exited_off,on,entered_on"
+    @log.join(",").should eql("exited_off,on,entered_on")
   end
   
-  specify "entry and exit actions may be parameterized" do
+  it "entry and exit actions may be parameterized" do
       @sm.get_state(:off).exit_action = Proc.new { |a| @log << "exited_off(#{a})" }
       @sm.get_state(:on).entry_action = Proc.new { |a, b| @log << "entered_on(#{a},#{b})" }
       
       @sm.toggle "one", "two"
       
-      @log.join(",").should_eql "exited_off(one),on,entered_on(one,two)"
+      @log.join(",").should eql("exited_off(one),on,entered_on(one,two)")
   end
 
-  specify "current state is set prior to exit and entry actions" do
+  it "current state is set prior to exit and entry actions" do
     @sm.get_state(:off).exit_action = Proc.new { @log << @sm.state }
     @sm.get_state(:on).entry_action =  Proc.new { @log << @sm.state }
     
     @sm.toggle
     
-    @log.join(",").should_eql "off,on,on"  
+    @log.join(",").should eql("off,on,on")
   end
 
-  specify "current state is set prior to exit and entry actions even with super states" do
+  it "current state is set prior to exit and entry actions even with super states" do
     @sm = Statemachine::Statemachine.new
     Statemachine.build(@sm) do
       superstate :off_super do
@@ -72,18 +72,18 @@ context "State Machine Entry and Exit Actions" do
     @sm.context = self
 
     @sm.toggle
-    @log.join(",").should_eql "off,super_on,on"  
+    @log.join(",").should eql("off,super_on,on")
   end
 
-  specify "entry actions invokes another event" do
+  it "entry actions invokes another event" do
     @sm.get_state(:on).entry_action = Proc.new { @sm.toggle }
     
     @sm.toggle
-    @log.join(",").should_eql "on,off"
-    @sm.state.should_be :off
+    @log.join(",").should eql("on,off")
+    @sm.state.should equal(:off)
   end
 
-  specify "startstate's entry action should be called when the statemachine starts" do
+  it "startstate's entry action should be called when the statemachine starts" do
     the_context = self
     @sm = Statemachine.build do
       trans :a, :b, :c

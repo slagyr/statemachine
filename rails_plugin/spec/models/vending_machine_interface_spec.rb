@@ -1,8 +1,8 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-context "Vending Machine Interface" do
+describe "Vending Machine Interface" do
 
-  setup do
+  before(:each) do
     @display = VendingMachineInterface.new
     @vm = VendingMachine.new
     @water = @vm.add_product(10, "Water", 100)
@@ -12,72 +12,72 @@ context "Vending Machine Interface" do
     @display.vending_machine = @vm
   end
   
-  specify "message" do
-    @display.message.should_eql "Insert Money"
+  it "message" do
+    @display.message.should eql("Insert Money")
     @display.add_dollar
-    @display.message.should_eql "$1.00"
+    @display.message.should eql(")$1.00"
     @display.add_quarter
-    @display.message.should_eql "$1.25"
+    @display.message.should eql(")$1.25"
     @display.add_dime
-    @display.message.should_eql "$1.35"
+    @display.message.should eql(")$1.35"
     @display.add_nickel
-    @display.message.should_eql "$1.40"
+    @display.message.should eql(")$1.40"
   end
 
-  specify "message when refusing money" do
+  it "message when refusing money" do
     @display.add_dollar
     @display.refuse_money
-    @display.message.should_eql "Select Item"
+    @display.message.should eql("Select Item")
   end
 
-  specify "available items" do
-    @display.affordable_items.should_eql []
-    @display.non_affordable_items.should_eql [@water, @tea, @chocolate, @danish]
+  it "available items" do
+    @display.affordable_items.should eql []
+    @display.non_affordable_items.should eql [@water, @tea, @chocolate, @danish]
     
     @display.add_dollar
-    @display.affordable_items.should_eql [@water]
-    @display.non_affordable_items.should_eql [@tea, @chocolate, @danish]
+    @display.affordable_items.should eql [@water]
+    @display.non_affordable_items.should eql [@tea, @chocolate, @danish]
     
     @display.add_quarter
-    @display.affordable_items.should_eql [@water, @tea]
-    @display.non_affordable_items.should_eql [@chocolate, @danish]
+    @display.affordable_items.should eql [@water, @tea]
+    @display.non_affordable_items.should eql [@chocolate, @danish]
     
     @display.add_dime
-    @display.affordable_items.should_eql [@water, @tea, @chocolate]
-    @display.non_affordable_items.should_eql [@danish]
+    @display.affordable_items.should eql [@water, @tea, @chocolate]
+    @display.non_affordable_items.should eql [@danish]
     
     @display.add_nickel
-    @display.affordable_items.should_eql [@water, @tea, @chocolate, @danish]
-    @display.non_affordable_items.should_eql []
+    @display.affordable_items.should eql [@water, @tea, @chocolate, @danish]
+    @display.non_affordable_items.should eql []
   end
 
-  specify "sold out items" do
-    @display.sold_out_items.should_eql []
+  it "sold out items" do
+    @display.sold_out_items.should eql []
     @water.inventory = 0
-    @display.sold_out_items.should_eql [@water]
+    @display.sold_out_items.should eql [@water]
     @danish.inventory = 0
-    @display.sold_out_items.should_eql [@water, @danish]
+    @display.sold_out_items.should eql [@water, @danish]
     
     @display.add_dollar
     @display.add_quarter
-    @display.affordable_items.should_eql [@tea]
-    @display.non_affordable_items.should_eql [@chocolate]
+    @display.affordable_items.should eql [@tea]
+    @display.non_affordable_items.should eql [@chocolate]
   end
   
-  specify "dispense change" do
+  it "dispense change" do
     @display.add_dollar
     @display.dispense_change
     
-    @display.amount_tendered.should_be 0
-    @display.change.should_eql "$1.00"
+    @display.amount_tendered.should equal 0
+    @display.change.should eql(")$1.00"
   end
   
 end
 
 
-context "Vending Machine Display Spec" do
+describe "Vending Machine Display Spec" do
 
-  setup do
+  before(:each) do
     @display = VendingMachineInterface.new
     @sm = mock("vending statemachine")
     @display.statemachine = @sm
@@ -90,53 +90,53 @@ context "Vending Machine Display Spec" do
     @display.vending_machine = @vending_machine
   end
   
-  specify "start state" do
-    @display.amount_tendered.should_be 0
-    @display.accepting_money.should_be true
+  it "start state" do
+    @display.amount_tendered.should equal 0
+    @display.accepting_money.should equal true
   end
 
-  specify "dollar" do
+  it "dollar" do
     @display.add_dollar
-    @display.amount_tendered.should_be 100
-    @display.accepting_money.should_be true
+    @display.amount_tendered.should equal 100
+    @display.accepting_money.should equal true
   end
 
-  specify "quarter" do
+  it "quarter" do
     @display.add_quarter
-    @display.amount_tendered.should_be 25
-    @display.accepting_money.should_be true
+    @display.amount_tendered.should equal 25
+    @display.accepting_money.should equal true
   end
 
-  specify "dime" do
+  it "dime" do
     @display.add_dime
-    @display.amount_tendered.should_be 10
-    @display.accepting_money.should_be true
+    @display.amount_tendered.should equal 10
+    @display.accepting_money.should equal true
   end
 
-  specify "nickel" do
+  it "nickel" do
     @display.add_nickel
-    @display.amount_tendered.should_be 5
-    @display.accepting_money.should_be true
+    @display.amount_tendered.should equal 5
+    @display.accepting_money.should equal true
   end
 
-  specify "dollar when max price is a dollar" do
+  it "dollar when max price is a dollar" do
     @display.refuse_money
-    @display.accepting_money.should_be false
+    @display.accepting_money.should equal false
   end
 
-  specify "make sale" do
+  it "make sale" do
     @display.add_dollar
     @display.load_product(@milk.id)
     @display.make_sale
     
-    @display.amount_tendered.should_be 0
-    @display.dispensed_item.name.should_eql "Milk"
-    @display.change.should_eql "$0.00"
-    Product.find(@milk.id).inventory.should_be 9
-    @vending_machine.cash.should_be 100
+    @display.amount_tendered.should equal 0
+    @display.dispensed_item.name.should eql("Milk")
+    @display.change.should eql(")$0.00"
+    Product.find(@milk.id).inventory.should equal 9
+    @vending_machine.cash.should equal 100
   end
 
-  specify "check affordability with inssuficient funds" do
+  it "check affordability with inssuficient funds" do
     @display.add_dollar
     @display.load_product(@whiskey.id)
     
@@ -144,7 +144,7 @@ context "Vending Machine Display Spec" do
     @display.check_affordability
   end
 
-  specify "check affordability with suficient funds" do
+  it "check affordability with suficient funds" do
     @display.add_dollar
     @display.add_dollar
     @display.load_product(@whiskey.id)
@@ -153,7 +153,7 @@ context "Vending Machine Display Spec" do
     @display.check_affordability
   end
 
-  specify "check affordability with inssuficient funds" do
+  it "check affordability with inssuficient funds" do
     @whiskey.inventory = 0
     @whiskey.save!
     

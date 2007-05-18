@@ -1,9 +1,9 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-context "Turn Stile" do
+describe "Turn Stile" do
   include TurnstileStatemachine
   
-  setup do
+  before(:each) do
     create_turnstile
     
     @out_out_order = false
@@ -22,19 +22,19 @@ context "Turn Stile" do
     @sm.context = self
   end
 
-  specify "substates respond to superstate transitions" do
+  it "substates respond to superstate transitions" do
     @sm.process_event(:maintain)
-    @sm.state.should_be :maintenance
-    @locked.should_be true
-    @out_of_order.should_be true
+    @sm.state.should equal(:maintenance)
+    @locked.should equal(true)
+    @out_of_order.should equal(true)
   end
 
-  specify "after transitions, substates respond to superstate transitions" do
+  it "after transitions, substates respond to superstate transitions" do
     @sm.coin
     @sm.maintain
-    @sm.state.should_be :maintenance
-    @locked.should_be false
-    @out_of_order.should_be true
+    @sm.state.should equal(:maintenance)
+    @locked.should equal(false)
+    @out_of_order.should equal(true)
   end
   
 end

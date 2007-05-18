@@ -1,8 +1,8 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-context "History States" do
+describe "History States" do
 
-  setup do
+  before(:each) do
     @sm = Statemachine.build do
       superstate :operate do
         trans :on, :toggle, :off
@@ -16,19 +16,19 @@ context "History States" do
     end
   end
   
-  specify "no history allowed for concrete states" do
+  it "no history allowed for concrete states" do
     lambda {
         @sm.dream
-      }.should_raise(Statemachine::StatemachineException, "No history exists for 'on' state since it is not a super state.")
+      }.should raise_error(Statemachine::StatemachineException, "No history exists for 'on' state since it is not a super state.")
   end
 
-  specify "error when trying to use history that doesn't exist yet" do
+  it "error when trying to use history that doesn't exist yet" do
     lambda {
       @sm.fiddle
-      }.should_raise(Statemachine::StatemachineException, "'operate' superstate doesn't have any history yet.")
+      }.should raise_error(Statemachine::StatemachineException, "'operate' superstate doesn't have any history yet.")
   end
   
-  specify "reseting the statemachine resets history" do
+  it "reseting the statemachine resets history" do
     @sm.faddle
     @sm.fiddle
     @sm.get_state(:operate).history.id.should eql(:on)
@@ -39,9 +39,9 @@ context "History States" do
   
 end
 
-context "History Default" do
+describe "History Default" do
   
-  setup do    
+  before(:each) do    
     @sm = Statemachine.build do
       superstate :operate do
         trans :on, :toggle, :off
@@ -55,12 +55,12 @@ context "History Default" do
     end
   end
   
-  specify "default history" do
+  it "default history" do
     @sm.fiddle
     @sm.state.should eql(:on)
   end
   
-  specify "reseting the statemachine resets history" do
+  it "reseting the statemachine resets history" do
     @sm.faddle
     @sm.toggle
     @sm.fiddle
@@ -71,4 +71,37 @@ context "History Default" do
   end
 
 end
+
+describe "Nested Superstates" do
+
+  before(:each) do
+    @sm = Statemachine.build do
+      
+      superstate :grandpa do
+        trans :start, :go, :daughter
+        event :sister, :great_auntie
+        
+        superstate :papa do
+          state :son
+          state :daughter
+        end
+      end
+      
+      state :great_auntie do
+        event :foo, :grandpa_H
+      end
+    
+    end
+  end
+  
+  it "should use history of sub superstates when transitioning itto it's own history" do
+    @sm.go
+    @sm.sister
+    @sm.foo
+    
+    @sm.state.should eql(:daughter)
+  end
+
+end
+
 

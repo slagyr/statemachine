@@ -1,24 +1,24 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-context "Builder" do
+describe "Builder" do
 
-  setup do
+  before(:each) do
     @log = []
   end
 
   def check_switch(sm)
-    sm.state.should_be :off
+    sm.state.should equal(:off)
     
     sm.toggle
-    @log[0].should_eql "toggle on"
-    sm.state.should_be :on
+    @log[0].should eql("toggle on")
+    sm.state.should equal(:on)
     
     sm.toggle
-    @log[1].should_eql "toggle off"
-    sm.state.should_be :off
+    @log[1].should eql("toggle off")
+    sm.state.should equal(:off)
   end
 
-  specify "Building a the switch, relaxed" do
+  it "Building a the switch, relaxed" do
     sm = Statemachine.build do
       trans :off, :toggle, :on, Proc.new { @log << "toggle on" }
       trans :on, :toggle, :off, Proc.new { @log << "toggle off" }
@@ -28,7 +28,7 @@ context "Builder" do
     check_switch sm
   end
 
-  specify "Building a the switch, strict" do
+  it "Building a the switch, strict" do
     sm = Statemachine.build do
       state(:off) { |s| s.event :toggle, :on, Proc.new { @log << "toggle on" } }
       state(:on) { |s| s.event :toggle, :off, Proc.new { @log << "toggle off" } }
@@ -38,7 +38,7 @@ context "Builder" do
     check_switch sm
   end
 
-  specify "Adding a superstate to the switch" do
+  it "Adding a superstate to the switch" do
     the_context = self
     sm = Statemachine.build do
       superstate :operation do
@@ -52,16 +52,16 @@ context "Builder" do
       context the_context
     end
     
-    sm.state.should_be :off
+    sm.state.should equal(:off)
     sm.toggle
     sm.admin
-    sm.state.should_be :testing
+    sm.state.should equal(:testing)
     sm.resume
-    sm.state.should_be :on
-    @log.join(",").should_eql "toggle on,testing,resuming"
+    sm.state.should equal(:on)
+    @log.join(",").should eql("toggle on,testing,resuming")
   end
   
-  specify "entry exit actions" do
+  it "entry exit actions" do
     the_context = self
     sm = Statemachine.build do
       state :off do
@@ -74,14 +74,14 @@ context "Builder" do
     end
 
     sm.toggle
-    sm.state.should_be :on
+    sm.state.should equal(:on)
     sm.toggle
-    sm.state.should_be :off
+    sm.state.should equal(:off)
 
-    @log.join(",").should_eql "enter off,exit off,toggle on,toggle off,enter off"
+    @log.join(",").should eql("enter off,exit off,toggle on,toggle off,enter off")
   end
   
-  specify "History state" do
+  it "History state" do
     the_context = self
     sm = Statemachine.build do
       superstate :operation do
@@ -100,12 +100,12 @@ context "Builder" do
     
     sm.admin
     sm.resume
-    sm.state.should_be :off
+    sm.state.should equal(:off)
     
-    @log.join(",").should_eql "enter off,testing,resuming,enter off"
+    @log.join(",").should eql("enter off,testing,resuming,enter off")
   end
 
-  specify "entry and exit action created from superstate builder" do
+  it "entry and exit action created from superstate builder" do
     the_context = self
     sm = Statemachine.build do
       trans :off, :toggle, :on, Proc.new { @log << "toggle on" }
@@ -118,11 +118,11 @@ context "Builder" do
     sm.toggle
     sm.toggle
     
-    @log.join(",").should_eql "entering off,toggle on,exiting on,toggle off,entering off"
+    @log.join(",").should eql("entering off,toggle on,exiting on,toggle off,entering off")
     
   end
 
-  specify "superstate as startstate" do
+  it "superstate as startstate" do
     
     lambda do 
       sm = Statemachine.build do
@@ -131,11 +131,11 @@ context "Builder" do
         end
       end
       
-      sm.state.should_be :luigi
-    end.should_not_raise(Exception)
+      sm.state.should equal(:luigi)
+    end.should_not raise_error(Exception)
   end
   
-  specify "setting the start state before any other states declared" do
+  it "setting the start state before any other states declared" do
     
     sm = Statemachine.build do
       startstate :right
@@ -144,12 +144,12 @@ context "Builder" do
       trans :right, :pull, :middle
     end
     
-    sm.state.should_be :right
+    sm.state.should equal(:right)
     sm.pull
-    sm.state.should_be :middle
+    sm.state.should equal(:middle)
   end
   
-  specify "setting start state which is in a super state" do
+  it "setting start state which is in a super state" do
     sm = Statemachine.build do
       startstate :right
       superstate :table do
@@ -161,16 +161,16 @@ context "Builder" do
       state :floor
     end
     
-    sm.state.should_be :right
+    sm.state.should equal(:right)
     sm.pull
-    sm.state.should_be :middle
+    sm.state.should equal(:middle)
     sm.push
-    sm.state.should_be :right
+    sm.state.should equal(:right)
     sm.tilt
-    sm.state.should_be :floor
+    sm.state.should equal(:floor)
   end
   
-  specify "can set context" do
+  it "can set context" do
     widget = Object.new
     sm = Statemachine.build do
       context widget
@@ -179,7 +179,7 @@ context "Builder" do
     sm.context.should be(widget)
   end
 
-  specify "statemachine will be set on context if possible" do
+  it "statemachine will be set on context if possible" do
     class Widget
       attr_accessor :statemachine
     end

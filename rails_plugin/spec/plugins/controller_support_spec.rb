@@ -37,39 +37,39 @@ class SampleController
   
 end
 
-context "State Machine Support" do
+describe "State Machine Support" do
 
-  setup do
+  before(:each) do
     @statemachine = mock("statemachine")
     @context = mock("context")
     @controller = SampleController.new(@statemachine, @context)
   end
   
-  specify "save state" do
+  it "save state" do
     @controller.send(:save_state)
     
-    @controller.session[:samplecontroller_state].should_be @context
+    @controller.session[:samplecontroller_state].should equal @context
   end
 
-  specify "recall state" do
+  it "recall state" do
     @controller.session[:samplecontroller_state] = @context
     @context.should_receive(:statemachine)
     
     @controller.send(:recall_state)
   end
   
-  specify "new context" do
+  it "new context" do
     @controller = SampleController.new(nil, nil)
     @controller.send(:new_context)
     
-    @controller.context.should_not_be nil
-    @controller.statemachine.should_not_be nil
-    @controller.context.statemachine.should_be @controller.statemachine
-    @controller.statemachine.context.should_be @controller.context
-    @controller.initialized.should_be true
+    @controller.context.should_not equal nil
+    @controller.statemachine.should_not equal nil
+    @controller.context.statemachine.should equal @controller.statemachine
+    @controller.statemachine.context.should equal @controller.context
+    @controller.initialized.should equal true
   end
 
-  specify "event action" do
+  it "event action" do
     @controller.params = {:event => "boo"}
     @controller.session[:samplecontroller_state] = @context
     @context.should_receive(:statemachine).and_return(@statemachine)
@@ -77,11 +77,11 @@ context "State Machine Support" do
     
     @controller.event
     
-    @controller.before.should_be true
-    @controller.after.should_be true
+    @controller.before.should equal true
+    @controller.after.should equal true
   end
   
-  specify "the event is not invoked is before_event return false" do
+  it "the event is not invoked is before_event return false" do
     @controller.params = {:event => "boo"}
     @controller.session[:samplecontroller_state] = @context
     @context.should_not_receive(:statemachine)
@@ -90,8 +90,8 @@ context "State Machine Support" do
     
     @controller.event
     
-    @controller.before.should_be true
-    @controller.after.should_not_be true
+    @controller.before.should equal true
+    @controller.after.should_not equal true
   end
 
   

@@ -19,13 +19,13 @@ class Noodle
   
 end
 
-context "Action Invokation" do
+describe "Action Invokation" do
 
-  setup do
+  before(:each) do
     @noodle = Noodle.new
   end
   
-  specify "Proc actions" do
+  it "Proc actions" do
     sm = Statemachine.build do |smb|
       smb.trans :cold, :fire, :hot, Proc.new { @cooked = true } 
     end
@@ -33,10 +33,10 @@ context "Action Invokation" do
     sm.context = @noodle
     sm.fire
     
-    @noodle.cooked.should_be true
+    @noodle.cooked.should equal(true)
   end
   
-  specify "Symbol actions" do
+  it "Symbol actions" do
     sm = Statemachine.build do |smb|
       smb.trans :cold, :fire, :hot, :cook
       smb.trans :hot, :mold, :changed, :transform
@@ -45,22 +45,22 @@ context "Action Invokation" do
     sm.context = @noodle
     sm.fire
   
-    @noodle.cooked.should_be true
+    @noodle.cooked.should equal(true)
     
     sm.mold "capellini"
     
-    @noodle.shape.should_eql "capellini"
+    @noodle.shape.should eql("capellini")
   end
 
-  specify "String actions" do
+  it "String actions" do
     sm = Statemachine.build do |smb|
       smb.trans :cold, :fire, :hot, "@shape = 'fettucini'; @cooked = true"
     end
     sm.context = @noodle
     
     sm.fire
-    @noodle.shape.should_eql "fettucini"
-    @noodle.cooked.should_be true
+    @noodle.shape.should eql("fettucini")
+    @noodle.cooked.should equal(true)
   end
 
   

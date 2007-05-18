@@ -4,11 +4,11 @@ require 'spec'
 require 'statemachine'
 
 def check_transition(transition, origin_id, destination_id, event, action)
-  transition.should_not_be nil
-  transition.event.should_be event
-  transition.origin_id.should_be origin_id
-  transition.destination_id.should_be destination_id
-  transition.action.should_eql action
+  transition.should_not equal(nil)
+  transition.event.should equal(event)
+  transition.origin_id.should equal(origin_id)
+  transition.destination_id.should equal(destination_id)
+  transition.action.should eql(action)
 end
 
 module SwitchStatemachine

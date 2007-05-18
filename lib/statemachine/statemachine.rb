@@ -3,6 +3,9 @@ module Statemachine
   class StatemachineException < Exception
   end
   
+  class TransitionMissingException < Exception 
+  end
+  
   # Used at runtime to execute the behavior of the statemachine.
   # Should be created by using the Statemachine.build method.
   # 
@@ -86,7 +89,7 @@ module Statemachine
         if transition
           transition.invoke(@state, self, args)
         else
-          raise StatemachineException.new("#{@state} does not respond to the '#{event}' event.")
+          raise TransitionMissingException.new("#{@state} does not respond to the '#{event}' event.")
         end
       else
         raise StatemachineException.new("The state machine isn't in any state while processing the '#{event}' event.")
@@ -104,8 +107,7 @@ module Statemachine
         superstate_id = base_id(id)
         superstate = @states[superstate_id]
         raise StatemachineException.new("No history exists for #{superstate} since it is not a super state.") if superstate.is_concrete?
-        raise StatemachineException.new("#{superstate} doesn't have any history yet.") if not superstate.history
-        return superstate.history
+        return load_history(superstate)
       else
         state = State.new(id, @root, self)
         @states[id] = state
@@ -125,13 +127,24 @@ module Statemachine
       end
     end
     
+    def respond_to?(message)
+      return true if super(message)
+      return true if @state.transition_for(message)
+      return false
+    end
+    
     def method_missing(message, *args) #:nodoc:
       if @state and @state.transition_for(message)
-        method = self.method(:process_event)
-        params = [message.to_sym].concat(args)
-        method.call(*params)
+        process_event(message.to_sym, *args)
+        # method = self.method(:process_event)
+        # params = [message.to_sym].concat(args)
+        # method.call(*params)
       else
-        super(message, args)
+        begin
+          super(message, args)
+        rescue NoMethodError
+          process_event(message.to_sym, *args)
+        end
       end
     end
     
@@ -145,6 +158,18 @@ module Statemachine
       return history_id.to_s[0...-2].to_sym
     end
     
+    def load_history(superstate)
+      100.times do
+        history = superstate.history
+        raise StatemachineException.new("#{superstate} doesn't have any history yet.") if not history
+        if history.is_concrete?
+          return history
+        else
+          superstate = history
+        end
+      end
+      raise StatemachineException.new("No history found within 100 levels of nested superstates.")
+    end
+    
   end
-
 end

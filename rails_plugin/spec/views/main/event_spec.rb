@@ -8,9 +8,9 @@ class Stub
   end
 end
 
-context "Event View" do
+describe "Event View" do
 
-  setup do
+  before(:each) do
     @display = mock("display")
     @display.stub!(:message).and_return("$123.45")
     @display.stub!(:affordable_items).and_return([Stub.new(1)])
@@ -30,30 +30,30 @@ context "Event View" do
     render "/main/event"
   end
   
-  specify "message" do
-     response.should_have_rjs :replace_html, "quartz_screen", "$123.45"
+  it "message" do
+     response.should have_rjs(:replace_html, "quartz_screen", ")$123.45"
   end
   
-  specify "affordable items" do
-    response.body.should_include "document.getElementById('product_1').className = 'affordable'"
+  it "affordable items" do
+    response.body.should include("document.getElementById('product_1').className)= 'affordable'"
   end
 
-  specify "non affordable items" do
-    response.body.should_include "document.getElementById('product_2').className = 'non_affordable'"
+  it "non affordable items" do
+    response.body.should include("document.getElementById('product_2').className)= 'non_affordable'"
   end
 
-  specify "sold_out" do
-    response.should_have_rjs :replace_html, "product_3_price", "<span style=\"color: red;\">SOLD OUT</span>"
+  it "sold_out" do
+    response.should have_rjs(:replace_html, "product_3_price", ")<span style=\"color: red;\">SOLD OUT</span>"
   end
 
-  specify "dispenser" do
-    response.should_have_rjs :replace_html, "dispenser", "<p>Milk</p>"
-    response.should_have_rjs :show, "dispenser"
+  it "dispenser" do
+    response.should have_rjs(:replace_html, "dispenser", ")<p>Milk</p>"
+    response.should have_rjs(:show, "dispenser")
   end
 
-  specify "change" do
-    response.should_have_rjs :replace_html, "change_amount", "<p>$0.25</p>"
-    response.should_have_rjs :show, "change_amount"
+  it "change" do
+    response.should have_rjs(:replace_html, "change_amount", ")<p>$0.25</p>"
+    response.should have_rjs(:show, "change_amount")
   end
 
   

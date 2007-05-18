@@ -1,5 +1,15 @@
 = Statemachine Changelog
 
+== Version 0.4.0
+
+Feature enhancements
+* enabled nested superstate history
+* TransitionMissingException's are raised when the statemachine can't respond to an event
+* Statmachine overrides respond_to? to respond to valid events.
+
+Behavior Fixes
+* fixed default transition so that superstate transitions have priority over default
+
 == Version 0.3.0
 
 Feature enhancements

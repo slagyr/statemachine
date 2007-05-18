@@ -1,18 +1,18 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-context "Turn Stile" do
+describe "Turn Stile" do
   include TurnstileStatemachine
   
-  setup do
+  before(:each) do
     create_turnstile
   end
   
-  specify "connections" do
+  it "connections" do
     locked_state = @sm.get_state(:locked)
     unlocked_state = @sm.get_state(:unlocked)
     
-    locked_state.transitions.length.should_be 2
-    unlocked_state.transitions.length.should_be 2
+    locked_state.transitions.length.should equal(2)
+    unlocked_state.transitions.length.should equal(2)
     
     check_transition(locked_state.transitions[:coin], :locked, :unlocked, :coin, @unlock)
     check_transition(locked_state.transitions[:pass], :locked, :locked, :pass, @alarm)
@@ -20,57 +20,57 @@ context "Turn Stile" do
     check_transition(unlocked_state.transitions[:coin], :unlocked, :locked, :coin, @thankyou)
   end
   
-  specify "start state" do
+  it "start state" do
     @sm.reset
-    @sm.startstate.should.be :locked
-    @sm.state.should.be :locked
+    @sm.startstate.should equal(:locked)
+    @sm.state.should equal(:locked)
   end
   
-  specify "bad event" do
+  it "bad event" do
     begin
       @sm.process_event(:blah)
       self.should.fail_with_message("Exception expected")
     rescue Exception => e
-      e.class.should.be Statemachine::StatemachineException
-      e.to_s.should_eql "'locked' state does not respond to the 'blah' event."
+      e.class.should equal(Statemachine::TransitionMissingException)
+      e.to_s.should eql("'locked' state does not respond to the 'blah' event.")
     end
   end
   
-  specify "locked state with a coin" do
+  it "locked state with a coin" do
     @sm.process_event(:coin)
     
-    @sm.state.should.be :unlocked
-    @locked.should.be false
+    @sm.state.should equal(:unlocked)
+    @locked.should equal(false)
   end
   
-  specify "locked state with pass event" do
+  it "locked state with pass event" do
     @sm.process_event(:pass)
     
-    @sm.state.should.be :locked
-    @locked.should.be true
-    @alarm_status.should.be true
+    @sm.state.should equal(:locked)
+    @locked.should equal(true)
+    @alarm_status.should equal(true)
   end
 
-  specify "unlocked state with coin" do
+  it "unlocked state with coin" do
     @sm.process_event(:coin)
     @sm.process_event(:coin)
     
-    @sm.state.should.be :locked
-    @thankyou_status.should.be true
+    @sm.state.should equal(:locked)
+    @thankyou_status.should equal(true)
   end
 
-  specify "unlocked state with pass event" do
+  it "unlocked state with pass event" do
     @sm.process_event(:coin)
     @sm.process_event(:pass)
     
-    @sm.state.should.be :locked
-    @locked.should.be true
+    @sm.state.should equal(:locked)
+    @locked.should equal(true)
   end
 
-  specify "events invoked via method_missing" do
+  it "events invoked via method_missing" do
     @sm.coin
-    @sm.state.should.be :unlocked
+    @sm.state.should equal(:unlocked)
     @sm.pass
-    @sm.state.should.be :locked
+    @sm.state.should equal(:locked)
   end
 end
