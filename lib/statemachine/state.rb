@@ -3,7 +3,8 @@ module Statemachine
   class State #:nodoc:
     
     attr_reader :id, :statemachine, :superstate
-    attr_accessor :entry_action, :exit_action, :default_transition
+    attr_accessor :entry_action, :exit_action
+    attr_writer :default_transition
 
     def initialize(id, superstate, state_machine)
       @id = id
@@ -20,10 +21,21 @@ module Statemachine
       return @superstate ? @transitions.merge(@superstate.transitions) : @transitions
     end
     
-    def transition_for(event)
+    def non_default_transition_for(event)
       transition = @transitions[event]
-      transition = @superstate.transition_for(event) if @superstate and not transition      
-      transition = @default_transition if not transition
+      transition = @superstate.non_default_transition_for(event) if @superstate and not transition
+      return transition
+    end
+    
+    def default_transition
+      return @default_transition if @default_transition
+      return @superstate.default_transition if @superstate
+      return nil
+    end
+    
+    def transition_for(event)
+      transition = non_default_transition_for(event)     
+      transition = default_transition if not transition
       return transition 
     end
     

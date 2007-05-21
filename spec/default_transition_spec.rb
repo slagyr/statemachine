@@ -83,5 +83,23 @@ describe "Default Transition" do
     @sm.state.should eql(:not_default_state)
   end
 
+  it "should use not use superstate's default before using it's own default" do
+    @sm = Statemachine.build do
+      superstate :super do
+        default :super_default
+        state :base do
+          default :base_default
+        end
+      end
+      state :super_default
+      state :base_default
+      startstate :base
+    end
+    
+    @sm.blah
+    @sm.state.should eql(:base_default)
+  end
+
+  
   
 end

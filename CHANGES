@@ -1,5 +1,10 @@
 = Statemachine Changelog
 
+== Version 0.4.1
+
+Simple Fixes
+* Fixed priority of default transitions, self defaults first, then superstate defaults.
+
 == Version 0.4.0
 
 Feature enhancements
