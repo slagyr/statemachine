@@ -1,5 +1,11 @@
 = Statemachine Changelog
 
+== Version 0.4.2
+
+Simple Fixes
+* Fixed respond_to? to handle the, what should be impossible, case when the state is nil
+* Switch history members variable to store id rather than object.
+
 == Version 0.4.1
 
 Simple Fixes

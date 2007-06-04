@@ -100,6 +100,12 @@ describe "Default Transition" do
     @sm.state.should eql(:base_default)
   end
 
+  it "should be marshalable" do
+    dump = Marshal.dump(@sm)
+    loaded = Marshal.load(dump)
+    loaded.state.should eql(:default_state)
+  end
+
   
   
 end

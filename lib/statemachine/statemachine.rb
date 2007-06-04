@@ -129,7 +129,7 @@ module Statemachine
     
     def respond_to?(message)
       return true if super(message)
-      return true if @state.transition_for(message)
+      return true if @state and @state.transition_for(message)
       return false
     end
     
@@ -160,7 +160,7 @@ module Statemachine
     
     def load_history(superstate)
       100.times do
-        history = superstate.history
+        history = superstate.history_id ? get_state(superstate.history_id) : nil
         raise StatemachineException.new("#{superstate} doesn't have any history yet.") if not history
         if history.is_concrete?
           return history

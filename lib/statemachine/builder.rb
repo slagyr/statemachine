@@ -205,7 +205,7 @@ module Statemachine
     #   end
     #
     def default_history(id)
-      @subject.default_history = @statemachine.get_state(id)
+      @subject.default_history = id
     end
   end
   

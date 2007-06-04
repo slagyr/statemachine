@@ -28,6 +28,12 @@ describe "State Machine Odds And Ends" do
     @sm.respond_to?(:blah).should eql(false)
   end
   
+  it "should not crash when respond_to? called when the statemachine is not in a state" do
+    @sm.instance_eval { @state = nil }
+    lambda { @sm.respond_to?(:toggle) }.should_not raise_error
+    @sm.respond_to?(:toggle).should eql(false)
+  end
+  
   it "set state with string" do
     @sm.state.should equal(:off)
     @sm.state = "on"

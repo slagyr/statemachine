@@ -3,12 +3,12 @@ module Statemachine
   class Superstate < State #:nodoc:
   
     attr_accessor :startstate_id
-    attr_reader :history
+    attr_reader :history_id
   
     def initialize(id, superstate, statemachine)
       super(id, superstate, statemachine)
       @startstate = nil
-      @history = nil
+      @history_id = nil
     end
     
     def is_concrete?
@@ -16,19 +16,19 @@ module Statemachine
     end
     
     def substate_exiting(substate)
-      @history = substate
+      @history_id = substate.id
     end
   
     def add_substates(*substate_ids)
       do_substate_adding(substate_ids)
     end
     
-    def default_history=(state)
-      @history = @default_history = state
+    def default_history=(state_id)
+      @history_id = @default_history_id = state_id
     end
     
     def reset
-      @history = @default_history
+      @history_id = @default_history_id
     end
 
     def to_s

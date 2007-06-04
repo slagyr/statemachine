@@ -31,10 +31,10 @@ describe "History States" do
   it "reseting the statemachine resets history" do
     @sm.faddle
     @sm.fiddle
-    @sm.get_state(:operate).history.id.should eql(:on)
+    @sm.get_state(:operate).history_id.should eql(:on)
     
     @sm.reset
-    @sm.get_state(:operate).history.should eql(nil)
+    @sm.get_state(:operate).history_id.should eql(nil)
   end
   
 end
@@ -64,10 +64,10 @@ describe "History Default" do
     @sm.faddle
     @sm.toggle
     @sm.fiddle
-    @sm.get_state(:operate).history.id.should eql(:off)
+    @sm.get_state(:operate).history_id.should eql(:off)
     
     @sm.reset
-    @sm.get_state(:operate).history.id.should eql(:on)
+    @sm.get_state(:operate).history_id.should eql(:on)
   end
 
 end
