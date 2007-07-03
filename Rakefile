@@ -32,6 +32,7 @@ rd = Rake::RDocTask.new do |rdoc|
 end
 task :rdoc
 
+
 spec = Gem::Specification.new do |s|
   s.name = PKG_NAME
   s.version = PKG_VERSION
@@ -94,20 +95,24 @@ task :tag do
   puts "Done!"
 end
 
+desc 'Generate HTML documentation for website'
+task :webgen do
+  `cd doc/website; webgen`
+end
 
-#desc "Build the website, but do not publish it"
-#task :website => [:clobber, :verify_rcov, :webgen, :failing_examples_with_html, :spec, :examples_specdoc, :rdoc]
+desc "Build the website, but do not publish it"
+task :website => [:clobber, :webgen, :spec, :rdoc]
 
-#desc "Upload Website to RubyForge"
-#task :publish_website => [:verify_user, :website] do
-#  publisher = Rake::SshDirPublisher.new(
-#    "rspec-website@rubyforge.org",
-#    "/var/www/gforge-projects/#{PKG_NAME}",
-#    "doc/output"
-#  )
+desc "Upload Website to RubyForge"
+task :publish_website => [:verify_user, :website] do
+  publisher = Rake::SshDirPublisher.new(
+    "#{ENV['RUBYFORGE_USER']}@rubyforge.org",
+    "/var/www/gforge-projects/#{PKG_NAME}",
+    "doc/website/output"
+  )
 
-#  publisher.upload
-#end
+  publisher.upload
+end
 
 task :verify_user do
   raise "RUBYFORGE_USER environment variable not set!" unless ENV['RUBYFORGE_USER']

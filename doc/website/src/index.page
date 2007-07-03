@@ -1,0 +1,20 @@
+---
+title: Statemachine Overview
+inMenu: true
+directoryName: 
+---
+The Statemachine library is a simple yet full-featured Finite Statemachine framework. Define your statemachine in Ruby code and execute it in your system.
+
+h2. Download and Installation
+
+To download the package or source code visit the Statemachine <a href="http://rubyforge.org/projects/statemachine/">project page.</a> For the Statemachine gem:
+
+<pre> > sudo gem install statemachine</pre>
+or just
+<pre> > gem install statemachine</pre>
+
+h2. Documentation
+
+* <a href="documentation.html">Full descriptive documentation</a>
+* <a href="http://statemachine.rubyforge.org/rdoc/index.html">RDoc API</a>
+* <a href="http://blog.8thlight.com/articles/2006/11/17/understanding-statemachines-part-1-states-and-transitions">Helpful tutorial</a> describing what Statemachine are and how to implement them using the statemachine library.

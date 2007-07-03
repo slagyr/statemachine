@@ -1,0 +1,76 @@
+---
+title: Statemachine Example 3
+inMenu: true
+directoryName: 
+---
+h2. Conditional Logic
+
+Out vending machine is a good example of when we may need conditional logic. When ever a coin is inserted, the invoked event will depend on whether the total amount of money inserted is sufficient to buy something. If enough money has been tendered, the display should suggest that the customer make a selection. If insufficient money has been inserted, the customer should be prompted to insert more.
+
+Conditional logic can be accomplished by using <b>entry actions</b>. See the diagram below.
+
+<img style="border: 1px solid black" src="images/examples/vending_machine3.png">
+<br><b>State Diagram with Conditional Logic</b>
+
+Starting in the Accept Money state, when a coin is inserted, the coin event is fired and the statemachine transitions into the Coin Inserted state. This is where it gets fun. Upon entering of the Coin Inserted state its entry event is invoked: count_amount_tendered. This method will count the money and invoke the not_paid_yet or paid event accordingly. This will cause the statemachine to transition into the appropriate state.
+
+The Coin Inserted state is unique. You wouldn’t expect to find the statemachine in the Coin Inserted state for any reason except to make this decision. Once the decision is made, the state changes. States like this are called <b>Decision States</b>.
+
+h2. Code
+
+<pre>require 'rubygems'
+require 'statemachine'
+
+class VendingMachineContext
+
+  attr_accessor :statemachine
+
+  def initialize
+    @amount_tendered = 0
+  end
+
+  def add_coin
+    @amount_tendered = @amount_tendered + 25
+  end
+
+  def count_amount_tendered
+    if @amount_tendered >= 100
+      @statemachine.paid
+    else
+      @statemachine.not_paid_yet
+    end
+  end
+
+  def prompt_money
+    puts "$.#{@amount_tendered}: more money please"
+  end
+
+  def prompt_selection
+    puts "please make a selection"
+  end
+end
+
+vending_machine = Statemachine.build do
+  trans :accept_money, :coin, :coin_inserted, :add_coin
+  state :coin_inserted do
+    event :not_paid_yet, :accept_money, :prompt_money
+    event :paid, :await_selection, :prompt_selection
+    on_entry :count_amount_tendered
+  end
+  context VendingMachineContext.new
+end
+vending_machine.context.statemachine = vending_machine
+
+vending_machine.coin
+vending_machine.coin
+vending_machine.coin
+vending_machine.coin</pre>
+
+Output:
+
+<pre>$.25: more money please
+$.50: more money please
+$.75: more money please
+please make a selection</pre>
+
+Moving on to <a href="example4.html">Example 4</a>, we will begin to deal with superstates.

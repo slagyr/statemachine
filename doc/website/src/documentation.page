@@ -1,0 +1,45 @@
+---
+title: Statemachine Documentation
+inMenu: true
+directoryName: 
+---
+h2. What is a statemachine?
+
+A statemachine keeps track of the status(state) of an application or device and responds to different inputs, which alter the state of the machine.
+
+h2. States, Transitions, and Events
+
+* State: This is the status of the device or application the statemachine is being used for. At any given time, the statemachine is in one of its predefined states.
+* Transition: Moving from one state to another is called a transition.  Transitions are invoked by Events.
+* Event: Events are the inputs to a statemachine.
+
+In the Statemachine project, a statemachine is defined by its transitions.
+
+Take a look at <a href="example1.html">Example 1</a> to see States, Transitions, and Events being used.
+
+h2. Actions
+
+Actions allow statemachines to perform operations at various point during execution. There are two models for incorporating actions into statemachines.
+
+* Mealy: A Mealy machine performs actions on transitions. Each transition in a statemachine may invoke a unique action.
+* Moore: A Moore machine performs actions when entering a state. Each state may have it’s own entry action.
+
+Mealy and Moore machines each have advantages and disadvantages. But one great advantage of both it that they are not mutually exclusive. If we use both models, and toss in some exit actions, we’ve got it made!
+
+Take a look at <a href="example2.html">Example 2</a> to see Actions being used.
+
+h2. Conditional Logic
+
+If you’re doing any significant amount of work with statemachines, you will most certainly encounter some conditional logic in your statemachines. You may need the state machine to go to one state if a certain condition is true and a different state if it is false.  To accomplish this, you can have a state check for the condition and invoke the appropriate transition in an entry action.
+
+Take a look at <a href="example3.html">Example 3</a> to see Conditional Logic being used.
+
+h2. Superstates
+
+Oftentimes duplication can arise within a statemachine.  One way to solve this problem is through the use of superstates.  A <b>superstate</b> is a state that contains other states. One statemachine may have multiple superstates. And every superstate may contain other superstates. ie. Superstates can be nested.
+
+h3. History State
+
+One problem with superstates is that they may not know which state to return to when coming into that state.  To solve this problem, superstates come with the <b>history state</b>. Every superstate will remember which state it is in before the superstate is exited. This memory is stored in a pseudo state called the history state. Transitions that end in the history state will recall the last active state of the superstate and enter it.
+
+Take a look at <a href="example4.html">Example 4</a> to see Superstates and History States being used.

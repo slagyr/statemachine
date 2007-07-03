@@ -1,0 +1,59 @@
+---
+title: Statemachine Example 1
+inMenu: true
+directoryName: 
+---
+h2. States, Transitions, and Events
+
+h3. This is a simple statemachine showing use of states and transitions.
+
+<img style="border: 1px solid black" src="images/examples/vending_machine.png">
+<br><b>The Vending Machine Statemachine Diagram</b>
+
+Above is a UML diagram of the statemachine the runs a simple vending machine. We can see that there are two rectangles with rounded corners. These are States. The vending machine has two possible states, Waiting and Paid. At any given time during execution, the vending machine will be in one of these states.
+
+Note the arrows going from one state to another. These arrows represent the transitions of the statemachine. Also note that each transition is labeled with an Event. They invoke transitions. For example, when the vending machine is in the Waiting state and the dollar event is received, the statemachine will transition into the Paid state. When in the paid state and the selection event is received, the statemachine will transition back into the Waiting state.
+
+This should seem reasonable. Imagine a real vending machine. When you walk up to it it’s waiting for you to put money in. You pay by sticking a dollar in and then you make your selection. After this happy transaction, the vending machine waits for the next client.
+
+This scenario is not the only possibility though. Statemachine are very helpful in examining all possible flows through the system. Take the Waiting state. We don’t normally expect users to make selections if they haven’t paid but it’s a possibility. As you can see this unexpected event is handled by our vending machine. It will simply continue to wait for your dollar. And it would be foolish for someone to put more money in the the vending machine if they’ve already paid. Foolish or not, you and I know it happens. Our vending machine handles this graciously by taking the money and allowing the user to make a selection for the fist dollar they supplied. Effectively the client loses the extra money they put in. (grin)
+
+Implementing the Statemachine:
+
+We have identified 3 fundamental components to a statemachine: States, Transitions, and Events. It turns out that the simplest way to define a statemachine is to define its transitions. Each transition can be defined by identifying the state where it begins, the event by which is invoked, and the state where it ends. Using this scheme we can define out vending machine like so…
+
+<table style="border: 1px solid black; margin: 10px;">
+<tr><th>Origin State</th><th>Event</th><th>Destination State</th></tr>
+<tr><td>Waiting</td><td>dollar</td><td>Paid</td></tr>
+<tr><td>Paid</td><td>selection</td><td>Waiting</td></tr>
+
+<tr><td>Waiting</td><td>selection</td><td>Waiting</td></tr>
+<tr><td>Paid</td><td>dollar</td><td>Paid</td></tr>
+</table>
+
+Defining it in ruby is not much harder:
+<pre>require 'rubygems'
+require 'statemachine'
+
+vending_machine = Statemachine.build do
+  trans :waiting, :dollar, :paid
+  trans :paid, :selection, :waiting
+  trans :waiting, :selection, :waiting
+  trans :paid, :dollar, :paid
+end</pre>
+
+The above snippet assumes you have the statemachine gem installed. (See <a href="overview.html">Overview</a> for installation instructions).
+
+The outcome of this code an instance of Statemachine stored in the variable named vending_machine. To use our statemachine we need to send events to it. This is done by calling methods that correspond to events.
+
+<pre>puts vending_machine.state
+vending_machine.dollar
+puts vending_machine.state
+vending_machine.selection
+puts vending_machine.state</pre>
+That sequence of events will produce the following ouput:
+<pre>waiting
+paid
+waiting</pre>
+
+That’s it for the basics. <a href="example2.html">Example 2</a> shows how to make our statemachine more functional by adding actions.

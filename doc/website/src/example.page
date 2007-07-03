@@ -1,0 +1,13 @@
+---
+title: Statemachine Examples
+inMenu: true
+directoryName: 
+---
+h2. Examples
+
+Please take a look at the Documentation tab for details explaining the terms used in each of the following examples.
+
+* <a href="example1.html">Example 1</a>: States, Transitions, and Events
+* <a href="example2.html">Example 2</a>: Actions
+* <a href="example3.html">Example 3</a>: Conditional Logic
+* <a href="example4.html">Example 4</a>: Superstates

@@ -51,11 +51,11 @@ body {
 
 a, a:link, a:visited {
 	text-decoration: none;
-	color: #777;
+	color: #9E5454;
 }
 
 a:hover, a:active {
-	text-shadow: 0px 0px 4px #9E5454;
+	text-shadow: 0px 0px 4px #777;
 }
 
 a img {
@@ -89,7 +89,22 @@ a img {
 	display: inline;
 }
 
+#menu a, #menu a:link, #menu a:visited {
+	text-decoration: none;
+	color: #777;
+}
+
+#menu a:hover, #menu a:active {
+	text-shadow: 0px 0px 4px #9E5454;
+}
+
 #body {
-	margin-top: 10px;
-	margin-bottom: 10px;
+	margin: 10px;
+}
+
+pre {
+	border: 1px solid black;
+	background: grey;
+	color: lightgreen;
+	padding: 5px;
 }

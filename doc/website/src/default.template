@@ -16,8 +16,10 @@
 			<div id="menu">
 				<ul>
 					<li><a href="index.html">Overview</a></li>
+					<li><a href="documentation.html">Documentation</a></li>
+					<li><a href="example.html">Examples</a></li>
 					<li><a href="rdoc/index.html">RDoc</a></li>
-					<li><a href="plugin.html">Rails Plugin</a></li>
+					<li><a href="http://rubyforge.org/projects/statemachine/">Project</a></li>
 				</ul>
 			</div>
 		    <div id="body">
