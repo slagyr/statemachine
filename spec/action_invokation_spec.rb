@@ -63,6 +63,4 @@ describe "Action Invokation" do
     @noodle.cooked.should equal(true)
   end
 
-  
-  
 end

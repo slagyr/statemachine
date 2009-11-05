@@ -74,6 +74,10 @@ module Statemachine
       @subject.add(Transition.new(@subject.id, destination_id, event, action))
     end
     
+    def on_event(event, options)
+      self.event(event, options[:transition_to], options[:and_perform])
+    end
+    
     # Declare the entry action for the state.
     #
     #   sm = Statemachine.build do

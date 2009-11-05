@@ -193,5 +193,31 @@ describe "Builder" do
     widget.statemachine.should be(sm)
   end
 
+  it "should have an on_event" do
+    sm = Statemachine.build do
+      startstate :start 
+      state :start do
+        on_event :go, :transition_to => :new_state
+      end
+    end
+    sm.go
+    sm.state.should == :new_state
+  end
+  
+  it "should trigger actions using on_event" do
+    sm = Statemachine.build do
+      startstate :start
+      state :start do
+        on_event :go, :transition_to => :new_state, :and_perform => :action
+      end
+    end
+    object = mock("context")
+    sm.context = object
+    object.should_receive(:action)
+
+    sm.go
+  end
+  
+  
 end
 
