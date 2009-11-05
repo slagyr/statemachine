@@ -218,6 +218,24 @@ describe "Builder" do
     sm.go
   end
   
+  it "should have a transition_from" do
+    sm = Statemachine.build do
+      transition_from :start, :on_event => :go, :transition_to => :new_state
+    end
+    
+    sm.go
+    sm.state.should == :new_state
+  end
   
+  it "should trigger actions on transition_from" do
+    sm = Statemachine.build do
+      transition_from :start, :on_event => :go, :transition_to => :new_state, :and_perform => :action
+    end
+    object = mock("context")
+    sm.context = object
+    object.should_receive(:action)
+
+    sm.go
+  end
 end
 

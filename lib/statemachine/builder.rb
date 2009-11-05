@@ -164,6 +164,10 @@ module Statemachine
       origin = acquire_state_in(origin_id, @subject)
       origin.add(Transition.new(origin_id, destination_id, event, action))
     end
+
+    def transition_from(origin_id, options)
+      trans(origin_id, options[:on_event], options[:transition_to], options[:and_perform])
+    end
     
     # Specifies the startstate for the statemachine or superstate.  The state must 
     # exist within the scope.
