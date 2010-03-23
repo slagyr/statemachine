@@ -1,7 +1,6 @@
 $:.unshift('lib')
 require 'rubygems'
 require 'rake/gempackagetask'
-require 'rake/contrib/rubyforgepublisher'
 require 'rake/clean'
 require 'rake/rdoctask'
 require 'spec/rake/spectask'
@@ -24,14 +23,15 @@ Spec::Rake::SpecTask.new do |t|
   t.spec_files = FileList['spec/**/*_spec.rb']
 end
 
+WEB_ROOT = File.expand_path('~/Projects/slagyr.github.com/statemachine/')
+
 desc 'Generate RDoc'
 rd = Rake::RDocTask.new do |rdoc|
-  rdoc.rdoc_dir = 'doc/website/output/rdoc'
-  rdoc.options << '--title' << 'Statemachine' << '--line-numbers' << '--inline-source' << '--main' << 'README'
-  rdoc.rdoc_files.include('README', 'CHANGES', 'lib/**/*.rb')
+  rdoc.rdoc_dir = "#{WEB_ROOT}/rdoc"
+  rdoc.options << '--title' << 'Statemachine' << '--line-numbers' << '--inline-source' << '--main' << 'README.rdoc'
+  rdoc.rdoc_files.include('README.rdoc', 'CHANGES', 'lib/**/*.rb')
 end
 task :rdoc
-
 
 spec = Gem::Specification.new do |s|
   s.name = PKG_NAME
@@ -73,10 +73,6 @@ task :todo do
   egrep /(FIXME|TODO|TBD)/
 end
 
-task :clobber do
-  rm_rf 'doc/output'
-end
-
 task :release => [:clobber, :verify_committed, :verify_user, :verify_password, :spec, :publish_packages, :tag, :publish_website, :publish_news]
 
 desc "Verifies that there is no uncommitted code"
@@ -97,22 +93,13 @@ end
 
 desc 'Generate HTML documentation for website'
 task :webgen do
-  `cd doc/website; webgen`
+  system "rm -rf doc/website/out"
+  system "rm -rf doc/website/webgen.cache"
+  system "cd doc/website; webgen -v render; cp -rf out/* #{WEB_ROOT}"
 end
 
 desc "Build the website, but do not publish it"
-task :website => [:clobber, :webgen, :spec, :rdoc]
-
-desc "Upload Website to RubyForge"
-task :publish_website => [:verify_user, :website] do
-  publisher = Rake::SshDirPublisher.new(
-    "#{ENV['RUBYFORGE_USER']}@rubyforge.org",
-    "/var/www/gforge-projects/#{PKG_NAME}",
-    "doc/website/output"
-  )
-
-  publisher.upload
-end
+task :website => [:webgen, :rdoc]
 
 task :verify_user do
   raise "RUBYFORGE_USER environment variable not set!" unless ENV['RUBYFORGE_USER']
@@ -120,23 +107,4 @@ end
 
 task :verify_password do
   raise "RUBYFORGE_PASSWORD environment variable not set!" unless ENV['RUBYFORGE_PASSWORD']
-end
-
-desc "Publish gem+tgz+zip on RubyForge. You must make sure lib/version.rb is aligned with the CHANGELOG file"
-task :publish_packages => [:verify_user, :verify_password, :package] do
-  require 'meta_project'
-  require 'rake/contrib/xforge'
-  release_files = FileList[
-    "pkg/#{PKG_FILE_NAME}.gem",
-    "pkg/#{PKG_FILE_NAME}.tgz",
-    "pkg/#{PKG_FILE_NAME}.zip"
-  ]
-
-  Rake::XForge::Release.new(MetaProject::Project::XForge::RubyForge.new(PKG_NAME)) do |xf|
-    # Never hardcode user name and password in the Rakefile!
-    xf.user_name = ENV['RUBYFORGE_USER']
-    xf.password = ENV['RUBYFORGE_PASSWORD']
-    xf.files = release_files.to_a
-    xf.release_name = "statemachine #{PKG_VERSION}"
-  end
 end

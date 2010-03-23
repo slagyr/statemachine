@@ -3,7 +3,7 @@ title: Statemachine Example 3
 inMenu: true
 directoryName: 
 ---
-h2. Conditional Logic
+<h2>Conditional Logic</h2>
 
 Out vending machine is a good example of when we may need conditional logic. When ever a coin is inserted, the invoked event will depend on whether the total amount of money inserted is sufficient to buy something. If enough money has been tendered, the display should suggest that the customer make a selection. If insufficient money has been inserted, the customer should be prompted to insert more.
 
@@ -16,7 +16,7 @@ Starting in the Accept Money state, when a coin is inserted, the coin event is f
 
 The Coin Inserted state is unique. You wouldn’t expect to find the statemachine in the Coin Inserted state for any reason except to make this decision. Once the decision is made, the state changes. States like this are called <b>Decision States</b>.
 
-h2. Code
+<h2>Code</h2>
 
 <pre>require 'rubygems'
 require 'statemachine'

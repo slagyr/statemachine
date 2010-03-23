@@ -3,9 +3,9 @@ title: Statemachine Example 1
 inMenu: true
 directoryName: 
 ---
-h2. States, Transitions, and Events
+<h2>States, Transitions, and Events</h2>
 
-h3. This is a simple statemachine showing use of states and transitions.
+<h3>This is a simple statemachine showing use of states and transitions.</h3>
 
 <img style="border: 1px solid black" src="images/examples/vending_machine.png">
 <br><b>The Vending Machine Statemachine Diagram</b>

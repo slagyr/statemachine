@@ -3,9 +3,9 @@ title: Statemachine Example 2
 inMenu: true
 directoryName: 
 ---
-h2. Actions
+<h2>Actions</h2>
 
-h3. This example shows the addition of actions to our statemachine from <a href="example1.html">Example 1</a>.
+<h3>This example shows the addition of actions to our statemachine from <a href="example1.html">Example 1</a>.</h3>
 
 The vending machine statemachine had some problems. Adding some actions will solve many of them. Here’s the same statemachine with actions.
 
@@ -67,7 +67,7 @@ Here is a simple context for the vending machine statemachine.
 
 end</pre>
 
-h3. Action Declarations:
+<h3>Action Declarations:</h3>
 
 With the statemachine gem, actions can be declared in any of three forms: Symbol, String, or Block.
 
@@ -77,7 +77,7 @@ When the action is a <b>Symbol</b>, (on_entry :sales_mode) it is assumes that th
 
 If the action is a <b>Proc</b> (on_entry Proc.new {puts 'entering sales mode'}), it will be called within the context of the context. Proc actions are also nice for quick and dirty actions. They can accept parameters and are preferred to String actions, unless you want to marshal your statemachine. Using one Proc actions will prevent the entire statemachine from being marhsal-able.
 
-h3. Execution
+<h3>Execution</h3>
 
 For kicks let’s put this statemachine thought a few events.
 

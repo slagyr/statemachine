@@ -3,7 +3,7 @@ title: Statemachine Example 4
 inMenu: true
 directoryName: 
 ---
-h2. Superstates
+<h2>Superstates</h2>
 
 Often in statemachines, duplication can arise. For example, the vending machine in our examples may need periodic repairs. It’s not certain which state the vending machine will be in when the repair man arrives. So all states should have a transition into the Repair Mode state.
 
@@ -19,13 +19,13 @@ Here we introduce the Operational superstate. Both the Waiting and Paid states a
 
 One statemachine may have multiple superstates. And every superstate may contain other superstates. ie. Superstates can be nested.
 
-h2. History State
+<h2>History State</h2>
 
 The solution in <i>diagram 2</i> has an advantage over <i>diagram 1</i>. In <i>diagram 1</i>, once the repair man is done he triggers the operate event and the vending machine transitions into the Waiting event. This is unfortunate. Even if the vending machine was in the Paid state before the repair man came along, it will be in the Waiting state after he leaves. Shouldn’t it go back into the Paid state?
 
 This is where use of the history state is useful. You can see the history state being use in <i>diagram 2</i>. In this solution, the history state allows the vending machine to return from a repair session into the same state it was in before, as though nothing happened at all.
 
-h2. Code
+<h2>Code</h2>
 
 The following code builds the statemachine in <i>diagram 2</i>. Watch out for the _H. This is how the history state is denoted. If you have a superstate named foo, then it’s history state will be named foo_H.
 
