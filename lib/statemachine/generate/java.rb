@@ -1,0 +1,1 @@
+require 'statemachine/generate/java/java_statemachine'

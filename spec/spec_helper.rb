@@ -43,5 +43,19 @@ module TurnstileStatemachine
     end
     @sm.context = self
   end
-  
+
+end
+
+TEST_DIR = File.expand_path(File.dirname(__FILE__) + "/../test_dir/")
+
+def test_dir(name = nil)
+  Dir.mkdir(TEST_DIR) if !File.exist?(TEST_DIR)
+  return TEST_DIR if name.nil?
+  dir = File.join(TEST_DIR, name)
+  Dir.mkdir(dir) if !File.exist?(dir)
+  return dir
+end
+
+def remove_test_dir(name)
+  system "rm -rf #{test_dir(name)}" if File.exist?(test_dir(name))
 end

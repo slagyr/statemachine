@@ -2,3 +2,6 @@
 doc/website/out
 doc/website/webgen.cache
 *.iml
+generate_tests/java/turnstile/
+out/
+test_dir/
