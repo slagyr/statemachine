@@ -50,7 +50,7 @@ module Statemachine
     # Resets the statemachine back to its starting state.
     def reset
       @state = get_state(@root.startstate_id)
-      while @state and not @state.is_concrete?
+      while @state and not @state.concrete?
         @state = get_state(@state.startstate_id)
       end
       raise StatemachineException.new("The state machine doesn't know where to start. Try setting the startstate.") if @state == nil
@@ -106,7 +106,7 @@ module Statemachine
       elsif(is_history_state_id?(id))
         superstate_id = base_id(id)
         superstate = @states[superstate_id]
-        raise StatemachineException.new("No history exists for #{superstate} since it is not a super state.") if superstate.is_concrete?
+        raise StatemachineException.new("No history exists for #{superstate} since it is not a super state.") if superstate.concrete?
         return load_history(superstate)
       else
         state = State.new(id, @root, self)
@@ -162,7 +162,7 @@ module Statemachine
       100.times do
         history = superstate.history_id ? get_state(superstate.history_id) : nil
         raise StatemachineException.new("#{superstate} doesn't have any history yet.") if not history
-        if history.is_concrete?
+        if history.concrete?
           return history
         else
           superstate = history

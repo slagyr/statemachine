@@ -11,10 +11,18 @@ module Statemachine
       @history_id = nil
     end
     
-    def is_concrete?
+    def concrete?
       return false
     end
-    
+
+    def startstate
+      return @statemachine.get_state(@startstate_id)
+    end
+
+    def resolve_startstate
+      return startstate.resolve_startstate
+    end
+
     def substate_exiting(substate)
       @history_id = substate.id
     end

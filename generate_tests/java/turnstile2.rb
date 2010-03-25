@@ -1,7 +1,7 @@
 $: << File.expand_path(File.dirname(__FILE__) + "/../../lib")
 require 'statemachine'
 require 'statemachine/generate/java'
-@output = File.expand_path(File.dirname(__FILE__) + "/turnstile")
+@output = File.expand_path(File.dirname(__FILE__) + "/turnstile2")
 
 def clean
   system "rm -rf #{@output}/java"
@@ -12,11 +12,29 @@ end
 
 def generate
   @sm = Statemachine.build do
-    trans :locked, :coin, :unlocked, :unlock
-    trans :unlocked, :pass, :locked, :lock
-    trans :locked, :pass, :locked, :alarm
-    trans :unlocked, :coin, :locked, :thanks
+    superstate :operational do
+      on_entry :operate
+      on_exit  :beep
+      state :locked do
+        on_entry :lock
+        event :coin, :unlocked
+        event :pass, :locked, :alarm
+      end
+      state :unlocked do
+        on_entry :unlock
+        event :coin, :unlocked, :thanks
+        event :pass, :locked
+      end
+      event :diagnose, :diagnostics
+    end
+    state :diagnostics do
+      on_entry :disable
+      on_exit  :beep
+      event :operate, :operational
+    end
+    stub_context :verbose => false
   end
+  
   @sm.to_java(:output => @output, :name => "JavaTurnstile", :package => "thejava.turnstile")
 end
 
@@ -27,12 +45,12 @@ def compile
 end
 
 def run
-  system "java -cp #{@output} TurnstileMain > #{@output}/output.txt"
+  system "java -cp #{@output} Turnstile2Main > #{@output}/output.txt"
 end
 
 def check
   actual = IO.read("#{@output}/output.txt").strip.split("\n")
-  expected = %w{alarm unlock thanks unlock lock}
+  expected = %w{operate lock alarm unlock thanks lock beep disable beep operate lock unlock lock}
 
   if actual == expected
     puts "PASSED"

@@ -20,26 +20,58 @@ describe Statemachine::Statemachine, "(Java)" do
     @sm.to_java(:output => @output, :name => "JavaTurnstile", :package => "test.turnstile")
   end
 
+  def generate_complex_turnstile_sm
+    @sm = Statemachine.build do
+      superstate :operational do
+        on_entry :operate
+        on_exit :beep
+        state :locked do
+          on_entry :lock
+          event :coin, :unlocked
+          event :pass, :locked, :alarm
+        end
+        state :unlocked do
+          on_entry :unlock
+          event :coin, :unlocked, :thanks
+          event :pass, :locked
+        end
+        event :diagnose, :diagnostics
+      end
+      state :diagnostics do
+        on_entry :disable
+        on_exit :beep
+        event :operate, :operational
+      end
+      stub_context :verbose => true
+    end
+
+    @sm.to_java(:output => @output, :name => "JavaTurnstile", :package => "test.turnstile")
+  end
+
+  def load_lines(*segs)
+    filename = File.join(*segs)
+    File.should exist( filename)
+    return IO.read(filename).split("\n")
+  end
+
   def empty_sm_lines
     @sm.to_java(:name => "JavaTest", :output => @output, :package => "test.blank")
-    filename = File.join(@output, "test", "blank", "JavaTest.java")
-    File.should exist( filename)
-    lines = IO.read(filename).split("\n")
-    return lines
+    return load_lines(@output, "test", "blank", "JavaTest.java")
   end
 
-  def sm_lines
+  def turnstile_lines
     generate_turnstile_sm
-    filename = File.join(@output, "test", "turnstile", "JavaTurnstile.java")
-    File.should exist( filename)
-    return IO.read(filename).split("\n")
+    return load_lines(@output, "test", "turnstile", "JavaTurnstile.java")
   end
 
-  def context_lines
+  def turnstile_context_lines
     generate_turnstile_sm
-    filename = File.join(@output, "test", "turnstile", "JavaTurnstileContext.java")
-    File.should exist( filename)
-    return IO.read(filename).split("\n")
+    return load_lines(@output, "test", "turnstile", "JavaTurnstileContext.java")
+  end
+
+  def complex_turnstile_lines
+    generate_complex_turnstile_sm
+    return load_lines(@output, "test", "turnstile", "JavaTurnstile.java")
   end
 
   def find_lines_after(lines, goose)
@@ -78,17 +110,19 @@ describe Statemachine::Statemachine, "(Java)" do
     lines.last.should == "}"
   end
 
-  it "should generate sm boilerplate code" do
-    lines = empty_sm_lines
-    lines = find_lines_after(lines, "// The following is boiler plate code standard to all statemachines")
+  it "should generate the constructor" do
+    lines = find_lines_after(empty_sm_lines, "// Statemachine constructor")
 
-    lines.shift.should == "  private JavaTestContext context;"
-    lines.shift.should == ""
     lines.shift.should == "  public JavaTest(JavaTestContext context)"
     lines.shift.should == "  {"
     lines.shift.should == "    this.context = context;"
     lines.shift.should == "  }"
     lines.shift.should == ""
+  end
+
+  it "should generate sm boilerplate code" do
+    lines = find_lines_after(empty_sm_lines, "// The following is boiler plate code standard to all statemachines")
+
     lines.shift.should == "  public JavaTestContext getContext()"
     lines.shift.should == "  {"
     lines.shift.should == "    return context;"
@@ -113,9 +147,9 @@ describe Statemachine::Statemachine, "(Java)" do
     lines.shift.should == "  {"
     lines.shift.should == "    public StatemachineException(State state, String event)"
     lines.shift.should == "    {"
-    lines.shift.should == "      super(\"Missing transition from the '\" + state.getClass().getName() + \"' state with the '\" + event + \"' event.\");"
+    lines.shift.should == "      super(\"Missing transition from '\" + state.getClass().getSimpleName() + \"' with the '\" + event + \"' event.\");"
     lines.shift.should == "    }"
-    lines.shift.should == "  }"    
+    lines.shift.should == "  }"
   end
 
   it "should generate base state" do
@@ -136,7 +170,7 @@ describe Statemachine::Statemachine, "(Java)" do
 
   it "should generate the context" do
     @sm.to_java(:name => "JavaTest", :output => @output, :package => "com.blah")
-    
+
     filename = File.join(@output, "com", "blah", "JavaTestContext.java")
     File.should exist(filename)
     lines = IO.read(filename).split("\n")
@@ -153,15 +187,17 @@ describe Statemachine::Statemachine, "(Java)" do
   end
 
   it "should generate the state instance variables" do
-    lines = find_lines_after(sm_lines, "// State instances")
+    lines = find_lines_after(turnstile_lines, "// Instance variables")
 
     lines.shift.should == "  public final State LOCKED = new LockedState(this);"
     lines.shift.should == "  public final State UNLOCKED = new UnlockedState(this);"
     lines.shift.should == "  private State state = LOCKED;"
+    lines.shift.should == ""
+    lines.shift.should == "  private JavaTurnstileContext context;"
   end
 
   it "should generate all the sm event handlers" do
-    lines = find_lines_after(sm_lines, "// Event delegation")
+    lines = find_lines_after(turnstile_lines, "// Event delegation")
 
     lines.shift.should == "  public void coin()"
     lines.shift.should == "  {"
@@ -176,7 +212,7 @@ describe Statemachine::Statemachine, "(Java)" do
   end
 
   it "should generate all the default event handlers" do
-    lines = find_lines_after(sm_lines, "// The base state")
+    lines = find_lines_after(turnstile_lines, "// The base state")
 
     lines.shift.should == "  public static abstract class State"
     lines.shift.should == "  {"
@@ -201,7 +237,7 @@ describe Statemachine::Statemachine, "(Java)" do
   end
 
   it "should generate state classes" do
-    lines = find_lines_after(sm_lines, "// State implementations")
+    lines = find_lines_after(turnstile_lines, "// State implementations")
 
     lines.shift.should == "  public static class LockedState extends State"
     lines.shift.should == "  {"
@@ -248,12 +284,65 @@ describe Statemachine::Statemachine, "(Java)" do
   end
 
   it "should generate all the context methods" do
-    lines = find_lines_after(context_lines, "// Actions")
+    lines = find_lines_after(turnstile_context_lines, "// Actions")
 
     lines.shift.should == "  void alarm();"
     lines.shift.should == "  void lock();"
     lines.shift.should == "  void thanks();"
     lines.shift.should == "  void unlock();"
+  end
+
+  it "should generate complext state instances" do
+    lines = find_lines_after(complex_turnstile_lines, "// Instance variables")
+
+    lines.shift.should == "  public final State DIAGNOSTICS = new DiagnosticsState(this);"
+    lines.shift.should == "  public final State LOCKED = new LockedState(this);"
+    lines.shift.should == "  public final State UNLOCKED = new UnlockedState(this);"
+    lines.shift.should == "  public final State OPERATIONAL = LOCKED;"
+    lines.shift.should == "  private State state = LOCKED;"
+  end
+
+  it "should generate entry actions on startup" do
+    lines = find_lines_after(complex_turnstile_lines, "// Statemachine constructor")
+
+    lines.shift.should == "  public JavaTurnstile(JavaTurnstileContext context)"
+    lines.shift.should == "  {"
+    lines.shift.should == "    this.context = context;"
+    lines.shift.should == "    context.operate();"
+    lines.shift.should == "    context.lock();"
+    lines.shift.should == "  }"
+    lines.shift.should == ""
+  end
+
+  it "should add entry/exit actions to each transition" do
+    lines = find_lines_after(complex_turnstile_lines, "public static class LockedState extends State")
+
+    lines.shift.should == "  {"
+    lines.shift.should == "    public LockedState(JavaTurnstile statemachine)"
+    lines.shift.should == "    {"
+    lines.shift.should == "      super(statemachine);"
+    lines.shift.should == "    }"
+    lines.shift.should == ""
+    lines.shift.should == "    public void coin()"
+    lines.shift.should == "    {"
+    lines.shift.should == "      statemachine.setState(statemachine.UNLOCKED);"
+    lines.shift.should == "      statemachine.getContext().unlock();"
+    lines.shift.should == "    }"
+    lines.shift.should == ""
+    lines.shift.should == "    public void diagnose()"
+    lines.shift.should == "    {"
+    lines.shift.should == "      statemachine.getContext().beep();"
+    lines.shift.should == "      statemachine.setState(statemachine.DIAGNOSTICS);"
+    lines.shift.should == "      statemachine.getContext().disable();"
+    lines.shift.should == "    }"
+    lines.shift.should == ""
+    lines.shift.should == "    public void pass()"
+    lines.shift.should == "    {"
+    lines.shift.should == "      statemachine.getContext().alarm();"
+    lines.shift.should == "      statemachine.setState(statemachine.LOCKED);"
+    lines.shift.should == "    }"
+    lines.shift.should == ""
+    lines.shift.should == "  }"
   end
 
 end

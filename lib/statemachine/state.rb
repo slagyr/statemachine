@@ -54,8 +54,12 @@ module Statemachine
       @statemachine.state = self
     end
     
-    def is_concrete?
+    def concrete?
       return true
+    end
+
+    def resolve_startstate
+      return self
     end
     
     def reset

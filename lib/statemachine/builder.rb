@@ -261,6 +261,20 @@ module Statemachine
       @statemachine.context = a_context
       a_context.statemachine = @statemachine if a_context.respond_to?(:statemachine=)
     end
+
+    # Stubs the context.  This makes statemachine immediately useable, even if functionless.
+    # The stub will print all the actions called so it's nice for trial runs.
+    #
+    #   sm = Statemachine.build do
+    #     ...
+    #     stub_context :verbose => true
+    #   end
+    #
+    # Statemachine.context may also be used.
+    def stub_context(options={})
+      require 'statemachine/stub_context'
+      context StubContext.new(options)
+    end
   end
   
 end

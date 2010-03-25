@@ -17,8 +17,8 @@ describe "Transition Calculating Exits and Entries" do
   it "to itself" do
     @a = Statemachine::State.new("a", nil, nil)
     exits, entries = @transition.exits_and_entries(@a, @a)
-    exits.to_s.should eql([@a].to_s)
-    entries.to_s.should eql([@a].to_s)
+    exits.should == []
+    entries.should == []
   end
 
   it "to friend" do

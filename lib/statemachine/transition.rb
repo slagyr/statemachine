@@ -19,20 +19,16 @@ module Statemachine
       
       origin.statemachine.invoke_action(@action, args, "transition action from #{origin} invoked by '#{@event}' event") if @action
       
-      terminal_state = destination
-      while terminal_state and not terminal_state.is_concrete?
-        terminal_state = statemachine.get_state(terminal_state.startstate_id)
-        entries << terminal_state
-      end
+      terminal_state = entries.last
       terminal_state.activate if terminal_state
 
       entries.each { |entered_state| entered_state.enter(args) }
     end
     
     def exits_and_entries(origin, destination)
+      return [], [] if origin == destination
       exits = []
       entries = exits_and_entries_helper(exits, origin, destination)
-      
       return exits, entries.reverse
     end
   
@@ -52,8 +48,9 @@ module Statemachine
     end
     
     def entries_to_destination(exit_state, destination)
+      return nil if destination.nil?
       entries = []
-      state = destination
+      state = destination.resolve_startstate
       while state    
         entries << state
         return entries if exit_state == state.superstate

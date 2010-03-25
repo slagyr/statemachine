@@ -1,6 +1,6 @@
 import thejava.turnstile.*;
 
-public class TurnstileMain implements JavaTurnstileContext
+public class Turnstile2Main implements JavaTurnstileContext
 {
   public void unlock()
   {
@@ -22,12 +22,30 @@ public class TurnstileMain implements JavaTurnstileContext
     System.out.println("lock");
   }
 
+  public void operate()
+  {
+    System.out.println("operate");
+  }
+
+  public void disable()
+  {
+    System.out.println("disable");
+  }
+
+  public void beep()
+  {
+    System.out.println("beep");
+  }
+
   public static void main(String[] args)
   {
-    JavaTurnstile sm = new JavaTurnstile(new TurnstileMain());
+    JavaTurnstile sm = new JavaTurnstile(new Turnstile2Main());
     sm.pass();
     sm.coin();
     sm.coin();
+    sm.pass();
+    sm.diagnose();
+    sm.operate();
     sm.coin();
     sm.pass();
   }

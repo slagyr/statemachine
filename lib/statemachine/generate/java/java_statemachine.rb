@@ -42,8 +42,6 @@ module Statemachine
         private ###########################################
 
         def explore_sm
-          @state_names = @sm.states.keys.reject{|k| k.nil? }.map { |id| id.to_s.camalized }.sort
-
           events = []
           actions = []
           @sm.states.values.each do |state|
@@ -59,6 +57,8 @@ module Statemachine
             add_action(actions, state.exit_action)
           end
           @action_names = actions.uniq.map {|e| e.to_s.camalized(:lower)}.sort
+
+          @startstate = @sm.get_state(@sm.startstate).resolve_startstate
         end
 
         def add_action(actions, action)
@@ -72,7 +72,8 @@ module Statemachine
           src << "public class #{@classname}" << endl
           begin_scope(src)
 
-          add_state_instances(src)
+          add_instance_variables(src)
+          add_constructor(src)
           add_statemachine_boilerplate_code(src)
           add_event_delegation(src)
           add_statemachine_exception(src)
@@ -83,20 +84,42 @@ module Statemachine
           return src.to_s
         end
 
-        def add_state_instances(src)
-          src << "// State instances" << endl
-          @state_names.each do |state|
-            src << "public final State #{state.upcase} = new #{state}State(this);" << endl
+        def add_instance_variables (src)
+          src << "// Instance variables" << endl
+          concrete_states = @sm.states.values.reject { |state| state.id.nil? || !state.concrete? }.sort { |a, b| a.id <=> b.id }
+          concrete_states.each do |state|
+            name = state.id.to_s.camalized
+            src << "public final State #{name.upcase} = new #{name}State(this);" << endl
           end
-          src << "private State state = #{default_state_name};" << endl
+          superstates = @sm.states.values.reject { |state| state.concrete? }.sort { |a, b| a.id <=> b.id }
+          superstates.each do |superstate|
+            startstate = superstate.resolve_startstate
+            src << "public final State #{superstate.id.to_s.upcase} = #{startstate.id.to_s.upcase};" << endl
+          end
+          src << "private State state = #{@startstate.id.to_s.upcase};" << endl
           src << endl
+          src << "private #{@context_classname} context;" << endl
+          src << endl
+        end
+
+        def add_constructor(src)
+          src << "// Statemachine constructor" << endl
+          add_method(src, nil, @classname, "#{@context_classname} context") do
+            src << "this.context = context;" << endl
+            entered_states = []
+            entry_state = @startstate
+            while entry_state != @sm.root
+              entered_states << entry_state
+              entry_state = entry_state.superstate
+            end
+            entered_states.reverse.each do |state|
+              src << "context.#{state.entry_action.to_s.camalized(:lower)}();" << endl if state.entry_action
+            end
+          end
         end
 
         def add_statemachine_boilerplate_code(src)
           src << "// The following is boiler plate code standard to all statemachines" << endl
-          src << "private #{@context_classname} context;" << endl
-          src << endl
-          add_one_liner(src, nil, @classname, "#{@context_classname} context", "this.context = context")
           add_one_liner(src, @context_classname, "getContext", nil, "return context")
           add_one_liner(src, "State", "getState", nil, "return state")
           add_one_liner(src, "void", "setState", "State newState", "state = newState")
@@ -115,7 +138,7 @@ module Statemachine
           begin_scope(src)
           src << "public StatemachineException(State state, String event)" << endl
           begin_scope(src)
-          src << "super(\"Missing transition from the '\" + state.getClass().getName() + \"' state with the '\" + event + \"' event.\");" << endl
+          src << "super(\"Missing transition from '\" + state.getClass().getSimpleName() + \"' with the '\" + event + \"' event.\");" << endl
           end_scope(src)
           end_scope(src)
           src << endl
@@ -137,34 +160,41 @@ module Statemachine
 
         def add_state_implementations(src)
           src << "// State implementations" << endl
-          @sm.states.keys.sort.each do |state_id|
-            add_state_class(src, state_id) if state_id
+          @sm.states.keys.reject{|k| k.nil? }.sort.each do |state_id|
+            state = @sm.states[state_id]
+            state_name = state.id.to_s.camalized
+            base_class = state.superstate == @sm.root ? "State" : state.superstate.id.to_s.camalized
+
+            add_concrete_state_class(src, state, state_name, base_class) if state_id
           end
         end
 
-        def add_state_class(src, state_id)
-          state = @sm.states[state_id]
-          state_name = state_id.to_s.camalized
+        def add_concrete_state_class(src, state, state_name, base_class)
           src << "public static class #{state_name}State extends State" << endl
           src << "{" << endl
           src.indent!
           add_one_liner(src, nil, "#{state_name}State", "#{@classname} statemachine", "super(statemachine)")
           state.transitions.keys.sort.each do |event_id|
-            add_state_event_handler(event_id, src, state)
+            transition = state.transitions[event_id]
+            add_state_event_handler(transition, src)
           end
           src.undent!
           src << "}" << endl
           src << endl
         end
 
-        def add_state_event_handler(event_id, src, state)
-          transition = state.transitions[event_id]
-          event_name = event_id.to_s.camalized(:lower)
+        def add_state_event_handler(transition, src)
+          event_name = transition.event.to_s.camalized(:lower)
+          exits, entries = transition.exits_and_entries(@sm.get_state(transition.origin_id), @sm.get_state(transition.destination_id))
           add_method(src, "void", event_name, nil) do
-            if transition.action
-              src << "statemachine.getContext().#{transition.action.to_s.camalized(:lower)}();" << endl
+            exits.each do |exit|
+              src << "statemachine.getContext().#{exit.exit_action.to_s.camalized(:lower)}();" << endl if exit.exit_action
             end
+            src << "statemachine.getContext().#{transition.action.to_s.camalized(:lower)}();" << endl if transition.action
             src << "statemachine.setState(statemachine.#{transition.destination_id.to_s.upcase});" << endl
+            entries.each do |entry|
+              src << "statemachine.getContext().#{entry.entry_action.to_s.camalized(:lower)}();" << endl if entry.entry_action              
+            end
           end
         end
 
@@ -175,7 +205,7 @@ module Statemachine
         end
 
         def add_method(src, return_type, name, params)
-          src << "public #{return_type} #{name}(#{params})".sub('  ', ' ') << endl
+          src << "public #{return_type} #{name}(#{params})".sub(' ' * 2, ' ') << endl
           begin_scope(src)
           yield
           end_scope(src)
@@ -189,10 +219,6 @@ module Statemachine
 
         def end_scope(src)
           src.undent! << "}" << endl
-        end
-
-        def default_state_name
-          @sm.startstate.nil? ? "null" : @sm.startstate.to_s.upcase
         end
 
         def build_context_src
