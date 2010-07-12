@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/spec_helper'
+require 'statemachine/generate/dot_builder'
 
-describe "Turn Stile" do
+describe Statemachine::Statemachine, "(Turn Stile)" do
   include TurnstileStatemachine
 
   before(:each) do

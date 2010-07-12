@@ -148,36 +148,39 @@ module Statemachine
       end
     end
 
-    def endl
-      return :endl
-    end
+    # def endl
+    #   return :endl
+    # end
 
-    def to_dot
-      require 'statemachine/generate/src_builder'
+    # def to_dot
+    #   require 'statemachine/generate/src_builder'
 
-      builder = Generate::SrcBuilder.new
+    #   builder = Generate::SrcBuilder.new
 
-      builder << "digraph #{self.class.name} {" << endl
+    #   builder << "digraph #{self.class.name} {" << endl
+    #   builder.indent!
 
-      @states.values.each { |state|
-        puts "state = #{state}"
-        state.transitions.values.each { |transition|
-          # puts "transition_list = #{transition_list.inspect}"
-          # puts "transition_list type = #{transition_list.class.name}"
-          # transition_list.each { |transition|
-            puts "transition = #{transition}"
-            builder << transition.origin_id
-            builder << " -> "
-            builder << transition.destination_id
-          builder << " [ label = #{transition.event} ]"
-            builder << endl
-          # }
-        }
-      }
-      builder << "}" << endl
+    #   @states.values.each { |state|
+    #     puts "state = #{state}"
+    #     state.transitions.values.each { |transition|
+    #       # puts "transition_list = #{transition_list.inspect}"
+    #       # puts "transition_list type = #{transition_list.class.name}"
+    #       # transition_list.each { |transition|
+    #         puts "transition = #{transition}"
+    #         builder << transition.origin_id
+    #         builder << " -> "
+    #         builder << transition.destination_id
+    #       builder << " [ label = #{transition.event} ]"
+    #         builder << endl
+    #       # }
+    #     }
+    #   }
 
-      return builder.to_s
-    end
+    #   builder.undent!
+    #   builder << "}" << endl
+
+    #   return builder.to_s
+    # end
 
     private
 
