@@ -193,7 +193,7 @@ module Statemachine
             src << "statemachine.getContext().#{transition.action.to_s.camalized(:lower)}();" << endl if transition.action
             src << "statemachine.setState(statemachine.#{transition.destination_id.to_s.upcase});" << endl
             entries.each do |entry|
-              src << "statemachine.getContext().#{entry.entry_action.to_s.camalized(:lower)}();" << endl if entry.entry_action              
+              src << "statemachine.getContext().#{entry.entry_action.to_s.camalized(:lower)}();" << endl if entry.entry_action
             end
           end
         end
@@ -242,12 +242,12 @@ module Statemachine
           return src
         end
 
-        def create_file(filename, content)
-          establish_directory(File.dirname(filename))
-          File.open(filename, 'w') do |file|
-            file.write(content)
-          end
-        end
+        # def create_file(filename, content)
+        #   establish_directory(File.dirname(filename))
+        #   File.open(filename, 'w') do |file|
+        #     file.write(content)
+        #   end
+        # end
 
         def src_file(name)
           path = @output_dir

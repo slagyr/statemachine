@@ -5,15 +5,23 @@ describe Statemachine::Statemachine, "(Turn Stile)" do
   include TurnstileStatemachine
 
   before(:each) do
+    remove_test_dir("dot")
+    @output = test_dir("dot")
     create_turnstile
   end
 
-  it "should generate a basic graph declaration" do
-    dot = @sm.to_dot
+  it "should output to console when no output dir provided" do
+    # Note - this test doesn't verify output to the console, but it does
+    # ensure that the to_dot call does not fail if not output is provided.
+    @sm.to_dot
+  end
 
-    puts dot
+  it "should generate a basic graph declaration" do
+    @sm.to_dot(:output => @output)
+
+    dot = load_lines(@output, "main.dot")
 
     dot.should_not equal(nil)
-    dot.include?("digraph").should == true
+    dot[0].include?("digraph").should == true
   end
 end

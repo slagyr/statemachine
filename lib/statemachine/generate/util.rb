@@ -4,6 +4,13 @@ module Statemachine
   module Generate
     module Util
 
+      def create_file(filename, content)
+        establish_directory(File.dirname(filename))
+        File.open(filename, 'w') do |file|
+          file.write(content)
+        end
+      end
+
       def establish_directory(path)
         return if File.exist?(path)
         establish_directory(File.dirname(path))

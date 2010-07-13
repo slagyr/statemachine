@@ -20,7 +20,7 @@ module Statemachine
 
       def initialize(sm, options)
         @sm = sm
-        # @output_dir = options[:output]
+        @output_dir = options[:output]
         # @classname = options[:name]
         # @context_classname = "#{@classname}Context"
         # @package = options[:package]
@@ -30,37 +30,101 @@ module Statemachine
       end
 
       def generate!
-        # explore_sm
-        # create_file(src_file(@classname), build_statemachine_src)
-        # create_file(src_file(@context_classname), build_context_src)
-      require 'statemachine/generate/src_builder'
-
-      builder = Generate::SrcBuilder.new
-
-      builder << "digraph #{self.class.name} {" << endl
-      builder.indent!
-
-      @sm.states.values.each { |state|
-        puts "state = #{state}"
-        state.transitions.values.each { |transition|
-          # puts "transition_list = #{transition_list.inspect}"
-          # puts "transition_list type = #{transition_list.class.name}"
-          # transition_list.each { |transition|
-            puts "transition = #{transition}"
-            builder << transition.origin_id
-            builder << " -> "
-            builder << transition.destination_id
-          builder << " [ label = #{transition.event} ]"
-            builder << endl
-          # }
+        explore_sm
+        save_output(src_file("main"), build_full_graph)
+        @sm.states.values.each { |state|
+          save_output(src_file("#{state.id}"), build_state_graph(state))
         }
-      }
-
-      builder.undent!
-      builder << "}" << endl
-
-      return builder.to_s
       end
+
+private
+
+      def explore_sm
+        @nodes = []
+        @transitions = []
+        @sm.states.values.each { |state|
+          state.transitions.values.each { |transition|
+            @nodes << transition.origin_id
+            @nodes << transition.destination_id
+            @transitions << transition
+          }
+        }
+        @nodes = @nodes.uniq
+      end
+
+      def build_full_graph
+        builder = Generate::SrcBuilder.new
+
+        add_graph_header(builder, "main")
+
+        @nodes.each { |node| add_node(builder, node) }
+        builder << endl
+
+        @transitions.each do |transition|
+          add_transition(builder, transition)
+        end
+
+        add_graph_footer(builder)
+
+        return builder.to_s
+      end
+
+      def build_state_graph(state)
+        builder = Generate::SrcBuilder.new
+
+        add_graph_header(builder, state.id)
+
+        state.transitions.values.each do |transition|
+          add_transition(builder, transition)
+        end
+
+        add_graph_footer(builder)
+
+        return builder.to_s
+      end
+
+      def add_graph_header(builder, graph_name)
+        builder << "digraph #{graph_name} {" << endl
+        builder.indent!
+      end
+
+      def add_graph_footer(builder)
+        builder.undent!
+        builder << "}" << endl
+      end
+
+      def add_node(builder, node)
+        builder << node
+        builder << " [ href = \"#{node}.svg\"]"
+        builder << endl
+      end
+
+      def add_transition(builder, transition)
+        builder << transition.origin_id
+        builder << " -> "
+        builder << transition.destination_id
+        builder << " [ "
+        builder << "label = #{transition.event} "
+        builder << "]"
+        builder << endl
+      end
+
+      def src_file(name)
+        return name if @output_dir.nil?
+        path = @output_dir
+        answer = File.join(path, "#{name}.dot")
+        return answer
+      end
+
+      def save_output(filename, content)
+        if @output_dir.nil?
+          puts "[#{filename}.dot]"
+          puts content
+        else
+          create_file(filename, content)
+        end
+      end
+
     end
   end
 end
