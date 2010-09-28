@@ -88,8 +88,8 @@ module Statemachine
           src << "// Instance variables" << endl
           concrete_states = @sm.states.values.reject { |state| state.id.nil? || !state.concrete? }.sort { |a, b| a.id <=> b.id }
           concrete_states.each do |state|
-            name = state.id.to_s.camalized
-            src << "public final State #{name.upcase} = new #{name}State(this);" << endl
+            name = state.id.to_s
+            src << "public final State #{name.upcase} = new #{name.camalized}State(this);" << endl
           end
           superstates = @sm.states.values.reject { |state| state.concrete? }.sort { |a, b| a.id <=> b.id }
           superstates.each do |superstate|
@@ -242,12 +242,12 @@ module Statemachine
           return src
         end
 
-        # def create_file(filename, content)
-        #   establish_directory(File.dirname(filename))
-        #   File.open(filename, 'w') do |file|
-        #     file.write(content)
-        #   end
-        # end
+        def create_file(filename, content)
+          establish_directory(File.dirname(filename))
+          File.open(filename, 'w') do |file|
+            file.write(content)
+          end
+        end
 
         def src_file(name)
           path = @output_dir
