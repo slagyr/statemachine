@@ -48,11 +48,11 @@ describe Statemachine::Statemachine, "(Java)" do
     @sm.to_java(:output => @output, :name => "JavaTurnstile", :package => "test.turnstile")
   end
 
-  def load_lines(*segs)
-    filename = File.join(*segs)
-    File.should exist( filename)
-    return IO.read(filename).split("\n")
-  end
+  # def load_lines(*segs)
+  #   filename = File.join(*segs)
+  #   File.should exist( filename)
+  #   return IO.read(filename).split("\n")
+  # end
 
   def empty_sm_lines
     @sm.to_java(:name => "JavaTest", :output => @output, :package => "test.blank")

@@ -37,7 +37,7 @@ module Statemachine
           explore_sm
           create_file(src_file(@classname), build_statemachine_src)
           create_file(src_file(@context_classname), build_context_src)
-          puts "Statemachine generated."
+          say "Statemachine generated."
         end
 
         private ###########################################
@@ -194,7 +194,7 @@ module Statemachine
             src << "statemachine.getContext().#{transition.action.to_s.camalized(:lower)}();" << endl if transition.action
             src << "statemachine.setState(statemachine.#{transition.destination_id.to_s.upcase});" << endl
             entries.each do |entry|
-              src << "statemachine.getContext().#{entry.entry_action.to_s.camalized(:lower)}();" << endl if entry.entry_action              
+              src << "statemachine.getContext().#{entry.entry_action.to_s.camalized(:lower)}();" << endl if entry.entry_action
             end
           end
         end
@@ -245,7 +245,7 @@ module Statemachine
 
         def create_file(filename, content)
           establish_directory(File.dirname(filename))
-          puts "Writing to file: #{filename}"
+          say "Writing to file: #{filename}"
           File.open(filename, 'w') do |file|
             file.write(content)
           end

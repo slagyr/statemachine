@@ -16,7 +16,9 @@ module Statemachine
     end
 
     def __generic_method(name, *args)
-      puts "action invoked: #{name}(#{args.join(", ")}) #{block_given? ? "with block" : ""}" if @verbose      
+      if !defined?($IS_TEST)
+        puts "action invoked: #{name}(#{args.join(", ")}) #{block_given? ? "with block" : ""}" if @verbose
+      end
     end
 
   end

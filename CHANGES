@@ -1,5 +1,16 @@
 = Statemachine Changelog
 
+== Version 1.1.0
+
+DotGraph
+* DotGraph generator was added to generate graphs of statemachines using Omnigraffle.
+* Fixed bug in Java generator where Statenames where not formated correctly.
+
+== Version 1.0.0
+
+Generator
+* Java generator was added.  Statemachines defined in the Ruby DSL can generate Java code.
+
 == Version 0.4.2
 
 Simple Fixes
