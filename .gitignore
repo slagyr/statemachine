@@ -4,6 +4,8 @@ doc/website/webgen.cache
 *.iml
 generate_tests/java/turnstile/
 generate_tests/java/turnstile2/
+generate_tests/dot_graph/turnstile/
+generate_tests/dot_graph/turnstile2/
 out/
 test_dir/
 pkg/
