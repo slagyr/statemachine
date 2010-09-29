@@ -21,7 +21,7 @@ at http://blog.8thlight.com/articles/2006/11/17/understanding-statemachines-part
 	
 == License
 
-Copyright (C) 2006  Micah Martin
+Copyright (C) 2006-2010  Micah Martin
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public

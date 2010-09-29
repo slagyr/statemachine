@@ -37,6 +37,7 @@ module Statemachine
           explore_sm
           create_file(src_file(@classname), build_statemachine_src)
           create_file(src_file(@context_classname), build_context_src)
+          puts "Statemachine generated."
         end
 
         private ###########################################
@@ -244,6 +245,7 @@ module Statemachine
 
         def create_file(filename, content)
           establish_directory(File.dirname(filename))
+          puts "Writing to file: #{filename}"
           File.open(filename, 'w') do |file|
             file.write(content)
           end
