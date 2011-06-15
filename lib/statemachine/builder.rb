@@ -57,12 +57,13 @@ module Statemachine
   module StateBuilding
     attr_reader :subject
   
-    # Declares that the state responds to the spcified event.
-    # The +event+ paramter should be a Symbol.  
+    # Declares that the state responds to the specified event.
+    # The +event+ parameter should be a Symbol.  
     # The +destination_id+, which should also be a Symbol, is the id of the state 
     # that will event will transition into.
     # 
-    # The 3rd +action+ paramter is optional
+    # The 3rd +action+ parameter is optional. Note that the action runs *before*
+    # the transition to the state specified in the 2nd parameter.
     #   
     #   sm = Statemachine.build do
     #     state :locked do
