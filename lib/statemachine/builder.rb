@@ -11,7 +11,7 @@ module Statemachine
   #     trans :unlocked, :pass, :locked, :lock
   #   end
   #   
-  # An optional statemachine paramter may be passed in to modify
+  # An optional statemachine parameter may be passed in to modify
   # an existing statemachine instance.
   #
   # Actions:
