@@ -33,6 +33,11 @@ module Statemachine
     # is responsible for all the behavior.
     attr_accessor :context
 
+    # A statemachine can be named. This is most useful when a program is running
+    # multiple machines with a tracer. The name is prepended to the tracer notices
+    # so that they can be matched to the correct statemachine.
+    attr_accessor :name
+
     attr_reader :root #:nodoc:
 
     # Should not be called directly.  Instances of Statemachine::Statemachine are created
@@ -97,7 +102,9 @@ module Statemachine
     end
 
     def trace(message) #:nodoc:
-      @tracer.puts message if @tracer
+      if @tracer
+        @name ? @tracer.puts("#{@name}-#{message}") : @tracer.puts(message)
+      end
     end
 
     def get_state(id) #:nodoc:
