@@ -103,7 +103,8 @@ module Statemachine
 
     def trace(message) #:nodoc:
       if @tracer
-        @name ? @tracer.puts("#{@name}-#{message}") : @tracer.puts(message)
+        prefix = @name ? "(#{@name}) " : ""
+        @tracer.puts("#{prefix}#{message}")
       end
     end
 

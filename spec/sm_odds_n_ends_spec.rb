@@ -61,6 +61,41 @@ describe "State Machine Odds And Ends" do
     @sm.state.should equal(:stuck)
   end
 
+  it "traces output with name" do
+    io = StringIO.new
+    @sm.name = "Switch"
+    @sm.tracer = io
+    @sm.toggle
+    @sm.toggle
+
+    expected = StringIO.new
+    expected.puts "(Switch) Event: toggle"
+    expected.puts "(Switch) \texiting 'off' state"
+    expected.puts "(Switch) \tentering 'on' state"
+    expected.puts "(Switch) Event: toggle"
+    expected.puts "(Switch) \texiting 'on' state"
+    expected.puts "(Switch) \tentering 'off' state"
+
+    io.string.should == expected.string
+  end
+
+  it "traces output without name" do
+    io = StringIO.new
+    @sm.tracer = io
+    @sm.toggle
+    @sm.toggle
+
+    expected = StringIO.new
+    expected.puts "Event: toggle"
+    expected.puts "\texiting 'off' state"
+    expected.puts "\tentering 'on' state"
+    expected.puts "Event: toggle"
+    expected.puts "\texiting 'on' state"
+    expected.puts "\tentering 'off' state"
+
+    io.string.should == expected.string
+  end
+
 end
 
 
