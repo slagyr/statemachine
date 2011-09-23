@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/spec_helper'
+require File.expand_path(File.dirname(__FILE__) + "/spec_helper")
 
 describe "State Machine Odds And Ends" do
   include SwitchStatemachine
