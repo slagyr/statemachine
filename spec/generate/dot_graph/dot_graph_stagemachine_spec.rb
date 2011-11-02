@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../spec_helper'
+require File.expand_path(File.dirname(__FILE__) + "/../../spec_helper")
 require 'statemachine/generate/dot_graph/dot_graph_statemachine'
 
 describe Statemachine::Statemachine, "(Turn Stile)" do
