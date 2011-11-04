@@ -1,8 +1,8 @@
 module Statemachine
   module VERSION #:nodoc:
     unless defined? MAJOR
-      MAJOR  = 1
-      MINOR  = 2
+      MAJOR  = 2
+      MINOR  = 0
       TINY   = 0
 
       STRING = [MAJOR, MINOR, TINY].join('.')
