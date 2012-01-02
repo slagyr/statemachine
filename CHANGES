@@ -1,5 +1,10 @@
 = Statemachine Changelog
 
+== Version 2.0.1
+
+* initialize ivars so that runtimes running with -d don't complain about uninitialized ivars (chuckremes)
+* updated to use Bundler and Rspec 2 (ericmeyer)
+
 == Version 1.1.0
 
 DotGraph
