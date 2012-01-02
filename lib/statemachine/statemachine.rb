@@ -45,6 +45,7 @@ module Statemachine
     def initialize(root = Superstate.new(:root, nil, self))
       @root = root
       @states = {}
+      @tracer = nil
     end
 
     # Returns the id of the startstate of the statemachine.

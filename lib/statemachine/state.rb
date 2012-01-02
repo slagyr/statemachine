@@ -11,6 +11,7 @@ module Statemachine
       @superstate = superstate
       @statemachine = state_machine
       @transitions = {}
+      @exit_action = @entry_action = nil
     end
 
     def add(transition)
