@@ -9,6 +9,7 @@ module Statemachine
       super(id, superstate, statemachine)
       @startstate = nil
       @history_id = nil
+      @default_history_id = nil
     end
     
     def concrete?
