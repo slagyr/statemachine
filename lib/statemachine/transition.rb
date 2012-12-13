@@ -17,12 +17,19 @@ module Statemachine
       exits, entries = exits_and_entries(origin, destination)
       exits.each { |exited_state| exited_state.exit(args) }
       
-      origin.statemachine.invoke_action(@action, args, "transition action from #{origin} invoked by '#{@event}' event") if @action
+      if @action
+        result = origin.statemachine.invoke_action(@action, args, "transition action from #{origin} invoked by '#{@event}' event") if @action
+        transition = !(result === false)
+      else
+        transition = true
+      end
       
-      terminal_state = entries.last
-      terminal_state.activate if terminal_state
+      if transition
+        terminal_state = entries.last
+        terminal_state.activate if terminal_state
 
-      entries.each { |entered_state| entered_state.enter(args) }
+        entries.each { |entered_state| entered_state.enter(args) }
+      end
     end
     
     def exits_and_entries(origin, destination)

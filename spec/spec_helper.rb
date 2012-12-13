@@ -33,12 +33,12 @@ module TurnstileStatemachine
     @alarm_status = false
     @thankyou_status = false
     @lock = "@locked = true"
-    @unlock = "@locked = false"
+    @unlock = "@locked = false; nil"
     @alarm = "@alarm_status = true"
     @thankyou = "@thankyou_status = true"
 
     @sm = Statemachine.build do
-      trans :locked, :coin, :unlocked, "@locked = false"
+      trans :locked, :coin, :unlocked, "@locked = false; nil"
       trans :unlocked, :pass, :locked, "@locked = true"
       trans :locked, :pass, :locked, "@alarm_status = true"
       trans :unlocked, :coin, :locked, "@thankyou_status = true"
