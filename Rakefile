@@ -3,7 +3,7 @@ require 'rubygems'
 require 'rake/gempackagetask'
 require 'rake/clean'
 require 'rake/rdoctask'
-require 'spec/rake/spectask'
+require 'rspec/core/rake_task'
 require 'statemachine'
 require "bundler/gem_tasks"
 
@@ -19,10 +19,8 @@ PKG_FILES = FileList[
 
 task :default => :spec
 
-desc "Run all specs"
-Spec::Rake::SpecTask.new do |t|
-  t.spec_files = FileList['spec/**/*_spec.rb']
-end
+RSpec::Core::RakeTask.new(:spec)
+
 
 WEB_ROOT = File.expand_path('~/Projects/slagyr.github.com/statemachine/')
 
