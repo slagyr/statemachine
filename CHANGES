@@ -1,5 +1,9 @@
 = Statemachine Changelog
 
+== Version 2.1.0
+
+* Do not perform transitions if context method returns false | by @zombor (https://github.com/slagyr/statemachine/pull/11)
+
 == Version 2.0.1
 
 * initialize ivars so that runtimes running with -d don't complain about uninitialized ivars (chuckremes)
