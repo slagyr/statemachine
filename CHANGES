@@ -1,5 +1,9 @@
 = Statemachine Changelog
 
+== Version ???
+
+* applied .dot file improvements from @wsobel (https://github.com/slagyr/statemachine/pull/12)
+
 == Version 2.1.0
 
 * Do not perform transitions if context method returns false | by @zombor (https://github.com/slagyr/statemachine/pull/11)
