@@ -1,8 +1,8 @@
 = Statemachine Changelog
 
-== Version ???
+== Version 2.2.0
 
-* applied .dot file improvements from @wsobel (https://github.com/slagyr/statemachine/pull/12)
+* applied dotfile improvements from @wsobel (https://github.com/slagyr/statemachine/pull/12)
 
 == Version 2.1.0
 
