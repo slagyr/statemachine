@@ -38,6 +38,11 @@ module Statemachine
     # so that they can be matched to the correct statemachine.
     attr_accessor :name
 
+    # This callback would be called whenever the statemachine is changing the state.
+    # This is useful whenever we want to make the state persistent and store into
+    # some database.
+    attr_accessor :state_change_action
+
     attr_reader :root #:nodoc:
 
     # Should not be called directly.  Instances of Statemachine::Statemachine are created
@@ -55,9 +60,9 @@ module Statemachine
 
     # Resets the statemachine back to its starting state.
     def reset
-      @state = get_state(@root.startstate_id)
+      self.state = get_state(@root.startstate_id)
       while @state and not @state.concrete?
-        @state = get_state(@state.startstate_id)
+        self.state = get_state(@state.startstate_id)
       end
       raise StatemachineException.new("The state machine doesn't know where to start. Try setting the startstate.") if @state == nil
       @state.enter
@@ -80,6 +85,8 @@ module Statemachine
       elsif value and @states[value.to_sym]
         @state = @states[value.to_sym]
       end
+
+      invoke_action(state_change_action, [@state], "state change action to #{@state}") if state_change_action
     end
 
     # The key method to exercise the statemachine. Any extra arguments supplied will be passed into

@@ -276,6 +276,13 @@ module Statemachine
       require 'statemachine/stub_context'
       context StubContext.new(options)
     end
+
+    # This callback would be called whenever the statemachine is changing the state.
+    # This is useful whenever we want to make the state persistent and store into
+    # some database.
+    def on_state_change(action=nil, &block)
+      @statemachine.state_change_action = action || block
+    end
   end
   
 end
