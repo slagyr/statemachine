@@ -17,11 +17,11 @@ Some documentation is available here in this RDOC documentation.
 You may also find useful documentation on the Statemachine website: http://slagyr.github.com/statemachine
 
 A detailed tutorial and overview of Finite State Machines and this library can be found
-at http://blog.8thlight.com/articles/2006/11/17/understanding-statemachines-part-1-states-and-transitions.
+at http://blog.8thlight.com/micah-martin/2006/11/17/understanding-statemachines-part-1-states-and-transitions.html
 	
 == License
 
-Copyright (C) 2006-2010  Micah Martin
+Copyright (C) 2006-2014  Micah Martin
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
