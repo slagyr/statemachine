@@ -1,9 +1,9 @@
 module Statemachine
 
-  class StatemachineException < Exception
+  class StatemachineException < StandardError
   end
 
-  class TransitionMissingException < Exception
+  class TransitionMissingException < StandardError
   end
 
   # Used at runtime to execute the behavior of the statemachine.
