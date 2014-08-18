@@ -1,5 +1,11 @@
 = Statemachine Changelog
 
+== Version 2.3.0
+
+* Introduce on_state_change for building persistent states from @godfat (https://github.com/slagyr/statemachine/pull/13)
+* Update rake tasks according to it's deprecation messages from @godfat (https://github.com/slagyr/statemachine/pull/14)
+* Base Exceptions on StandardError from @Asmod4n (https://github.com/slagyr/statemachine/pull/15)
+
 == Version 2.2.0
 
 * applied dotfile improvements from @wsobel (https://github.com/slagyr/statemachine/pull/12)
