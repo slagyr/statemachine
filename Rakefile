@@ -1,8 +1,8 @@
 $:.unshift('lib')
 require 'rubygems'
-require 'rake/gempackagetask'
+require 'rubygems/package_task'
 require 'rake/clean'
-require 'rake/rdoctask'
+require 'rdoc/task'
 require 'rspec/core/rake_task'
 require 'statemachine'
 require "bundler/gem_tasks"
